@@ -1,11 +1,11 @@
 ---
 version: "1.0"
-date: 2026-03-02
+date: 2026-03-03
 ---
 
 # Agent Persona Framework — Change History
 
-Change history for the [Agent Persona Framework](../resources/persona-framework.md).
+Change history for the [Agent Persona Framework](resources/persona-framework.md).
 
 ---
 
@@ -21,4 +21,4 @@ First published version. Includes the complete 7-step persona design workflow:
 6. **Score** — 50-point rubric (5 categories x 10 points)
 7. **Encode** — Copy-paste-ready Agent Builder field values
 
-See `references/change-history-pre-1.0.md` (not published) for pre-1.0 development history.
+Pre-1.0 development history is available locally (`_local/`) but not published.

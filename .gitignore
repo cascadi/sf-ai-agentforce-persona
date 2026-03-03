@@ -4,16 +4,10 @@
 # Claude Code session config
 .claude/
 
-# Internal planning (not part of published skill)
-BACKLOG.md
-feedback/
+# Local working files (not part of published skill, not indexed by AI tools)
+_local/
 
-# Generated persona outputs (produced by the skill, not part of the repo)
-generated/
+# Local developer tooling config
+.claudeignore
+.cursorignore
 
-# Research and derived references (internal forever)
-research/
-
-# Archived references (not part of published skill)
-references/agent-design-sketch.md
-references/change-history-pre-1.0.md

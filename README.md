@@ -43,7 +43,7 @@ Three Markdown files:
 | `resources/persona-encoding-guide.md` | How to encode persona into Agentforce Agent Builder |
 | `templates/persona-template.md` | Persona document output template |
 | `templates/persona-encoding-template.md` | Agent Builder encoding output template |
-| `references/change-history.md` | Version history |
+| `CHANGELOG.md` | Version history |
 
 ## Process Overview
 
@@ -103,7 +103,7 @@ Dimensions are ordered by dependency — upstream choices constrain downstream o
 
 ## Version
 
-v1.0 — See `references/change-history.md` for full version history.
+v1.0 — See `CHANGELOG.md` for full version history.
 
 ## Contributing Upstream
 

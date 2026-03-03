@@ -1,5 +1,5 @@
 ---
-version: "1.0"
+version: "1.1"
 date: 2026-03-02
 ---
 
@@ -219,10 +219,12 @@ More work is needed on encoding persona into `.agent` files for Agent Script, bu
 
 ### Recommended Pattern
 
-1. **System prompt** — Put the bulk of persona content here: Identity, archetype behavioral bullets, phrase book, chatting style rules, tone boundaries. This is the primary persona surface in Agent Script.
+1. **Agent-Level Instructions** (in the System Messages section) — Put the bulk of persona content here: Identity, archetype behavioral bullets, phrase book, chatting style rules, tone boundaries. This is the primary persona surface in Agent Script — the equivalent of Role in Agent Builder.
 2. **Topic instructions** — Add brief persona reminders per topic. Topic-level instructions can calibrate the persona for specific contexts (e.g., more empathetic in escalation topics, terser in status checks).
 3. **Loading text** — Write static, in-character loading text for each action. Match Voice + Tone + Brevity.
-4. **Welcome message** — Write a static welcome message reflecting Identity + Register + Voice + Brevity.
+4. **Welcome message** (800 chars) — Write a static welcome message reflecting Identity + Register + Voice + Brevity.
+5. **Error message** (255 chars) — Fallback message for system errors. Should reflect Voice + Tone + Brevity — same guidance as the Agent Builder Error Message field.
+6. **Static deterministic outputs** — Agent Script supports deterministic branches (`if`/`else`) with hardcoded pipe (`|`) output that bypasses the LLM entirely. Because the model doesn't generate these at runtime, each static output must be **pre-authored in the persona's voice**. Apply the same Voice + Tone + Brevity + Chatting Style rules you'd use for any other persona surface. A Conversational, Concise agent's static output should read like that agent wrote it — not like a developer placeholder.
 
 ### Open Questions
 
