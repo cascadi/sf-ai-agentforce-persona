@@ -1,6 +1,6 @@
 ---
-version: "1.1"
-date: 2026-03-02
+version: "1.2"
+date: 2026-03-03
 ---
 
 # Persona Encoding Guide
@@ -197,6 +197,10 @@ An alternative to encoding persona field-by-field: store the full persona docume
 3. **Reference the metadata** in a Prompt Template as a merge variable — consider **Flow-based injection** to dynamically insert the persona header at the top of each prompt at runtime
 4. **Actions that use that Prompt Template** receive the full persona context at runtime
 
+### Compatibility
+
+This approach works in Legacy Agent Builder and should work in Next Generation Authoring (NGA) as well. It provides a centralized source of truth for the primary persona, but static fields (Welcome Message, Error Message, Loading Text) still need content authored separately per field.
+
 ### When to Use It
 
 - **Multiple actions need the same persona context** — rather than duplicating persona instructions across every Action Output Response Instructions field, centralize in one record
@@ -215,20 +219,31 @@ The variable method adds persona context to specific actions via Prompt Template
 
 ## Agent Script (.agent DSL) Encoding
 
-More work is needed on encoding persona into `.agent` files for Agent Script, but early experimentation supports the following approach:
+Agent Script is GA. A single `.agent` file holds all instructions — no character limits apply. Encode the persona primarily in system instructions and secondarily in topic instructions.
 
 ### Recommended Pattern
 
-1. **Agent-Level Instructions** (in the System Messages section) — Put the bulk of persona content here: Identity, archetype behavioral bullets, phrase book, chatting style rules, tone boundaries. This is the primary persona surface in Agent Script — the equivalent of Role in Agent Builder.
-2. **Topic instructions** — Add brief persona reminders per topic. Topic-level instructions can calibrate the persona for specific contexts (e.g., more empathetic in escalation topics, terser in status checks).
+1. **System Instructions** — Put the bulk of persona content here: Identity, archetype behavioral bullets, phrase book, chatting style rules, tone boundaries. This is the primary persona surface in Agent Script — the equivalent of Role in Agent Builder. No character limits apply, so the full persona document can live here.
+2. **Topic instructions with persona pointers** — Add brief persona reminders per topic. Topic-level instructions can calibrate the persona for specific contexts (e.g., more empathetic in escalation topics, terser in status checks). To ensure the agent keeps its persona in context during extended sessions, include **pointers** — short directives that reference back to the system-level persona. Example: *"Remember, you are [Name]: succinct, friendly, casual. Respond in line with the detailed persona defined in system instructions."* Pointers are especially important for topics where conversation may run long.
 3. **Loading text** — Write static, in-character loading text for each action. Match Voice + Tone + Brevity.
 4. **Welcome message** (800 chars) — Write a static welcome message reflecting Identity + Register + Voice + Brevity.
 5. **Error message** (255 chars) — Fallback message for system errors. Should reflect Voice + Tone + Brevity — same guidance as the Agent Builder Error Message field.
-6. **Static deterministic outputs** — Agent Script supports deterministic branches (`if`/`else`) with hardcoded pipe (`|`) output that bypasses the LLM entirely. Because the model doesn't generate these at runtime, each static output must be **pre-authored in the persona's voice**. Apply the same Voice + Tone + Brevity + Chatting Style rules you'd use for any other persona surface. A Conversational, Concise agent's static output should read like that agent wrote it — not like a developer placeholder.
+6. **Static deterministic outputs** — Agent Script supports deterministic branches (`if`/`else`) with hardcoded pipe (`|`) output that bypasses the LLM entirely. Determinism is a Next Generation Authoring (NGA) capability that allows prescribing exact behaviors and responses. Because the model doesn't generate these at runtime, each static output must be **written exactly as it should appear** — pre-authored in the persona's voice. Apply the same Voice + Tone + Brevity + Chatting Style rules you'd use for any other persona surface. A Conversational, Concise agent's static output should read like that agent wrote it — not like a developer placeholder. This includes all deterministic responses, not just loading text.
+
+### Static Messages Summary
+
+Several Agent Script message types are static (not LLM-generated) and must be authored to align with the persona:
+
+| Message Type | Source | Persona Guidance |
+|---|---|---|
+| **Welcome** | `.agent` config | Identity + Register + Voice + Brevity |
+| **Error** | `.agent` config | Voice + Tone + Brevity |
+| **Loading** | Per action | Voice + Tone + Brevity |
+| **Deterministic responses** | `if`/`else` branches | Full persona — write exactly as it should appear |
 
 ### Open Questions
 
-- **Context retention:** It is unclear whether the entire `.agent` file is held in context throughout the session, or whether persona instructions in the system prompt may be lost due to context rotation in longer conversations.
+- **Context retention:** It is unclear whether the entire `.agent` file is held in context throughout the session, or whether persona instructions in the system prompt may be lost due to context rotation in longer conversations. Persona pointers in topic instructions (see item 2 above) are a mitigation strategy.
 - **Instruction precedence:** The working assumption is that topic instructions supersede system instructions, but more testing is needed to evaluate this. If confirmed, the system prompt carries the baseline persona and topic instructions carry overrides — the same layering pattern as Agent Builder (global Role + per-topic detail).
 
 ---
