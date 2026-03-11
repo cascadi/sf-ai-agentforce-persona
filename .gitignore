@@ -3,6 +3,7 @@
 
 # Claude Code session config
 .claude/
+.cursor/
 
 # Local working files (not part of published skill, not indexed by AI tools)
 _local/
