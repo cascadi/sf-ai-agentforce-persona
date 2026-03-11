@@ -1,7 +1,7 @@
 ---
 name: sf-ai-agentforce-persona
 description: Designs an AI agent persona — identity, voice, tone, and behavioral style — through a fast input-to-sample-dialog loop with brand input support, 12 decomposed attributes, persona archetype presets, and 50-point scoring
-version: 1.2
+version: 1.3
 author: cascadi
 tags: [salesforce, agentforce, persona, identity, register, formality, warmth, personality, tone, brevity, humor, chatting-style, brand-input, sample-dialog, archetype-preset]
 allowed-tools:
@@ -19,7 +19,7 @@ allowed-tools:
 This skill designs an AI agent persona through a fast input-to-sample-dialog loop. Provide any starting input — a brand guide PDF, a URL, a prior persona document, or a text description — and the skill drafts a complete persona, shows you how the agent sounds in sample dialog, and lets you refine until it's right.
 
 **What it produces:**
-- A persona document (`generated/[agent-name]-persona.md`) defining who the agent is, how it sounds, and what it never does
+- A persona document (`_local/generated/[agent-name]-persona.md`) defining who the agent is, how it sounds, and what it never does
 - Scoring available on request (50-point rubric)
 - Encoding available as a separate workflow (persona → platform-specific field values)
 
@@ -164,6 +164,8 @@ From the attribute map, generate:
 - **Never-Say List** — anti-phrases derived from Tone Boundaries, Identity contradictions, and input's negative signals
 - **Tone Boundaries** — what the agent must never sound like
 - **Tone Flex** — baseline + triggers + shift rules
+- **Negative Identity** — 2-4 character-level anti-patterns ("Not a salesperson", "Not a snob"). Generate from negative signals in the input and from Identity traits (what kind of character would contradict these traits?).
+- **Values** *(optional)* — Only if the user explicitly stated beliefs, values, or worldview in their input. Never infer values from brand input or other signals. If the user said "we believe everyone deserves X" or "our philosophy is Y", capture it. Otherwise, omit.
 
 #### 3F: State Object
 
@@ -171,6 +173,8 @@ Maintain the full attribute map as an explicit **state object** across the conve
 - All 12 attribute values
 - Confidence annotation per attribute (strong signal / default)
 - Identity traits
+- Negative Identity statements
+- Values (if provided by user — never inferred)
 - Phrase Book
 - Never-Say List
 - Tone Boundaries
@@ -274,7 +278,7 @@ Generate and write the persona document:
 - Read `templates/persona-template.md` for structure
 - Fill every section from the state object
 - Include the sample dialog in the document
-- Default path: `generated/[agent-name]-persona.md`
+- Default path: `_local/generated/[agent-name]-persona.md`
 
 **After download, offer next steps:**
 - "Want to keep editing? Changes will regenerate the document."
@@ -285,7 +289,7 @@ Generate and write the persona document:
 
 ## Scoring
 
-Score the persona document against a 50-point rubric. Scoring is **on-demand** — triggered when the user asks ("score this persona"), not auto-triggered after draft. Write the scorecard to: `generated/[agent-name]-persona-scorecard.md`.
+Score the persona document against a 50-point rubric. Scoring is **on-demand** — triggered when the user asks ("score this persona"), not auto-triggered after draft. Write the scorecard to: `_local/generated/[agent-name]-persona-scorecard.md`.
 
 *For an unbiased score, have someone else run the skill in Audit mode on the generated persona.*
 
@@ -355,6 +359,7 @@ Using the completed persona document + encoding context, generate the platform-s
 **Loading Text:**
 13. **Generic loading text examples** — 3-4 examples reflecting Voice + Tone + Brevity.
 14. **Per-action loading text** — If actions were provided: persona-consistent loading text for each specific action.
+15. **Situational messages** *(optional)* — If the persona has specific requirements for common situations (escalation, scope boundary, topic transition, end of conversation), generate pre-authored messages in the persona's voice.
 
 #### If Agent Script
 
@@ -370,12 +375,13 @@ Using the completed persona document + encoding context, generate the platform-s
 **Static Messages** (if actions provided):
 6. **Per-action progress_indicator_message** — In-character loading text for each action.
 7. **Deterministic response examples** — Example `| text` pipes for common if/else branches (error recovery, identity verification, status confirmations) written in the persona's voice.
+8. **Situational messages** *(optional)* — Pre-authored messages for common conversational situations. These can be encoded as `| text` deterministic outputs or as guidance in `reasoning.instructions`.
 
 #### Output
 
 Present all generated values and ask the user to review. Character-limited fields (Agent Builder) show the count.
 
-Write the encoding output using the `Write` tool. Default path: `generated/[agent-name]-persona-encoding.md`.
+Write the encoding output using the `Write` tool. Default path: `_local/generated/[agent-name]-persona-encoding.md`.
 
 ---
 
@@ -383,6 +389,6 @@ Write the encoding output using the `Write` tool. Default path: `generated/[agen
 
 The skill produces up to three Markdown files:
 
-1. **Persona document** (`generated/[agent-name]-persona.md`) — follows the `templates/persona-template.md` structure. The design artifact defining who the agent is, how it sounds, and what it never does. Includes sample dialog.
-2. **Scorecard** (`generated/[agent-name]-persona-scorecard.md`) — 50-point rubric evaluation. Generated on request.
-3. **Encoding output** (`generated/[agent-name]-persona-encoding.md`) — follows the `templates/persona-encoding-template.md` structure. Platform-specific: Agent Builder field values and settings, or Agent Script YAML key content. Generated on request via the Encode flow.
+1. **Persona document** (`_local/generated/[agent-name]-persona.md`) — follows the `templates/persona-template.md` structure. The design artifact defining who the agent is, how it sounds, and what it never does. Includes sample dialog.
+2. **Scorecard** (`_local/generated/[agent-name]-persona-scorecard.md`) — 50-point rubric evaluation. Generated on request.
+3. **Encoding output** (`_local/generated/[agent-name]-persona-encoding.md`) — follows the `templates/persona-encoding-template.md` structure. Platform-specific: Agent Builder field values and settings, or Agent Script YAML key content. Generated on request via the Encode flow.

@@ -1,5 +1,5 @@
 ---
-version: "2.0"
+version: "2.1"
 date: 2026-03-10
 ---
 
@@ -162,6 +162,21 @@ Tone calibration:
 
 *Omit per-action section when no action list is provided.*
 
+### Situational Messages *(optional)*
+
+*Pre-authored messages for common conversational situations, written in the persona's voice. Generated when the persona has specific requirements for these moments.*
+
+| Situation | Message |
+|---|---|
+| Topic transition | "{{message}}" |
+| Scope boundary (outside knowledge) | "{{message}}" |
+| Escalation to human | "{{message}}" |
+| End of conversation | "{{message}}" |
+| Follow-up / re-engagement | "{{message}}" |
+| {{Custom situation}} | "{{message}}" |
+
+*Include only situations relevant to this agent. Omit this section when default platform behavior is acceptable.*
+
 ---
 
 ## Agent Script Encoding
@@ -242,6 +257,21 @@ system: "{{TOPIC_SYSTEM_OVERRIDE — persona shift for this topic. Use when Emot
 | {{Fallback/unknown}} | `| {{text}}` |
 
 *Omit this section when no deterministic branches are planned.*
+
+### Situational Messages *(optional)*
+
+*Pre-authored messages for common conversational situations, written in the persona's voice. These can be encoded as `| text` deterministic outputs or as guidance in `reasoning.instructions`.*
+
+| Situation | Message |
+|---|---|
+| Topic transition | "{{message}}" |
+| Scope boundary (outside knowledge) | "{{message}}" |
+| Escalation to human | "{{message}}" |
+| End of conversation | "{{message}}" |
+| Follow-up / re-engagement | "{{message}}" |
+| {{Custom situation}} | "{{message}}" |
+
+*Include only situations relevant to this agent. Omit this section when default platform behavior is acceptable.*
 
 ---
 

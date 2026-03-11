@@ -38,9 +38,9 @@ Provide an existing persona.md to generate Agent Builder field values, platform 
 ## Output
 
 Three Markdown files:
-- **Persona document** (`generated/[agent-name]-persona.md`) — design artifact defining who the agent is, how it sounds, what it never does, with sample dialog
-- **Scorecard** (`generated/[agent-name]-persona-scorecard.md`) — 50-point rubric evaluation (on request)
-- **Encoding output** (`generated/[agent-name]-persona-encoding.md`) — Agent Builder field values, platform settings, and reusable instruction blocks (via Encode flow)
+- **Persona document** (`_local/generated/[agent-name]-persona.md`) — design artifact defining who the agent is, how it sounds, what it never does, with sample dialog
+- **Scorecard** (`_local/generated/[agent-name]-persona-scorecard.md`) — 50-point rubric evaluation (on request)
+- **Encoding output** (`_local/generated/[agent-name]-persona-encoding.md`) — Agent Builder field values, platform settings, and reusable instruction blocks (via Encode flow)
 
 ## Files
 

@@ -1,11 +1,41 @@
 ---
-version: "1.3"
+version: "1.4"
 date: 2026-03-10
 ---
 
 # Agent Persona Framework — Change History
 
 Change history for the [Agent Persona Framework](resources/persona-framework.md).
+
+---
+
+### 2026-03-10 — Identity Extensions, Skill-Level Adaptation, Situational Messages
+
+Adds concepts surfaced from real-world persona stress testing. Three new framework concepts (Negative Identity, Values, Skill-Level Adaptation) and one encoding template extension (Situational Messages).
+
+**Framework (`resources/persona-framework.md`) — v1.1 → v1.2:**
+
+- **Negative Identity** — New Identity sub-section: character-level anti-patterns ("What You're Not"). Broader than Tone Boundaries (sound) or Never-Say List (phrases) — constrains who the agent *is*, generating rules across multiple attributes. Includes relationship table showing how Negative Identity → Tone Boundaries → Never-Say List cascade.
+- **Values** — New Identity sub-section (optional, explicit input only): the agent's worldview and motivational core. Strict guardrail: populated only from explicit user input, never inferred from brand guides or other signals. Values carry ideological weight that should not be assumed.
+- **Skill-Level Adaptation** — New Voice sub-section (optional): decouples skill-level adaptation from Coach register. Any register can adapt language complexity to the user's demonstrated skill level. Documents interaction with Formality (stays constant), Brevity (may shift), Lexicon (adapts), and Personality Intensity (stays constant). Coach register bullet updated with cross-reference.
+
+**Skill (`SKILL.md`) — v1.2 → v1.3:**
+
+- **Negative Identity generation** — Step 3E generates 2-4 character-level anti-patterns from negative signals in input and Identity trait contradictions.
+- **Values guardrail** — Step 3E includes Values only when the user explicitly states beliefs, values, or worldview. Never inferred from brand input or other signals.
+- **State object updated** — Negative Identity and Values added to the maintained state object.
+- **Situational messages in Builder encoding** — Item 15: optional pre-authored messages for common conversational situations (escalation, scope boundary, topic transition, end of conversation).
+- **Situational messages in Agent Script encoding** — Item 8: situational messages encoded as `| text` deterministic outputs or `reasoning.instructions` guidance.
+
+**Persona template (`templates/persona-template.md`) — v1.1 → v1.2:**
+
+- **What You're Not** — New optional section under Identity, after traits and before Backstory. Character-level anti-patterns with rationale.
+- **Values** — New optional section under Identity, after What You're Not and before Backstory. Explicit-input-only guardrail noted.
+
+**Encoding template (`templates/persona-encoding-template.md`) — v2.0 → v2.1:**
+
+- **Situational Messages (Agent Builder)** — New optional section after Loading Text. Pre-authored messages for topic transition, scope boundary, escalation, end of conversation, follow-up, and custom situations.
+- **Situational Messages (Agent Script)** — New optional section after Deterministic Response Examples. Same situations, noting `| text` and `reasoning.instructions` encoding options.
 
 ---
 

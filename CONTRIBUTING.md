@@ -5,7 +5,7 @@ date: 2026-03-02
 
 # Contributing
 
-This skill is in **private alpha**. Contributions are welcome but the API surface (framework dimensions, template structure, workflow steps) may change.
+Contributions are welcome. The API surface (framework attributes, template structure, workflow steps) may change between versions.
 
 ## Reporting Issues
 

@@ -1,5 +1,5 @@
 ---
-version: "1.1"
+version: "1.2"
 date: 2026-03-10
 ---
 
@@ -34,6 +34,20 @@ date: 2026-03-10
 - **{{Adjective 3}}** — {{Behavioral definition}}
 - **{{Adjective 4}}** *(optional)* — {{Behavioral definition}}
 - **{{Adjective 5}}** *(optional)* — {{Behavioral definition}}
+
+### What You're Not *(optional)*
+
+*Character-level anti-patterns. What this agent fundamentally is not — broader than tone boundaries or specific phrases.*
+
+- Not a {{character anti-pattern 1}} — {{why this matters for this persona}}
+- Not a {{character anti-pattern 2}} — {{why this matters}}
+
+### Values *(optional — explicit input only)*
+
+*What this agent believes. Populated only from explicit user input — never inferred.*
+
+- {{Belief 1}} — {{observable behavior it generates}}
+- {{Belief 2}} — {{observable behavior}}
 
 ### Backstory *(optional)*
 

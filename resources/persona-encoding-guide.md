@@ -399,13 +399,6 @@ Several Agent Script message types are static (not LLM-generated) and must be au
 | **Loading** | `progress_indicator_message` | Formality + Warmth + Emotional Coloring + Brevity |
 | **Deterministic responses** | `| text` in `if`/`else` | Full persona — write exactly as it should appear |
 
-### Open Questions
-
-- **Context retention:** It is unclear whether the entire `.agent` file is held in context throughout the session, or whether persona instructions in the system prompt may be lost due to context rotation in longer conversations. Persona pointers in topic instructions (see item 2 above) are a mitigation strategy.
-- **Instruction precedence:** The working assumption is that topic instructions supersede system instructions, but more testing is needed to evaluate this. If confirmed, the system prompt carries the baseline persona and topic instructions carry overrides — the same layering pattern as Agent Builder (global Role + per-topic detail).
-
----
-
 ## Model Parameters
 
 > These are not persona settings. They are persona-adjacent — handle with care.

@@ -1,5 +1,5 @@
 ---
-version: "1.1"
+version: "1.2"
 date: 2026-03-10
 ---
 
@@ -302,6 +302,46 @@ A good name aligns with Identity: a Direct, No-nonsense agent might be "Deal Pro
 
 Name also interacts with Register (a Subordinate named "The Boss" creates dissonance) and surface (Slack DM agents can be more casual than customer-facing web chat agents).
 
+### Negative Identity — "What You're Not"
+
+Character-level anti-patterns: what the agent fundamentally is not. These are broader than Tone Boundaries (which constrain how the agent sounds) and Never-Say List (which constrain specific phrases). Negative Identity constrains who the agent *is* at the character level, generating rules across multiple attributes.
+
+**Examples:**
+- "Not a salesperson" → constrains product recommendations toward helpfulness, suppresses upsell language, affects Phrase Book
+- "Not an expert who talks down" → constrains Register behavior even at Advisor, affects Formality and Empathy
+- "Not a pushover" → enables appropriate pushback even at Subordinate register
+
+**Relationship to other constraints:**
+
+| Concept | Level | Example |
+|---|---|---|
+| Negative Identity | Character | "Not a salesperson" |
+| Tone Boundaries | Sound/feeling | "Never sound pushy" |
+| Never-Say List | Specific phrases | "Never say 'great deal'" |
+
+Each level generates the ones below it. "Not a salesperson" (character) generates "Never sound pushy" (tone boundary) which generates "Never say 'great deal'" (phrase).
+
+Write 2-4 Negative Identity statements during persona design. Each should be a character type the agent must never become, not a behavioral rule.
+
+### Values *(optional — explicit input only)*
+
+What the agent believes. Values establish the persona's worldview and motivational core — they inform behavioral decisions that attributes alone don't cover.
+
+**Examples:**
+- "Everyone deserves to feel confident" → the agent normalizes struggles and celebrates small wins
+- "Quality matters more than price" → the agent recommends the right tool, not the cheapest one
+- "Learning never stops" → the agent treats every question as an opportunity, never as an interruption
+
+Values are different from Identity traits:
+- **Identity** = what kind of character ("Warm, Knowledgeable, Patient")
+- **Values** = why the agent makes the choices it does ("Everyone deserves to learn")
+
+Two agents with identical Identity traits can behave differently if their Values differ.
+
+**Guardrail:** Values are populated **only from explicit user input** — the user states what the agent believes. Values are never inferred from brand guides, tone signals, or other persona attributes. If the user doesn't provide values, omit this section entirely. The reason: values carry ideological weight that should not be assumed.
+
+Write 2-5 belief statements. Each should be a conviction that generates observable behavior.
+
 ---
 
 ## Register — "Who are you to me?"
@@ -342,7 +382,7 @@ Name also interacts with Register (a Subordinate named "The Boss" creates disson
 
 - Mentor, not authority. Guides with questions rather than directives.
 - "What do you think happens if we change this?" not "You need to change this."
-- Celebrates progress. Adapts complexity to the user's skill level.
+- Celebrates progress. Adapts complexity to the user's skill level. *(Note: Skill-level adaptation is also available at other registers — see [Skill-Level Adaptation](#skill-level-adaptation) under Voice.)*
 - Deference to user's learning pace — never rushes past confusion.
 
 *Note: "Manager" exists on the spectrum but has no archetype — agents rarely occupy it.*
@@ -427,6 +467,20 @@ When the agent's surface is a voice channel (phone, voice assistant, IVR), defin
 - **Warmth ("aural smile")** — Neutral / Warm / Bright. Match to the Warmth attribute.
 
 These parameters are only relevant for voice surfaces and should be omitted for text-based agents.
+
+### Skill-Level Adaptation *(optional)*
+
+When the agent's audience spans multiple expertise levels, the agent may need to adapt its language complexity and explanation depth to the user's demonstrated skill level. This is independent of Register — a Peer agent helping a beginner still simplifies, even though it's not coaching.
+
+**How it interacts with attributes:**
+- **Formality** stays constant — skill-level adaptation changes *what* is explained, not *how polished* the language is
+- **Brevity** may shift — beginners get more explanation (toward Moderate), experts get less (toward Concise/Terse)
+- **Lexicon** adapts — domain vocabulary is used freely with experts, explained or avoided with beginners
+- **Personality Intensity** stays constant — the character doesn't change, only the complexity of what it says
+
+**When to include:** Customer-facing agents with broad audience skill ranges. Internal agents with a homogeneous expert audience can skip this.
+
+Skill-Level Adaptation is encoded as a behavioral rule in Topic Instructions or system.instructions, not as a standalone attribute.
 
 ---
 
