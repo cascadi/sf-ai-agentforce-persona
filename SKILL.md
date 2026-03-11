@@ -291,7 +291,7 @@ Generate and write the persona document:
 
 Score the persona document against a 50-point rubric. Scoring is **on-demand** — triggered when the user asks ("score this persona"), not auto-triggered after draft. Write the scorecard to: `_local/generated/[agent-name]-persona-scorecard.md`.
 
-*For an unbiased score, have someone else run the skill in Audit mode on the generated persona.*
+*For an unbiased score, have a different person run the scoring rubric on the generated persona.*
 
 | Category | Points | What It Measures |
 |---|---|---|

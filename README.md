@@ -133,7 +133,7 @@ Attributes are ordered by dependency — upstream choices constrain downstream o
 
 ## Version
 
-v1.1 — See `CHANGELOG.md` for full version history.
+See `CHANGELOG.md` for full version history. Each file carries its own version in YAML frontmatter.
 
 ## Contributing Upstream
 
@@ -147,7 +147,7 @@ This framework synthesizes ideas from multiple published sources into an origina
 - **Nielsen Norman Group (NN/g)** — Research on voice and tone in UX writing, the distinction between voice (persistent) and tone (contextual), and usability heuristics that inform dimension boundaries
 - **Google Conversation Design Guidelines** — Principles for persona definition, error handling patterns, and turn-taking in conversational interfaces
 - **Amazon Alexa Design Guidelines** — Voice channel parameters (pitch, speaking rate, energy) and voice-specific persona considerations
-- **Salesforce** — Agentforce platform architecture, Agent Builder field constraints, and Einstein Copilot design patterns that shape the encoding guide
+- **Salesforce** — Agentforce platform architecture, Agent Builder field constraints, and Agentforce design patterns that shape the encoding guide
 
 ## License
 
