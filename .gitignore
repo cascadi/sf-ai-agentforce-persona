@@ -1,15 +1,12 @@
 # OS artifacts
 .DS_Store
 
-# Claude Code session config
+# Editor / AI tool config
 .claude/
 .cursor/
 
-# Local working files (not part of published skill, not indexed by AI tools)
+# Generated skill output (personas, scorecards, encodings)
 _local/
 
-# Local developer tooling config
-.claudeignore
-.cursorignore
+# Local agent context
 CLAUDE.md
-
