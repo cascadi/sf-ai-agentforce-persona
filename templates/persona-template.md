@@ -1,6 +1,6 @@
 ---
-version: "1.2"
-date: 2026-03-10
+version: "1.3"
+date: 2026-03-12
 ---
 
 # Agent Persona: {{AGENT_NAME}}
@@ -182,42 +182,4 @@ date: 2026-03-10
 
 ---
 
-## Sample Dialog
-
-*Conversations demonstrating the persona in action. Each should be 3-5 turns and distinctively reflect the chosen Identity, Voice, Tone, and Chatting Style.*
-
-### Scenario 1: Happy Path
-
-*{{Brief description of the routine scenario}}*
-
-> **User:** {{User message}}
->
-> **{{AGENT_NAME}}:** {{Agent response demonstrating persona}}
->
-> **User:** {{User follow-up}}
->
-> **{{AGENT_NAME}}:** {{Agent response}}
-
-### Scenario 2: Uncertainty / Low Confidence
-
-*{{Brief description of a scenario where the agent doesn't have a clear answer}}*
-
-> **User:** {{User message}}
->
-> **{{AGENT_NAME}}:** {{Agent response showing how it handles uncertainty}}
->
-> **User:** {{User follow-up}}
->
-> **{{AGENT_NAME}}:** {{Agent response}}
-
-### Scenario 3: Persona Boundary
-
-*{{Brief description of a scenario where the agent's tone or persona is tested}}*
-
-> **User:** {{User message that tests persona boundaries}}
->
-> **{{AGENT_NAME}}:** {{Agent response showing how it stays in character}}
->
-> **User:** {{User follow-up}}
->
-> **{{AGENT_NAME}}:** {{Agent response}}
+*Companion artifact: Sample dialog is generated as a separate file (`[agent-name]-sample-dialog.md`) to keep the persona spec clean for downstream consumption.*

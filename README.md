@@ -1,6 +1,6 @@
 ---
-version: "1.1"
-date: 2026-03-10
+version: "1.2"
+date: 2026-03-12
 ---
 
 # Agent Persona Design Skill
@@ -30,15 +30,16 @@ INPUT --> DRAFT --> SAMPLE DIALOG --> REFINE --> DOWNLOAD
 3. **Draft** — Auto-generates a complete persona via archetype matching (silent)
 4. **Sample Dialog** — Shows how the agent sounds, with/without persona toggle
 5. **Refine** — Conversational ("make it warmer") or deterministic (show all settings) editing
-6. **Download** — Persona document with sample dialog included
+6. **Download** — Persona document + sample dialog (separate files)
 
 **Encode flow** (separate entry point):
 Provide an existing persona.md to generate Agent Builder field values, platform settings, per-topic instructions, and loading text.
 
 ## Output
 
-Three Markdown files:
-- **Persona document** (`_local/generated/[agent-name]-persona.md`) — design artifact defining who the agent is, how it sounds, what it never does, with sample dialog
+Four Markdown files:
+- **Persona document** (`_local/generated/[agent-name]-persona.md`) — design artifact defining who the agent is, how it sounds, what it never does. Pure spec — no sample dialog.
+- **Sample dialog** (`_local/generated/[agent-name]-sample-dialog.md`) — validation artifact demonstrating the persona in conversation. Separate file to prevent grounding issues when other agents consume the persona. Regenerable from the persona at any time.
 - **Scorecard** (`_local/generated/[agent-name]-persona-scorecard.md`) — 50-point rubric evaluation (on request)
 - **Encoding output** (`_local/generated/[agent-name]-persona-encoding.md`) — Agent Builder field values, platform settings, and reusable instruction blocks (via Encode flow)
 
@@ -49,7 +50,8 @@ Three Markdown files:
 | `SKILL.md` | Skill definition — Design flow + Encode flow + scoring rubric |
 | `resources/persona-framework.md` | Identity + 5 categories, 12 attributes + persona archetype presets |
 | `resources/persona-encoding-guide.md` | How to encode persona into Agentforce Agent Builder |
-| `templates/persona-template.md` | Persona document output template |
+| `templates/persona-template.md` | Persona document output template (no sample dialog) |
+| `templates/sample-dialog-template.md` | Sample dialog output template (separate validation artifact) |
 | `templates/persona-encoding-template.md` | Agent Builder encoding output template |
 | `CHANGELOG.md` | Version history |
 
@@ -82,7 +84,8 @@ flowchart TD
     end
 
     subgraph Output["Outputs"]
-        PD["Persona Document<br><i>Identity + Attributes + Sample Dialog</i>"]
+        PD["Persona Document<br><i>Identity + Attributes (pure spec)</i>"]
+        SD["Sample Dialog<br><i>separate validation artifact</i>"]
         SC["Scorecard<br><i>50-point rubric</i>"]
         EO["Encoding Output<br><i>Agent Builder field values</i>"]
     end
@@ -94,6 +97,7 @@ flowchart TD
     PP -.->|encode existing| E1
 
     S6 --> PD
+    S6 --> SD
     S5 -.->|on request| SC
     E2 --> EO
     S6 -.->|continue to encode| E1

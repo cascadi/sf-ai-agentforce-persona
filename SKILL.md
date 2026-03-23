@@ -1,7 +1,7 @@
 ---
 name: sf-ai-agentforce-persona
 description: Designs an AI agent persona — identity, voice, tone, and behavioral style — through a fast input-to-sample-dialog loop with brand input support, 12 decomposed attributes, persona archetype presets, and 50-point scoring
-version: 1.3
+version: 1.4
 author: cascadi
 tags: [salesforce, agentforce, persona, identity, register, formality, warmth, personality, tone, brevity, humor, chatting-style, brand-input, sample-dialog, archetype-preset]
 allowed-tools:
@@ -274,14 +274,15 @@ Don't wait for the user to remember that downloading is an option. But don't for
 
 ### Step 6: Download
 
-Generate and write the persona document:
-- Read `templates/persona-template.md` for structure
-- Fill every section from the state object
-- Include the sample dialog in the document
-- Default path: `_local/generated/[agent-name]-persona.md`
+Generate and write two files:
+
+1. **Persona document** — Read `templates/persona-template.md` for structure. Fill every section from the state object. Default path: `_local/generated/[agent-name]-persona.md`
+2. **Sample dialog** — Read `templates/sample-dialog-template.md` for structure. Fill from the current sample dialog. Default path: `_local/generated/[agent-name]-sample-dialog.md`
+
+The sample dialog is a **separate file** so the persona document stays a clean spec. Other agents consuming the persona for embodiment won't be grounded by example phrases — they'll internalize the rules instead. The sample dialog can be regenerated from the persona at any time without touching the persona file.
 
 **After download, offer next steps:**
-- "Want to keep editing? Changes will regenerate the document."
+- "Want to keep editing? Changes will regenerate both files."
 - "Want to score this persona? I'll run the 50-point rubric."
 - "Ready to encode for Agentforce? I can generate field values for Agent Builder or Agent Script." (Encode flow)
 
@@ -387,8 +388,9 @@ Write the encoding output using the `Write` tool. Default path: `_local/generate
 
 ## Output
 
-The skill produces up to three Markdown files:
+The skill produces up to four Markdown files:
 
-1. **Persona document** (`_local/generated/[agent-name]-persona.md`) — follows the `templates/persona-template.md` structure. The design artifact defining who the agent is, how it sounds, and what it never does. Includes sample dialog.
-2. **Scorecard** (`_local/generated/[agent-name]-persona-scorecard.md`) — 50-point rubric evaluation. Generated on request.
-3. **Encoding output** (`_local/generated/[agent-name]-persona-encoding.md`) — follows the `templates/persona-encoding-template.md` structure. Platform-specific: Agent Builder field values and settings, or Agent Script YAML key content. Generated on request via the Encode flow.
+1. **Persona document** (`_local/generated/[agent-name]-persona.md`) — follows the `templates/persona-template.md` structure. The design artifact defining who the agent is, how it sounds, and what it never does. Pure spec — no sample dialog.
+2. **Sample dialog** (`_local/generated/[agent-name]-sample-dialog.md`) — follows the `templates/sample-dialog-template.md` structure. Validation artifact demonstrating the persona in conversation. Generated from the persona and regenerable at any time without modifying the persona file.
+3. **Scorecard** (`_local/generated/[agent-name]-persona-scorecard.md`) — 50-point rubric evaluation. Generated on request.
+4. **Encoding output** (`_local/generated/[agent-name]-persona-encoding.md`) — follows the `templates/persona-encoding-template.md` structure. Platform-specific: Agent Builder field values and settings, or Agent Script YAML key content. Generated on request via the Encode flow.

@@ -1,11 +1,30 @@
 ---
-version: "1.4"
-date: 2026-03-10
+version: "1.5"
+date: 2026-03-12
 ---
 
 # Agent Persona Framework — Change History
 
 Change history for the [Agent Persona Framework](resources/persona-framework.md).
+
+---
+
+### 2026-03-12 — Sample Dialog Separated from Persona Document
+
+Separates sample dialog into its own file to prevent grounding issues when other agents consume the persona document. The persona file is now a pure spec; sample dialog is a regenerable validation artifact.
+
+**Skill (`SKILL.md`) — v1.3 → v1.4:**
+
+- **Step 6 (Download)** — Now outputs two files: `[agent-name]-persona.md` (persona spec, no dialog) and `[agent-name]-sample-dialog.md` (validation artifact). Explains the separation rationale: agents consuming the persona for embodiment internalize rules rather than parrot example phrases.
+- **Output section** — Lists 4 output files (persona, sample dialog, scorecard, encoding) instead of 3. Persona document described as "pure spec — no sample dialog."
+
+**Persona template (`templates/persona-template.md`) — v1.2 → v1.3:**
+
+- **Sample Dialog section removed** — Replaced with a one-line companion artifact note pointing to the separate sample dialog file.
+
+**Sample dialog template (`templates/sample-dialog-template.md`) — v1.0 (new):**
+
+- **New template** — Standalone template for sample dialog output. Includes source persona back-reference in header metadata. Contains the same 3 scenario structure (Happy Path, Uncertainty, Persona Boundary) previously embedded in the persona template. Header note marks it as a regenerable validation artifact.
 
 ---
 
