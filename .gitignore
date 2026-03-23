@@ -11,4 +11,5 @@ _local/
 # Local developer tooling config
 .claudeignore
 .cursorignore
+CLAUDE.md
 
