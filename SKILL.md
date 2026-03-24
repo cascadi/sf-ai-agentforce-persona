@@ -1,7 +1,7 @@
 ---
 name: sf-ai-agentforce-persona
 description: Designs an AI agent persona — identity, voice, tone, and behavioral style — through a fast input-to-sample-dialog loop with brand input support, 12 decomposed attributes, and 50-point scoring
-version: 2.0
+version: 2.0.0
 author: cascadi
 tags: [salesforce, agentforce, persona, identity, register, formality, warmth, personality, tone, brevity, humor, chatting-style, brand-input, sample-dialog]
 allowed-tools:
