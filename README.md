@@ -1,15 +1,15 @@
 ---
-version: "1.2"
-date: 2026-03-12
+version: "2.0.0"
+date: 2025-03-23
 ---
 
 # Agent Persona Design Skill
 
 Design AI agent personas for Salesforce Agentforce using the **Identity + 12 decomposed attributes** framework.
 
-Users assign personality to conversational agents within seconds. If you don't design that personality intentionally, users will invent one — often inconsistent, often unflattering.
+An agent persona is a designed personality that tells an AI agent who it is and how to express itself so it comes across naturally as a consistent character suited to its context and users.
 
-This skill provides a fast input-to-sample-dialog loop for designing consistent, intentional agent personas — from brand input through persona document to Agent Builder encoding.
+This skill provides a fast input-to-sample-dialog loop for designing consistent, intentional agent personas — from brand input through persona document to Agentforce encoding.
 
 ## Quick Start
 
@@ -19,89 +19,46 @@ This skill provides a fast input-to-sample-dialog loop for designing consistent,
 
 Provide any starting input — a brand guide PDF, a URL, a prior persona document, or a text description — and the skill drafts a complete persona, shows you how the agent sounds in sample dialog, and lets you refine until it's right.
 
-**Design flow:**
+**Two-phase workflow:**
 
 ```
-INPUT --> DRAFT --> SAMPLE DIALOG --> REFINE --> DOWNLOAD
+PHASE 1:  INPUT → CONTEXT → IDENTITY → ATTRIBUTES → SAMPLE DIALOG
+PHASE 2:  HUB MENU → refine / phrase book / never-say / lexicon / score / encode
 ```
 
+**Phase 1 (Essentials)** gets to sample dialog as fast as possible:
 1. **Input** — Brand guide PDF, URL, prior persona.md, or text description
-2. **Minimal Context** — Only asks what the input doesn't already answer (zero questions is valid)
-3. **Draft** — Auto-generates a complete persona via archetype matching (silent)
-4. **Sample Dialog** — Shows how the agent sounds, with/without persona toggle
-5. **Refine** — Conversational ("make it warmer") or deterministic (show all settings) editing
-6. **Download** — Persona document + sample dialog (separate files)
+2. **Minimal Context** — Only asks what the input doesn't already answer
+3. **Draft** — Auto-generates identity + attributes (silent)
+4. **Name** — Suggests names distilled from identity
+5. **Sample Dialog** — Shows how the agent sounds, with/without persona toggle
 
-**Encode flow** (separate entry point):
-Provide an existing persona.md to generate Agent Builder field values, platform settings, per-topic instructions, and loading text.
+**Phase 2 (Electives)** — user-driven hub menu:
+- Refine identity or attributes
+- Add phrase book, never-say list, tone flex, lexicon
+- Score the persona (50-point rubric)
+- Download the persona document
+- Encode for Agentforce (Agent Builder or Agent Script)
 
 ## Output
 
 Four Markdown files:
-- **Persona document** (`_local/generated/[agent-name]-persona.md`) — design artifact defining who the agent is, how it sounds, what it never does. Pure spec — no sample dialog.
-- **Sample dialog** (`_local/generated/[agent-name]-sample-dialog.md`) — validation artifact demonstrating the persona in conversation. Separate file to prevent grounding issues when other agents consume the persona. Regenerable from the persona at any time.
+- **Persona document** (`_local/generated/[agent-name]-persona.md`) — design artifact defining who the agent is, how it sounds, what it never does
+- **Sample dialog** (`_local/generated/[agent-name]-sample-dialog.md`) — validation artifact demonstrating the persona in conversation
 - **Scorecard** (`_local/generated/[agent-name]-persona-scorecard.md`) — 50-point rubric evaluation (on request)
-- **Encoding output** (`_local/generated/[agent-name]-persona-encoding.md`) — Agent Builder field values, platform settings, and reusable instruction blocks (via Encode flow)
+- **Encoding output** (`_local/generated/[agent-name]-persona-encoding.md`) — Agent Builder field values or Agent Script YAML blocks (via Encode flow)
 
 ## Files
 
 | File | Purpose |
 |---|---|
 | `SKILL.md` | Skill definition — Design flow + Encode flow + scoring rubric |
-| `resources/persona-framework.md` | Identity + 5 categories, 12 attributes + persona archetype presets |
-| `resources/persona-encoding-guide.md` | How to encode persona into Agentforce Agent Builder |
-| `templates/persona-template.md` | Persona document output template (no sample dialog) |
-| `templates/sample-dialog-template.md` | Sample dialog output template (separate validation artifact) |
-| `templates/persona-encoding-template.md` | Agent Builder encoding output template |
+| `resources/persona-framework.md` | Identity + 5 categories, 12 attributes — the deep reference |
+| `resources/persona-encoding-guide.md` | How to encode persona into Agentforce (architecture-first) |
+| `templates/persona-template.md` | Persona document output template |
+| `templates/sample-dialog-template.md` | Sample dialog output template |
+| `templates/persona-encoding-template.md` | Encoding output template (Agent Builder + Agent Script) |
 | `CHANGELOG.md` | Version history |
-
-## Process Overview
-
-```mermaid
-flowchart TD
-    subgraph Inputs
-        BG[Brand Guide PDF]
-        URL[Organization URL]
-        PP[Prior Persona.md]
-        TD[Text Description]
-    end
-
-    subgraph Design["Design Flow"]
-        S1["1 · Input"]
-        S2["2 · Minimal Context<br><i>ask only what's missing</i>"]
-        S3["3 · Draft<br><i>archetype matching + generation</i>"]
-        S4["4 · Sample Dialog<br><i>with/without persona toggle</i>"]
-        S5["5 · Refine<br><i>conversational or deterministic</i>"]
-        S6["6 · Download"]
-        S1 --> S2 --> S3 --> S4 --> S5 --> S6
-        S5 -.->|iterate| S4
-    end
-
-    subgraph Encode["Encode Flow"]
-        E1["Collect encoding context<br><i>surface, topics, actions</i>"]
-        E2["Generate field values<br><i>+ per-topic instructions</i>"]
-        E1 --> E2
-    end
-
-    subgraph Output["Outputs"]
-        PD["Persona Document<br><i>Identity + Attributes (pure spec)</i>"]
-        SD["Sample Dialog<br><i>separate validation artifact</i>"]
-        SC["Scorecard<br><i>50-point rubric</i>"]
-        EO["Encoding Output<br><i>Agent Builder field values</i>"]
-    end
-
-    BG --> S1
-    URL --> S1
-    PP --> S1
-    TD --> S1
-    PP -.->|encode existing| E1
-
-    S6 --> PD
-    S6 --> SD
-    S5 -.->|on request| SC
-    E2 --> EO
-    S6 -.->|continue to encode| E1
-```
 
 ## Framework Overview
 
@@ -125,15 +82,17 @@ flowchart TD
   - **Punctuation** — Conservative / Standard / Expressive
   - **Capitalization** — Standard / Casual
 
-**Persona archetype presets** provide 6 starting points that pre-populate all 12 attributes:
+Attributes are ordered by dependency — upstream choices constrain downstream ones. Constraints are recommendations, not hard locks. The persona document also includes a **Phrase Book** (with affirmations), **Never-Say List**, **Tone Flex** rules, and optional **Lexicon** for per-topic vocabulary.
 
-| Use Case | Conservative | Outlandish |
-|---|---|---|
-| Internal Sales Coach | The Steady Hand | Drover |
-| External Customer Service | The Concierge | Y.T. |
-| Lead Generation | The Qualifier | Bluebonnet |
+## Encoding Architecture
 
-Attributes are ordered by dependency — upstream choices constrain downstream ones. The persona document also includes a **Phrase Book**, **Never-Say List**, **Tone Flex** rules, and optional **Lexicon** for per-topic vocabulary.
+Persona encoding follows a three-layer model on both Agent Script and legacy Agentforce Builder:
+
+1. **Global instructions** — baseline identity + all attributes (Agent Script: `system.instructions`, Builder: dedicated global instructions topic)
+2. **Topic calibration** — per-topic overrides for brevity, tone flex, lexicon, phrase book, humor
+3. **Static messages** — welcome, error, loading text, deterministic responses
+
+See `resources/persona-encoding-guide.md` for the full guide.
 
 ## Version
 
@@ -143,15 +102,15 @@ See `CHANGELOG.md` for full version history. Each file carries its own version i
 
 This skill is designed for contribution to [jaganpro/sf-skills](https://github.com/jaganpro/sf-skills). Upstream validation: `python3 skill-builder/scripts/bulk_validate.py` (run in a fork of sf-skills). AI assistance must be disclosed in PR descriptions. See `CONTRIBUTING.md` for details.
 
-## Acknowledgements
+## Sources
 
 This framework synthesizes ideas from multiple published sources into an original persona design system for AI agents:
 
-- **Conversation Design Institute (CDI)** — Foundational principles on why intentional persona design matters, including the pareidolia effect, register archetypes (via Leary's Interpersonal Circumplex), the "One Breath Test," tapering, and apology/acknowledgement guidelines
+- **Conversation Design Institute (CDI)** — Foundational principles on intentional persona design, including the pareidolia effect, register (via Leary's Interpersonal Circumplex), the "One Breath Test," tapering, and apology guidelines
 - **Nielsen Norman Group (NN/g)** — Research on voice and tone in UX writing, the distinction between voice (persistent) and tone (contextual), and usability heuristics that inform dimension boundaries
-- **Google Conversation Design Guidelines** — Principles for persona definition, error handling patterns, and turn-taking in conversational interfaces
-- **Amazon Alexa Design Guidelines** — Voice channel parameters (pitch, speaking rate, energy) and voice-specific persona considerations
-- **Salesforce** — Agentforce platform architecture, Agent Builder field constraints, and Agentforce design patterns that shape the encoding guide
+- **Google Conversation Design Guidelines** — Principles for persona definition, error handling patterns, and turn-taking
+- **Amazon Alexa Design Guidelines** — Voice channel parameters and voice-specific persona considerations
+- **Salesforce** — Agentforce platform architecture, Agent Builder field constraints, and design patterns that shape the encoding guide
 
 ## License
 

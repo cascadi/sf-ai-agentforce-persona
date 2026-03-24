@@ -131,7 +131,7 @@ Extract persona signals from the user's input:
 - **Tone/voice signals:** Look for adjectives, "we are..." statements, competitive positioning language, formality markers.
 - **Negative signals:** "Never," "don't," "we are NOT" statements — often the strongest persona signals. These feed the Never-Say List.
 - **Audience signals:** Who the brand talks to, formal vs. informal examples, relationship language.
-- **If input is a prior persona.md:** Extract attributes directly, skip archetype matching.
+- **If input is a prior persona.md:** Extract attributes directly.
 
 ##### 3B: Attribute Selection
 

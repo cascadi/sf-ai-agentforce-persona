@@ -76,7 +76,7 @@ date: 2026-03-12
 | Chatting Style | Punctuation | {{Value}} | {{strong / default}} |
 | Chatting Style | Capitalization | {{Value}} | {{strong / default}} |
 
-*Constraint check: Do upstream choices align with downstream ones? See constraint notes in the framework for natural pairings. "Strong" = clear evidence in input. "Default" = inferred from preset.*
+*Constraint check: Do upstream choices align with downstream ones? See constraint notes in the framework for natural pairings. "Strong" = clear evidence in input. "Default" = inferred from context.*
 
 ---
 
