@@ -1,11 +1,57 @@
 ---
-version: "1.5"
-date: 2026-03-12
+version: "1.6.0"
+date: 2025-03-23
 ---
 
 # Agent Persona Framework — Change History
 
 Change history for the [Agent Persona Framework](resources/persona-framework.md).
+
+---
+
+### 2025-03-23 — Whitepaper-Led Rewrite
+
+Major revision aligning framework, encoding guide, skill, and templates with the practitioner whitepaper.
+
+**Framework (`persona-framework.md`) — v1.2 → v2.0.0:**
+- New intro section: "Why Persona Matters" with one-sentence persona definition, three-response scenario, brand greeting examples, and benefits
+- Added Design Principles section (specificity, iterate, positive instructions, comprehensiveness)
+- Richer Identity examples (Luna, Striker, Y.T., Bluebonnet with evocative trait definitions)
+- Expanded Naming section with 8 principles from whitepaper
+- Added Affirmations to Phrase Book categories
+- Archetype presets removed (moved to backlog for expansion into full grab-and-go personas)
+- Categories retained as lightweight organizers (Register, Voice, Tone, Delivery, Chatting Style)
+- All attribute spectrums, constraint notes, tension pairs, tone flex, tone boundaries preserved
+
+**Encoding Guide (`persona-encoding-guide.md`) — v2.1 → v3.0.0:**
+- Restructured from field-first to architecture-first: global instructions → topic calibration → static messages
+- Role field reversed: functional summary only — do not encode persona style when global instructions present
+- Global instructions topic is the primary persona surface in Builder
+- Agent Script section outputs ready-to-paste YAML blocks (system block, per-topic, per-action, deterministic)
+- Added resilience recommendation: Agent Script recommended when persona consistency is at a premium
+- Added "What to Expect" section (platform evolution, precision caveats, language scope)
+- Added Dynamic Welcome Messages (Builder, linking to Salesforce blog)
+- Added Conversation Style as lightweight encoding option
+- Constraints documented as recommendations, not hard locks
+- YAML literal block scalar (`|`) warning for Agent Script
+- Action Output Response Instructions dropped (moved to backlog for testing)
+- Drover vs. Juno side-by-side static message comparison
+
+**Skill (`SKILL.md`) — v1.4 → v2.0:**
+- Two-phase workflow: Phase 1 (essentials → sample dialog), Phase 2 (hub menu with electives)
+- Name moved to after identity (name distills identity)
+- Strong-signal attributes: show full spectrum with recommendation and rationale
+- "Other" free-text field for user additions that don't fit standard framework
+- Lexicon introduced as optional elective with phrase book disambiguation
+- Encode flow: architecture-first (global → topic → static), Role = functional only
+- Topics and actions are optional — skill does not guess or invent them
+- Dynamic welcome message option referenced in encode output
+- Agent Script encoding outputs YAML structure
+
+**Encoding Template (`persona-encoding-template.md`) — v1.0 → v2.0.0:**
+- Restructured to architecture-first matching encoding guide
+- Agent Script section with YAML code blocks for system, topic, action, deterministic
+- Builder section with global persona block as primary, Role as functional summary
 
 ---
 

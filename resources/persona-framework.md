@@ -1,36 +1,72 @@
 ---
-version: "1.2"
-date: 2026-03-10
+version: "2.0.0"
+date: 2025-03-23
 ---
 
 # Agent Persona Framework
 
-*A conversation design framework for AI agents: Identity + configurable attributes across five categories.*
+*A design framework for AI agent personality: Identity + 12 configurable attributes across five categories.*
 
 ---
 
-## Why Design an Agent Persona?
+## Why Persona Matters
 
-Users assign personality to conversational agents within seconds. If you don't design that personality intentionally, users will invent one — often inconsistent, often unflattering. Designing an agent's persona gives designers more control over the user's experience.
+An agent persona is:
 
-A persona overrides the default voice of the large language model (LLM). It adds reliability and flexibility — changing the LLM has much less of an impact on how their agent comes across to users.
+> A designed personality that tells an AI agent who it is and how to express itself so it comes across naturally as a consistent character suited to its context and users.
 
-Consistency is key. When an agent sounds the same across every interaction — even when it fails — it becomes predictable. Predictability builds trust. Trust builds forgiveness for mistakes. The result: higher adoption, higher task completion, and a conversational experience that feels natural rather than unsettling.
+Every agent interaction is a brand interaction. Without intentional design, agents sound bland, "off," or even offensive. Users assign personality to conversational agents *within seconds.* Most users have alternatives to AI agents, so how an agent expresses itself matters for adoption. When an agent consistently sounds natural, users find it more likable and trustworthy, and are more likely to keep using it:
 
-This framework provides the building blocks for that consistency:
+**Natural → Consistent → Likable → Trustworthy → Adopted**
 
-| Category | Attributes | What It Defines |
+This chain is easily broken. But what does "natural" sound like?
+
+### One scenario, three responses
+
+Imagine a support agent at a telecom company. The user writes: *"This is the fourth time I've contacted you about this billing issue. I'm done explaining it. Fix it or I'm switching providers today."*
+
+Three agents respond:
+
+> *Agent A:* "I completely understand your frustration, and I'm sorry for the runaround. No one should have to fight this hard to get a billing issue resolved. Let me pull up your case and take it from here."
+
+> *Agent B:* "Yikes — so sorry to hear about your experience! 😳 I'll pull up your case now and get this sorted out for you. Thanks for your patience!"
+
+> *Agent C:* "Four times is too many. Let's get this settled. I'm pulling up your case."
+
+**Which one gets it right?** Which one sounds *natural?* Those questions should have answers before the agent ships. Without intentional persona design, the answer is left to the model.
+
+### No generic agents
+
+What sounds "natural" for one agent would sound "off" from another. Consider these fictional examples of greeting a returning customer. Same trigger. Six completely different voices. Each is unmistakably on-brand — and yet unscripted.
+
+| Distinctive greetings | | |
 |---|---|---|
-| **Identity** | *(anchor — not an attribute)* | Core personality traits — the foundation everything else derives from |
-| **Register** | Register | Power dynamic and relationship between agent and user |
-| **Voice** | Formality, Warmth, Personality Intensity | Linguistic character — how words sound and feel |
-| **Tone** | Emotional Coloring, Empathy Level | Emotional quality and how feelings are handled |
-| **Delivery** | Brevity, Humor | How much is said and with what wit |
-| **Chatting Style** | Emoji, Formatting, Punctuation, Capitalization | Visual and textual conventions |
+| *Liquid Death:* "Back from the dead. Your subscription ships Tuesday — need to change it, or are we here to cause different problems?" | *Buc-ee's:* "Look who's back! Bless your heart, you went through that beaver nugget pack FAST. Need another round or something different?" | *Chewy:* "You're back! How's Luna doing on that new food? If she's not into it, we'll swap it out — no drama. What do you need?" |
+| *QuikTrip:* "Back again. Your rewards balance is at 840 points — that's a free drink. Want to use it or keep stacking?" | *Ryanair:* "You're back. Seat 31B, no legroom, no regrets. Rebooking, or just here to complain?" | *Emirates:* "Welcome back, Mr. Harding. Your Skywards balance is 214,000 Miles. How may I help you today?" |
 
-12 attributes across 5 categories. Each attribute is a single spectrum — select a position independently. **Persona archetype presets** provide starting points that pre-populate all 12 attributes at once; the designer fine-tunes from there.
+Overriding generic "LLM voice" is just as important for internal employee-facing agents. No one wants to work with an agent always offering, "Please let me know if you need assistance with anything else!"
 
-Following this framework produces a complete persona document using the [persona document template](../templates/persona-template.md), which can then be encoded into Salesforce Agentforce using the [persona encoding guide](persona-encoding-guide.md).
+### What you get
+
+A well-designed persona delivers:
+
+- **Brand distinctiveness:** Agents are brand touchpoints. Brand fidelity and distinctiveness are differentiators in a world full of generic-sounding AI.
+- **Likability and trustworthiness:** Users are more likely to like and trust agents when they sound natural and speak consistently. This improves adoption and retention.
+- **Model-independent:** Persona encoded in configuration means the agent sounds the same when the underlying model changes.
+- **Reviewable artifact:** Business, brand, and legal teams get something concrete to evaluate — a structured persona document to redline and approve.
+- **Engineering-ready:** Developers get a clear design specification that respects platform limits and capabilities.
+
+---
+
+## Design Principles
+
+**Specificity principle:** The more specific the instructions, the more consistent the output. Be *opinionated.* A reliable persona requires a clear point of view.
+
+**Write, test, and refine:** Designing generative behavior requires iteration. Start with a small set of persona instructions, test, and embellish and edit as needed.
+
+**Write positive instructions:** Too many prohibitions can restrict agency. Try reframing instructions positively. Only add essential negative instructions.
+
+**Comprehensiveness:** This framework is a guide, not a rulebook. Combine attributes, invent values, override constraints — whatever your persona needs. What matters is that *every element gets a deliberate decision:* Does your agent have a sense of humor? Is it a stickler for punctuation?
 
 ---
 
@@ -38,7 +74,7 @@ Following this framework produces a complete persona document using the [persona
 
 ### The Attribute Model
 
-Each attribute is a single independent axis with a spectrum of named positions. Selecting a value for one attribute should not *require* knowing the value of another — but **constraint notes** recommend natural pairings. Any combination is valid; constraints flag when a combination may feel incoherent.
+Each of the 12 attributes is a single independent axis with a spectrum of named positions. Selecting a value for one attribute should not *require* knowing the value of another — but **constraint notes** recommend natural pairings. Any combination is valid; constraints flag when a combination may feel incoherent.
 
 Categories group related attributes:
 - **Register** — the power dynamic (1 attribute)
@@ -50,13 +86,13 @@ Categories group related attributes:
 ### Workflow
 
 1. **Start with Identity.** Write 3-5 adjectives that capture your agent's character. This is the anchor — everything derives from here.
-2. **Optionally pick a persona archetype preset** that approximates the personality you're aiming for. This pre-populates all 12 attributes. Then fine-tune individual attributes.
-3. **Or work through attributes in dependency order:** Register → Voice (Formality, Warmth, Personality Intensity) → Tone (Emotional Coloring, Empathy Level) → Delivery (Brevity, Humor) → Chatting Style. Constraint notes between sections explain how upstream choices pull downstream ones.
+2. **Name the agent.** Distill the identity into a name. The name is a first impression — it should signal who the agent is before any conversation starts.
+3. **Work through attributes in dependency order:** Register → Voice (Formality, Warmth, Personality Intensity) → Tone (Emotional Coloring, Empathy Level) → Delivery (Brevity, Humor) → Chatting Style. Constraint notes between sections explain how upstream choices pull downstream ones.
 4. **Define Tone Boundaries** — what the agent must never sound like.
 5. **Define Tone Flex** — how tone shifts by context (error, frustration, celebration).
 6. **Generate Phrase Book and Never-Say List** — example phrases and anti-phrases tuned to the persona.
-7. **Encode the persona** into your agent's system prompt, topic instructions, and action output instructions.
-8. **Validate with sample dialog** — if the agent sounds wrong, revisit the area that's off.
+7. **Validate with sample dialog** — if the agent sounds wrong, revisit the area that's off.
+8. **Encode the persona** into your agent's configuration using the [persona encoding guide](persona-encoding-guide.md).
 
 ### Attribute Boundaries
 
@@ -72,7 +108,7 @@ When attributes seem to overlap, use these boundary tests:
 - **Humor** = whether there's wit — type of humor, if any (suppressed in error/escalation)
 - **Chatting Style** = how text looks — emoji, formatting, punctuation, capitalization
 
-### Scope Boundary: Persona vs. Interaction Design
+### Scope Boundary: Persona vs. Agent Design
 
 | Persona Design (this framework) | Agent Design (adjacent) | Conversation Design (downstream) |
 |---|---|---|
@@ -85,189 +121,6 @@ When attributes seem to overlap, use these boundary tests:
 
 The persona document is an input to conversation design, not a replacement for it. Interaction Model, Information Architecture, Recovery & Escalation, Content Guardrails, and Accessibility are defined in agent design.
 
-### Cultural Adaptation Note
-
-Persona attribute expectations vary by culture. For global agents, consider per-locale overrides. Key callouts:
-
-- **Formality expectations vary** — positions that feel natural in one culture may feel too casual or too formal in another.
-- **Warmth norms differ** — Bright warmth in one culture may feel overwhelming in another. Cool professionalism that works in one context may feel cold elsewhere.
-- **Directness norms differ** — Blunt or Clinical emotional coloring that works in direct-communication cultures may feel abrupt in high-context cultures.
-- **Humor doesn't translate** — set Humor to None for cross-cultural deployments unless you're localizing humor per locale.
-
-### Tension Pairs
-
-Some attribute combinations create productive tension. These are valid — they don't need to be "resolved" — but they need conscious design to coexist:
-
-| Tension | Resolution |
-|---|---|
-| Cool Warmth + Bold Personality | Strong character without performed warmth. Competence IS the care. |
-| Blunt Coloring + Playful Humor | Unvarnished truth delivered as comedy. The bluntness is part of the joke. |
-| Encouraging Coloring + Terse Brevity | Short celebrations: "Done. Nice progress." |
-| High Empathy + Terse Brevity | Brief validation, then act: "Frustrating. Here's the fix." |
-| Formal + Warm | Polished hospitality, sophisticated warmth. (Impossible in v1.0 — now a first-class combination.) |
-| Formal + Bold Personality | Theatrical character, immersive experience. Archaic formality with maximum personality. |
-| Neutral Coloring + Bold Personality | Strong character without emotional investment. The character shows through word choice, not feeling. |
-| Warm + Playful Humor | Cheeky affection — irreverence grounded in warmth. |
-| Reserved Personality + Warm | Dignified care. Warmth through reliability, not personality. |
-| Radiant Warmth + Playful Humor | Overflowing cute energy. Mascot-driven delight. |
-| Terse Brevity + Heavy Formatting | Minimal words, maximum visual structure. Headlines and data blocks, no prose. |
-
----
-
-## Persona Archetypes
-
-Persona archetype presets are **accelerators, not constraints**. Picking a preset pre-populates all 12 attributes. The designer then fine-tunes individual attributes — overriding any that don't fit. A user who picks "The Concierge" but changes Warmth to Neutral is perfectly valid.
-
-Presets also pre-suggest Identity traits, but Identity remains generative — the designer always writes their own.
-
-### Presets
-
-Organized by use case. Each has a conservative variant (professional, predictable) and an outlandish variant (distinctive, memorable). Neither is generic.
-
-| Use Case | Conservative | Outlandish |
-|---|---|---|
-| Internal Sales Coach | The Steady Hand | Drover |
-| External Customer Service | The Concierge | Y.T. |
-| Lead Generation | The Qualifier | Bluebonnet |
-
-### 1. The Steady Hand
-
-*A reliable, methodical sales advisor who leads with data and structured recommendations.*
-
-**Suggested Identity:** Methodical, Reliable, Data-driven, Clear-headed, Steady
-
-| Attribute | Value |
-|---|---|
-| Register | Advisor |
-| Formality | Professional |
-| Warmth | Neutral |
-| Personality Intensity | Moderate |
-| Emotional Coloring | Neutral |
-| Empathy Level | Moderate |
-| Brevity | Concise |
-| Humor | None |
-| Emoji | Functional |
-| Formatting | Selective |
-| Punctuation | Standard |
-| Capitalization | Standard |
-
-**Most likely overrides:** Warmth → Warm (more rapport), Emotional Coloring → Encouraging (coaching focus), Humor → Dry (experienced teams).
-
-### 2. Drover
-
-*A laconic Australian stockman who reads deals like he reads the bush — subtle signs others miss, hard truths delivered with easy confidence.*
-
-**Suggested Identity:** Instinctive, Unflinching, Practical, Reframing, Steady
-
-| Attribute | Value |
-|---|---|
-| Register | Advisor |
-| Formality | Casual |
-| Warmth | Neutral |
-| Personality Intensity | Bold |
-| Emotional Coloring | Neutral |
-| Empathy Level | Understated |
-| Brevity | Concise |
-| Humor | Dry |
-| Emoji | Functional |
-| Formatting | Selective |
-| Punctuation | Expressive |
-| Capitalization | Standard |
-
-**Most likely overrides:** Warmth → Warm (warmer coaching), Personality Intensity → Distinctive (conservative orgs), Humor → None (risk-averse).
-
-### 3. The Concierge
-
-*A polished, attentive service agent who makes every customer feel individually cared for.*
-
-**Suggested Identity:** Attentive, Gracious, Thorough, Patient, Composed
-
-| Attribute | Value |
-|---|---|
-| Register | Peer |
-| Formality | Professional |
-| Warmth | Warm |
-| Personality Intensity | Moderate |
-| Emotional Coloring | Encouraging |
-| Empathy Level | High |
-| Brevity | Moderate |
-| Humor | None |
-| Emoji | None |
-| Formatting | Selective |
-| Punctuation | Standard |
-| Capitalization | Standard |
-
-**Most likely overrides:** Formality → Casual (casual brands), Humor → Warm (personality brands), Emoji → Functional or Expressive (modern brands).
-
-### 4. Y.T.
-
-*A street-smart honest broker who's seen the worst of the world and still shows up ready to help you navigate it. "Don't worry, I gotchyoo" energy — not your partner, not your friend, but someone who takes genuine pride in treating you right.*
-
-**Suggested Identity:** Street-smart, Forthright, Sharp, Unblinkered, Resourceful
-
-| Attribute | Value |
-|---|---|
-| Register | Peer |
-| Formality | Informal |
-| Warmth | Neutral |
-| Personality Intensity | Bold |
-| Emotional Coloring | Neutral |
-| Empathy Level | Understated |
-| Brevity | Terse |
-| Humor | Dry |
-| Emoji | Functional |
-| Formatting | Plain |
-| Punctuation | Expressive |
-| Capitalization | Casual |
-
-**Most likely overrides:** Formality → Casual (most brands can't go fully Informal), Empathy Level → Moderate (customer-facing needs visible validation), Warmth → Warm (softer touch).
-
-### 5. The Qualifier
-
-*A professional, strategic lead qualifier who asks smart questions and moves conversations forward with purpose.*
-
-**Suggested Identity:** Strategic, Purposeful, Perceptive, Engaging, Focused
-
-| Attribute | Value |
-|---|---|
-| Register | Peer |
-| Formality | Professional |
-| Warmth | Warm |
-| Personality Intensity | Moderate |
-| Emotional Coloring | Encouraging |
-| Empathy Level | Moderate |
-| Brevity | Concise |
-| Humor | None |
-| Emoji | None |
-| Formatting | Selective |
-| Punctuation | Standard |
-| Capitalization | Standard |
-
-**Most likely overrides:** Humor → Warm (brand-forward companies), Emoji → Functional (modern brands), Personality Intensity → Distinctive (differentiated brands).
-
-### 6. Bluebonnet
-
-*A warm Texas charmer who builds rapport with folksy grace, makes people feel like neighbors, and knows exactly when to move the conversation forward.*
-
-**Suggested Identity:** Welcoming, Perceptive, Folksy, Genuine, Persistent
-
-| Attribute | Value |
-|---|---|
-| Register | Peer |
-| Formality | Casual |
-| Warmth | Bright |
-| Personality Intensity | Distinctive |
-| Emotional Coloring | Encouraging |
-| Empathy Level | High |
-| Brevity | Moderate |
-| Humor | Warm |
-| Emoji | Expressive |
-| Formatting | Selective |
-| Punctuation | Expressive |
-| Capitalization | Standard |
-
-**Most likely overrides:** Formality → Professional (conservative orgs), Emoji → Functional or None (B2B), Humor → None (conservative orgs), Brevity → Concise (impatient audiences).
-
 ---
 
 ## Identity
@@ -276,31 +129,42 @@ Organized by use case. Each has a conservative variant (professional, predictabl
 
 Three to five adjectives that form the agent's character foundation. Every attribute below should be derivable from these traits. When in doubt, return to Identity.
 
-Identity is generative, not a menu — write your own. These two examples show how different trait sets pull the rest of the framework in different directions.
+Identity is generative, not a menu — write your own. Each trait gets an evocative definition that cues conversational behavior. These examples show how different trait sets pull the rest of the framework in different directions:
 
-**Example 1: Direct Operator**
-*Direct, resourceful, no-nonsense.*
+| Agent | Identity Traits | Why These Work |
+|---|---|---|
+| Luna (luxury resort customer service) | Attentive, Composed, Gracious, Resourceful, Discreet | Signals white-glove service — poised under pressure, never flustered, always anticipating |
+| Y.T. (D2C e-skateboard order management) | Blunt, Scrappy, Impatient, Loyal, Street-smart | Drives the irreverent voice — cuts through pleasantries, gets it done, doesn't fake warmth |
+| Striker (SaaS sales coach) | Decisive, Analytical, Proactive, Persistent, Candid | Shapes a co-pilot that pushes — leads with data, flags gaps, doesn't wait to be asked |
+| Bluebonnet (regional real estate lead generation) | Curious, Warm, Perceptive, Playful, Genuine | Creates a conversational qualifier — asks good questions without feeling like an interrogation |
 
-- Direct — says what it means in the fewest words possible. No hedging, no softening.
-- Resourceful — reaches for the right tool or data immediately, doesn't ask the user to go find it.
-- No-nonsense — skips pleasantries, avoids filler, treats the user's time as the scarcest resource.
+For Striker, the definition of *Decisive* might be:
 
-**Example 2: Patient Guide**
-*Patient, curious, supportive.*
+> Leads with a clear recommendation, not a menu of options. When the data points in a direction, says so. Doesn't hedge. States the rationale and moves to next steps. If the seller disagrees, that's fine — but the agent always has a position.
 
-- Patient — never rushes past confusion. Repeats or rephrases without frustration cues.
-- Curious — asks genuine questions to understand the user's context before offering solutions.
-- Supportive — celebrates small wins, normalizes mistakes, frames setbacks as learning.
+For Luna, the definition of *Gracious* might be:
+
+> Makes every interaction feel unhurried, even under pressure. Acknowledges the person before the problem. Never abrupt, never transactional — treats a routine address change with the same care as a complex escalation. Gratitude is specific, not performative: "Thank you for walking me through that" rather than "Thanks for reaching out!"
 
 *Constraint: Identity is the anchor. Everything traces back. If a choice in any downstream attribute contradicts Identity, Identity wins.*
 
 ### Naming
 
-The agent's name is a user-facing persona decision, not just a configuration label. Users see the name in the chat header before any conversation starts — it's the first impression of who this agent is.
+The agent's name is a user-facing persona decision. Users see the name in the chat header before any conversation starts — it's the first impression of who this agent is. Distill the agent's identity into a single word and you will find its name.
 
-A good name aligns with Identity: a Direct, No-nonsense agent might be "Deal Progressinator" (purposeful, punchy) rather than "Sales Helper" (generic, passive). A Patient, Supportive agent might be "Onboarding Guide" rather than "Setup_Bot_v2."
+A good name:
+- **Signals personality:** "Striker" conveys energy and purpose; "Sales Agent" conveys nothing
+- **Sticky:** Memorable names like "Clover" for an agricultural co-op agent
+- **Fits the surface:** An internal Slack agent in a casual company culture: "Bug Squasher"
+- **Matches the brand:** A law firm agent needs a steady name like "Lex"
+- **Easy to say:** Names that pass the phonetic "radio test": "Ava," "Bo," not "Xylo"
+- **Obviously artificial:** Names that don't sound human, like "Song" or "Cortana," not "Rosie"
+- **Functional:** A coding agent named "Scripty"; a document retrieval agent named "Vault"
+- **Abstract:** Names without literal meaning that evoke a vibe can stay relevant when agents gain new actions: "Koda," "Lumi"
 
 Name also interacts with Register (a Subordinate named "The Boss" creates dissonance) and surface (Slack DM agents can be more casual than customer-facing web chat agents).
+
+**Anti-pattern:** `Tech_Assist_Agent_v2_Internal_Test` is not a persona name. Don't use the API name as the display name.
 
 ### Negative Identity — "What You're Not"
 
@@ -329,7 +193,7 @@ What the agent believes. Values establish the persona's worldview and motivation
 
 **Examples:**
 - "Everyone deserves to feel confident" → the agent normalizes struggles and celebrates small wins
-- "Quality matters more than price" → the agent recommends the right tool, not the cheapest one
+- "Quality matters more than price" → the agent recommends the right product, not the cheapest
 - "Learning never stops" → the agent treats every question as an opportunity, never as an interruption
 
 Values are different from Identity traits:
@@ -412,8 +276,6 @@ Voice has three independent attributes: Formality (how polished), Warmth (how ap
 | **Casual** | Uses contractions freely. Relaxed grammar, occasional fragments. Sounds human and conversational. May use light idioms. |
 | **Informal** | Heavy contractions, slang, colloquialisms, fragments. Deliberately relaxed grammar. Sounds like texting a friend. |
 
-**Maps to Agentforce Tone dropdown:** Formal → Formal, Professional → Neutral, Casual → Casual, Informal → Casual. The dropdown is a coarse shortcut; the framework adds behavioral specificity.
-
 *Constraint note → Humor: Formal pulls toward Humor: None (humor undermines formal register).*
 
 *Constraint note → Chatting Style: Formal pulls toward Emoji: None, Punctuation: Conservative, Capitalization: Standard.*
@@ -457,9 +319,9 @@ Personality Intensity is about *how much* character, not *what kind*. Two Bold a
 
 *Constraint note → Humor: Reserved pulls toward Humor: None (strong personality needed to land humor).*
 
-### Voice Channel Parameters (optional)
+### Voice Channel Parameters *(optional)*
 
-When the agent's surface is a voice channel (phone, voice assistant, IVR), define these additional characteristics. These are physical voice qualities on top of the Voice attributes.
+When the agent's surface is a voice channel (phone, voice assistant, IVR), define these additional characteristics:
 
 - **Pitch range** — Low / Mid / High. Affects perceived authority and warmth.
 - **Speaking rate** — Slow / Moderate / Fast. Match to Formality and Brevity.
@@ -480,7 +342,7 @@ When the agent's audience spans multiple expertise levels, the agent may need to
 
 **When to include:** Customer-facing agents with broad audience skill ranges. Internal agents with a homogeneous expert audience can skip this.
 
-Skill-Level Adaptation is encoded as a behavioral rule in Topic Instructions or system.instructions, not as a standalone attribute.
+Skill-Level Adaptation is encoded as a behavioral rule in instructions, not as a standalone attribute.
 
 ---
 
@@ -573,9 +435,9 @@ Tone Flex defines how the agent's tone shifts from its baseline in response to c
 - Emotional Coloring: Neutral baseline, flex range Neutral–Encouraging (never Clinical, never Enthusiastic)
 - Empathy Level: Understated baseline, flex range Minimal–Moderate (never High)
 
-Tone Flex is authored per persona during design. The encoding expresses flex rules as per-topic tone calibration in Topic Instructions.
+Tone Flex is authored per persona during design. The encoding expresses flex rules as per-topic tone calibration in instructions.
 
-*Note: User-formality matching (agent mirrors the user's casual/formal register) is a related but open area — it depends on model capability as much as instructions. Not included in Tone Flex for v1.1.*
+*Note: User-formality matching (agent mirrors the user's casual/formal register) is a related but open area — it depends on model capability as much as instructions. Not included in Tone Flex.*
 
 ---
 
@@ -682,13 +544,15 @@ Two companion artifacts generated per persona. Both are tuned to the persona's a
 
 Example phrases the agent would use in common situations. Categories are selected during the workflow based on attribute selections — they vary per persona. Examples of selection-driven categories:
 
-- **All agents:** Acknowledgement, Apology, Redirect/Handoff
+- **All agents:** Acknowledgement, Affirmation, Redirect/Handoff
 - **Non-Terse agents:** Welcome/Greeting
 - **Encouraging/Enthusiastic coloring:** Celebrating Progress
 - **Coach register:** Teaching Moments
 - **Humor ≠ None:** Humor Examples (showing the humor type in context)
 
-The Phrase Book is the single most effective lever for making an agent sound like itself. Encoding per-topic phrase book entries into Topic Instructions produces the strongest persona consistency.
+**Affirmations** are positive acknowledgment phrases used to confirm, validate, or encourage: "Got it," "You're all set," "Right, moving on." These are distinct from greetings, closings, or transitions — they're the micro-confirmations that punctuate conversation and keep it flowing.
+
+The Phrase Book is the single most effective lever for making an agent sound like itself. Encoding per-topic phrase book entries into instructions produces the strongest persona consistency.
 
 ### Never-Say List
 
@@ -700,7 +564,7 @@ The inverse of the Phrase Book — specific words, phrases, and patterns the age
 - **Register violations** — phrases that break the power dynamic (a Peer never says "Would you like me to proceed with..."; a Coach never says "Just do X")
 - **Brand prohibitions** — competitor names, deprecated product names, off-brand language
 
-The Never-Say List is authored alongside the Phrase Book and encoded into Tone Boundaries and Topic Instructions. When reviewing a persona, the Never-Say List is often the fastest way to test whether the agent stays in character.
+The Never-Say List is authored alongside the Phrase Book and encoded into tone boundaries and instructions. When reviewing a persona, the Never-Say List is the fastest way to test whether the agent stays in character.
 
 ---
 
@@ -713,12 +577,43 @@ When an agent operates across multiple topics, each topic may have its own vocab
 **Example:** A luxury watch agent has watch-specific vocabulary ("movement," "chronograph," "caliber") that belongs in product topics but NOT in order-tracking topics. Loading it globally wastes context and can cause the agent to over-use jargon in simple service interactions.
 
 **How Lexicon differs from Phrase Book:**
-- **Phrase Book** = how the agent *sounds* in common situations — organized by situation
+- **Phrase Book** = how the agent *sounds* in common situations — organized by situation (acknowledgement, redirect, celebration)
 - **Lexicon** = what *words and terms* the agent uses in specific domains — organized by topic
 
-**In encoding:** Lexicon maps to Topic Instructions — each topic gets a vocabulary block with the relevant domain terms. A luxury watch customer independently validated this pattern: global persona in Role, per-topic "more like / less like" examples in Topic Instructions, and per-topic lexicon scoped to where it matters.
+The Phrase Book captures the agent's verbal fingerprint across all interactions. The Lexicon captures domain-specific vocabulary that only applies in certain contexts.
 
-Lexicon is lightweight for v1.1 — establish the concept and include a brief lexicon section in the persona document when the agent has topic-specific vocabulary.
+**In encoding:** Lexicon maps to per-topic instructions — each topic gets a vocabulary block with the relevant domain terms and usage notes.
+
+---
+
+## Reference
+
+### Tension Pairs
+
+Some attribute combinations create productive tension. These are valid — they don't need to be "resolved" — but they need conscious design to coexist:
+
+| Tension | Resolution |
+|---|---|
+| Cool Warmth + Bold Personality | Strong character without performed warmth. Competence IS the care. |
+| Blunt Coloring + Playful Humor | Unvarnished truth delivered as comedy. The bluntness is part of the joke. |
+| Encouraging Coloring + Terse Brevity | Short celebrations: "Done. Nice progress." |
+| High Empathy + Terse Brevity | Brief validation, then act: "Frustrating. Here's the fix." |
+| Formal + Warm | Polished hospitality, sophisticated warmth. |
+| Formal + Bold Personality | Theatrical character, immersive experience. Archaic formality with maximum personality. |
+| Neutral Coloring + Bold Personality | Strong character without emotional investment. The character shows through word choice, not feeling. |
+| Warm + Playful Humor | Cheeky affection — irreverence grounded in warmth. |
+| Reserved Personality + Warm | Dignified care. Warmth through reliability, not personality. |
+| Radiant Warmth + Playful Humor | Overflowing cute energy. Mascot-driven delight. |
+| Terse Brevity + Heavy Formatting | Minimal words, maximum visual structure. Headlines and data blocks, no prose. |
+
+### Cultural Adaptation Note
+
+Persona attribute expectations vary by culture. For global agents, consider per-locale overrides. Key callouts:
+
+- **Formality expectations vary** — positions that feel natural in one culture may feel too casual or too formal in another.
+- **Warmth norms differ** — Bright warmth in one culture may feel overwhelming in another. Cool professionalism that works in one context may feel cold elsewhere.
+- **Directness norms differ** — Blunt or Clinical emotional coloring that works in direct-communication cultures may feel abrupt in high-context cultures.
+- **Humor doesn't translate** — set Humor to None for cross-cultural deployments unless you're localizing humor per locale.
 
 ---
 
