@@ -298,7 +298,14 @@ Present a few turns of conversation (3-5 exchanges) based on the use case from S
 - None of these agents say "Hello! How can I help you today?" — the sample should make the persona's impact obvious
 - For voice/telephony modality, start the dialog with the welcome message including AI disclosure so the user sees it in context
 
-**After presenting the sample dialog,** transition to Phase 2 by offering the hub menu.
+**After presenting the sample dialog,** prompt for feedback. The prompt should encourage free-text adjustments as the primary editing path — "Tell me what to change — 'make it warmer,' 'drop the humor,' 'don't say that' — or pick an option." Structured options should be limited to:
+- "Looks good — move on"
+- "Try a different scenario"
+- (free-text input always available)
+
+When the user types a natural language adjustment ("make it warmer," "it shouldn't say 'that's frustrating'"), apply it using the conversational editing mappings (see Refine section), regenerate sample dialog with the change, and re-present. Stay in this loop until the user says "looks good" or asks for the hub. Don't bounce to the hub after every adjustment.
+
+When the user selects "Looks good — move on," transition to Phase 2 by offering the hub menu.
 
 ### Phase 2: Electives
 
@@ -386,11 +393,11 @@ Score the persona document against a 50-point rubric. Scoring is **on-demand** �
 
 | Category | Points | What It Measures |
 |---|---|---|
-| **Identity Coherence** | /10 | Traits are distinct, non-contradictory, and behaviorally defined. Each trait generates specific, observable agent behaviors — not vague aspirations. |
-| **Attribute Consistency** | /10 | Each attribute is independently set and coherent with Identity. Combinations respect constraint notes. Tone Boundaries are consistent with Emotional Coloring and Empathy Level. Tone Flex rules stay within flex range and never cross Tone Boundaries. |
-| **Behavioral Specificity** | /10 | Attribute selections include concrete behavioral examples. Rules are testable. Chatting Style, Tone Boundaries, and Tone Flex triggers are explicit. Never-Say List entries are specific and actionable. |
-| **Phrase Book Quality** | /10 | Phrases are consistent with all attributes. Never-Say List items are distinct from Tone Boundaries. Variety in acknowledgements and affirmations. Language matches register. |
-| **Sample Quality** | /10 | Sample dialog demonstrates persona attributes recognizably. A reader could identify which persona produced these responses without seeing the attribute table. Samples cover happy path, uncertainty, and boundary scenarios. |
+| **Identity Coherence** | /10 | Traits are distinct, non-contradictory, and behaviorally defined. Each trait generates specific, observable agent behaviors — not vague aspirations. Design Inputs (Company, Audience, Modality, Primary Language) are present and coherent with identity — audience aligns with register, modality aligns with chatting style, company context shapes the agent's frame of reference. |
+| **Attribute Consistency** | /10 | Each attribute is independently set and coherent with Identity. Combinations respect constraint notes. Tone Boundaries are consistent with Emotional Coloring and Empathy Level. Tone Flex rules stay within flex range and never cross Tone Boundaries. Chatting Style is correctly adapted for modality (emoji/formatting suppressed for voice). When voice encoding is present: Stability aligns with Emotional Coloring + Personality Intensity, Speed aligns with Brevity. |
+| **Behavioral Specificity** | /10 | Attribute selections include concrete behavioral examples. Rules are testable. Chatting Style, Tone Boundaries, and Tone Flex triggers are explicit. Never-Say List has ≥5 entries covering chatbot filler, register violations, and persona-specific anti-phrases. Global Lexicon is populated (brand name, product names, domain terms). When voice: key-term prompting entries drawn from lexicon. When brand guide was provided: extraction depth — did the skill capture vocabulary, formatting rules, usage standards, and CTA patterns, or leave actionable content on the floor? |
+| **Phrase Book Quality** | /10 | All applicable categories populated with 2-4 phrases each: Acknowledgement, Affirmation, Apologies (agent mistakes only), Off-Topic Redirect, Welcome/Greeting for all agents. Escalation/Handoff for external-facing agents. Celebrating Progress for Encouraging/Enthusiastic coloring. Teaching Moments for Coach register. Humor Examples when Humor ≠ None. Returning Customer Greeting when relevant. Phrases are consistent with all attributes. Never-Say List items are distinct from Tone Boundaries. Language matches register. Brand guide content captured (preferred/prohibited terms, CTAs, preposition rules). |
+| **Sample Quality** | /10 | Sample dialog demonstrates persona attributes recognizably. A reader could identify which persona produced these responses without seeing the attribute table. Samples cover happy path, uncertainty, and boundary scenarios. Dialog matches modality — no emoji/formatting for voice, natural turn-taking for phone. When voice: sample starts with welcome message including AI disclosure. Brand guide vocabulary appears naturally in dialog. |
 
 **Scoring rules:**
 - Score each category independently. Provide a number and 1-2 sentences of justification.
