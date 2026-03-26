@@ -140,12 +140,42 @@ This step is the skill's intelligence — it must execute explicitly as specifie
 
 ##### 3A: Input Parsing
 
-Extract persona signals from the user's input:
+Extract persona signals from the user's input. Brand guides and style documents are often much richer than they appear — mine them thoroughly. A good brand guide can populate identity, attributes, phrase book, never-say list, AND lexicon in a single pass.
 
-- **Tone/voice signals:** Look for adjectives, "we are..." statements, competitive positioning language, formality markers.
-- **Negative signals:** "Never," "don't," "we are NOT" statements — often the strongest persona signals. These feed the Never-Say List.
-- **Audience signals:** Who the brand talks to, formal vs. informal examples, relationship language.
-- **If input is a prior persona.md:** Extract attributes directly.
+**Voice and tone signals:**
+- Adjectives, "we are..." statements, competitive positioning language, formality markers
+- Voice pillars or principles (e.g., "clear, concise, authoritative") → map directly to Identity traits and attributes
+
+**Negative signals:**
+- "Never," "don't," "we are NOT" statements — often the strongest persona signals. These feed the Never-Say List.
+- Prohibited words or phrasings (e.g., "say 'complimentary' not 'free'") → Never-Say List entries
+- Prohibited greetings, salutations, or sign-offs → Never-Say + Phrase Book
+
+**Vocabulary and terminology:**
+- Brand-specific vocabulary lists, "isms," or preferred terms → Lexicon entries
+- Domain-specific vocabulary (fabrication terms, technical jargon, product categories) → Lexicon entries scoped to relevant topics
+- Preferred vs. prohibited word choices (e.g., "earn" not "get," "beauty" not "cosmetics") → Phrase Book always-say / Never-Say pairs
+
+**Formatting and style rules:**
+- Capitalization rules (title case, sentence case, brand name casing) → Capitalization attribute + specific rules
+- Punctuation opinions (Oxford comma, em dash usage, smart quotes, exclamation points) → Punctuation attribute + specific rules
+- Number, date, and price formatting → custom section or encoding-level rules
+- Foreign word formatting, attribution formatting → custom section
+
+**CTA and interaction patterns:**
+- Call-to-action patterns ("SHOP NOW," "Tap to...") → Phrase Book entries
+- Promotional language rules (gift-with-purchase phrasing, discount language) → Phrase Book + Never-Say
+
+**Preposition and usage rules:**
+- Specific preposition preferences (e.g., "at [brand]" not "from [brand]") → Never-Say + Phrase Book
+- Usage standards that would sound wrong if violated → Never-Say entries
+
+**Audience signals:**
+- Who the brand talks to, formal vs. informal examples, relationship language
+
+**If input is a prior persona.md:** Extract attributes directly.
+
+**Extraction target:** Aim to use 80%+ of actionable content from a brand guide. If the guide contains vocabulary lists, formatting rules, or usage standards, those are encoding-ready — don't leave them on the floor.
 
 ##### 3B: Attribute Selection
 
