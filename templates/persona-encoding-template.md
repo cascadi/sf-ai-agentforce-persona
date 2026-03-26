@@ -1,6 +1,6 @@
 ---
-version: "2.1.0"
-date: 2026-03-24
+version: "2.2.0"
+date: 2026-03-25
 ---
 
 # [Agent Name] — Persona Encoding
@@ -131,3 +131,61 @@ Voice Reminder: [pointer back to global persona]
 | [action name] | [in-character loading text] |
 | [action name] | [in-character loading text] |
 | Generic (fallback) | [in-character loading text] |
+
+---
+
+## Voice Encoding
+
+*Include this section when modality includes telephony/voice. See `resources/persona-encoding-guide-voice.md` for full guidance.*
+
+### Voice Selection
+
+**Selection criteria:**
+
+| Criteria | Target | Persona Rationale |
+|---|---|---|
+| **Language** | [primary language] | [why] |
+| **Gender** | [inferred or specified] | [source — name, pronouns, or user input] |
+| **Voice Qualities** | [what to look for — e.g., warm, professional, measured pace] | [which persona attributes drive this] |
+
+**Recommended voices** (from default library — verify in your org, listen to previews):
+
+| Voice | Gender | Accent | Style | Why |
+|---|---|---|---|---|
+| [name] | [m/f] | [accent] | [style] | [persona match reasoning] |
+| [name] | [m/f] | [accent] | [style] | [persona match reasoning] |
+| [name] | [m/f] | [accent] | [style] | [persona match reasoning] |
+
+**Fine-tuning starting points** (experiment in voice preview — these are starting points, not prescriptions):
+
+| Parameter | Starting Point | Why |
+|---|---|---|
+| **Speed** | [value] | [e.g., "Concise brevity + hospitality warmth → moderate pace, not rushed"] |
+| **Stability** | [value] | [e.g., "Encouraging coloring needs expressiveness → lower stability"] |
+| **Similarity** | [value] | [e.g., "Default — no reason to deviate from base voice"] |
+
+### Key-Term Prompting
+
+| Term |
+|---|
+| [brand name] |
+| [product name] |
+| [domain term] |
+
+### Pronunciation Dictionary *(optional)*
+
+| Word | Pronunciation (IPA) | Verified? |
+|---|---|---|
+| [term] | [approximate IPA] | ⚠️ Verify in voice preview |
+
+### Voice Welcome Message
+
+```
+[Shorter than text welcome. Includes AI disclosure. In persona voice.]
+```
+
+### Voice Instruction Adjustments
+
+- Brevity: [text default] → [voice adjustment, one position shorter]
+- Formatting: suppressed (no emoji, bullets → ordinals)
+- [Any pausing guidance for structured data]
