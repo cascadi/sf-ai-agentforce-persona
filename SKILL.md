@@ -275,7 +275,7 @@ Present a few turns of conversation (3-5 exchanges) based on the use case from S
 - For voice/telephony modality, start the dialog with the welcome message including AI disclosure so the user sees it in context
 
 **After presenting the sample dialog,** prompt for feedback. The prompt should encourage free-text adjustments as the primary editing path — "Tell me what to change — 'make it warmer,' 'drop the humor,' 'don't say that' — or pick an option." Structured options should be limited to:
-- "Looks good — move on"
+- "Looks good — show me what's next"
 - "Try a different scenario"
 - (free-text input always available)
 
