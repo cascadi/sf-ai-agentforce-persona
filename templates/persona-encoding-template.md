@@ -1,11 +1,11 @@
 ---
-version: "2.0.0"
-date: 2025-03-23
+version: "2.1.0"
+date: 2026-03-24
 ---
 
 # [Agent Name] — Persona Encoding
 
-**Platform:** [Agent Builder / Agent Script]
+**Agent Authoring Tool:** [Agentforce Builder / Agent Script]
 **Date:** [date]
 **Source persona:** [agent-name]-persona.md
 
@@ -13,7 +13,7 @@ date: 2025-03-23
 
 ## Agent Script Encoding
 
-*Include this section when platform = Agent Script.*
+*Include this section when tool = Agent Script.*
 
 ### System Block
 
@@ -76,9 +76,9 @@ topic [topic_name]:
 
 ---
 
-## Agent Builder Encoding
+## Agentforce Builder Encoding
 
-*Include this section when platform = Agent Builder.*
+*Include this section when tool = Agentforce Builder.*
 
 ### Agent Configuration Fields
 
@@ -90,7 +90,7 @@ topic [topic_name]:
 | **Welcome Message** | 800 (aim ≤ 255) | [welcome in persona voice] | [count] |
 | **Error Message** | — | [error in persona voice] | — |
 
-### Platform Settings
+### Agentforce Builder Settings
 
 | Setting | Recommendation | Rationale |
 |---|---|---|

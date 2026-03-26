@@ -1,11 +1,11 @@
 ---
-version: "3.0.0"
-date: 2025-03-23
+version: "3.1.0"
+date: 2026-03-24
 ---
 
 # Persona Encoding Guide
 
-How to encode a persona document into Agentforce. This guide covers the encoding architecture, field-by-field guidance for each platform, and advanced encoding options.
+How to encode a persona document into Agentforce. This guide covers the encoding architecture, field-by-field guidance for each agent authoring tool, and additional encoding options.
 
 **Prerequisite:** A completed persona document — identity traits, 12 attribute selections across 5 categories (Register, Voice, Tone, Delivery, Chatting Style), tone boundaries, tone flex rules, phrase book, never-say list, and optionally a lexicon. See the **Agent Persona Framework** (`resources/persona-framework.md`) for how to create one.
 
@@ -13,7 +13,7 @@ How to encode a persona document into Agentforce. This guide covers the encoding
 
 ## Encoding Architecture
 
-The encoding model is the same on both Agent Script and legacy Agentforce Builder: **one global persona block, topic calibration overlays, and static messages.**
+The encoding model is the same on both Agent Script and Agentforce Builder: **one global persona block, topic calibration overlays, and static messages.**
 
 ```
 Global Instructions (who the agent is, baseline persona)
@@ -33,7 +33,7 @@ Global Instructions (who the agent is, baseline persona)
 |---|---|---|
 | **Global instructions** | Baseline identity + all attributes + phrase book + never-say + tone boundaries | Agent Script: `system.instructions`. Builder: a dedicated global instructions topic. |
 | **Topic calibration** | Per-topic overrides: brevity, tone flex, lexicon, phrase book entries, humor | Agent Script: `reasoning.instructions` per topic. Builder: per-topic instructions. |
-| **Static messages** | Welcome, error, loading text, deterministic responses | Platform-specific fields (see below). |
+| **Static messages** | Welcome, error, loading text, deterministic responses | Tool-specific fields (see below). |
 
 ### Global Instructions
 
@@ -159,7 +159,7 @@ topic deal_analysis:
       No corporate fluff. Be practical and read the room.
 ```
 
-In legacy Agentforce Builder, place the same text in the deal analysis Topic Instructions.
+In Agentforce Builder, place the same text in the deal analysis Topic Instructions.
 
 ### Static Messages
 
@@ -185,16 +185,9 @@ Compare how two different personas deliver the same messages:
 | Loading (run analysis) | "Crunching this…" | "Analyzing your pipeline data…" |
 | Deterministic (no data) | "Nothing here. Check the opp ID and try again." | "I wasn't able to find a match. Could you double-check the opportunity ID?" |
 
-### Dynamic Welcome Messages (Builder)
+### Dynamic Welcome Messages
 
-The static Welcome Message field works for a generic greeting, but a dynamic welcome message can personalize the opening based on who the customer is:
-
-1. **Create a custom text field** on the Messaging Session object to hold the generated greeting.
-2. **Map it as a Context Variable** in Builder so the welcome message can reference it.
-3. **Build a Prompt Template** that generates the greeting text (e.g., referencing the customer's name, recent order, or loyalty tier).
-4. **Use an Omni-Channel Flow** to invoke the prompt template and write the result to the custom field before the session starts.
-
-For a full step-by-step walkthrough, see [Design Better Greetings in Agentforce Builder](https://www.salesforce.com/blog/design-better-greetings-agentforce-builder/).
+For Agentforce Builder, a dynamic welcome message can personalize the greeting based on who the customer is. See [Dynamic Welcome Messages](#dynamic-welcome-messages-agentforce-builder) in Additional Encoding Options for details.
 
 ---
 
@@ -289,9 +282,9 @@ topic deal_analysis:
 
 ---
 
-## Legacy Agentforce Builder Encoding
+## Agentforce Builder Encoding
 
-Builder distributes persona across several fields with character limits. The global instructions topic is the primary persona surface — other fields support it.
+Agentforce Builder distributes persona across several fields with character limits. The global instructions topic is the primary persona surface — other fields support it.
 
 ### Fields
 
@@ -320,7 +313,7 @@ What the company does, who it serves, what makes it different. This field shapes
 
 Description *can* encode persona (the LLM reads it), but global instructions are recommended instead. Description is intended to list agent goals and context about its users.
 
-### Platform Settings
+### Agentforce Builder Settings
 
 #### The Tone Dropdown — register and formality
 
@@ -345,7 +338,7 @@ If you're deciding what the agent *does*, that's agent design. If you're decidin
 
 ---
 
-## Advanced Encoding Options
+## Additional Encoding Options
 
 ### Conversation Style — Lightweight Encoding
 
@@ -379,33 +372,24 @@ Store the persona document as a Custom Metadata Type record (`Agent_Persona__mdt
 - Share a persona definition across multiple agents — update once, all agents get the update
 - Persona exceeds what fits comfortably in individual Builder fields
 
-Compatible with both Agent Builder and Agent Script. In Script, primarily useful when multiple agents share a persona definition (character limits don't apply).
+Compatible with both Agentforce Builder and Agent Script. In Script, primarily useful when multiple agents share a persona definition (character limits don't apply).
 
-### Global Topic Override (Builder only)
+### Dynamic Welcome Messages (Agentforce Builder)
 
-Override the default General topic with a custom topic including the full persona instructions. Since the General topic is the fallback for unclassified utterances, a persona-enriched General topic keeps persona context available for those conversations. Use in tandem with Custom Metadata — it is unknown whether the General topic's instructions are always held in context during conversations routed to other topics.
+The static Welcome Message field works for a generic greeting, but a dynamic welcome message can personalize the opening based on who the customer is. The high-level approach:
 
----
+1. **Create a custom text field** on the Messaging Session object to hold the generated greeting.
+2. **Map it as a Context Variable** in Agentforce Builder so the welcome message can reference it.
+3. **Build a Prompt Template** that generates the greeting text (e.g., referencing the customer's name, recent order, or loyalty tier).
+4. **Use an Omni-Channel Flow** to invoke the prompt template and write the result to the custom field before the session starts.
 
-## What to Expect
+Once wired up, the Welcome Message field references the Context Variable instead of static text, and every customer sees a greeting that feels tailored rather than canned. For a full step-by-step walkthrough, see [Design Better Greetings in Agentforce Builder](https://www.salesforce.com/blog/design-better-greetings-agentforce-builder/).
 
-**Platform evolution:** Encoding patterns are based on current Agentforce capabilities. As the tools evolve, encoding may shift.
-
-**Precision:** LLM output generation is probabilistic, and the chain of custody between persona instructions and generated text is long. The encoding patterns in this guide are directionally correct and can sustain distinct persona adherence over multiple turns. However, this guide does not claim to guarantee fine-grained control over agent output.
-
-**Hosting and model:** Changing the hosting environment or model sometimes causes minor deviations in attributes such as Emotional Coloring.
-
-**Language scope:** All testing referenced in this guide was conducted in English. Results from other languages may vary.
-
-**Constraints are recommendations:** Attribute constraint notes in the framework are recommendations, not hard locks. No attribute value is ever unavailable — any combination is valid. Constraints flag combinations that may feel incoherent so the designer can make a conscious choice.
-
----
-
-## Model Parameters
+### Model Parameters
 
 > These are not persona settings. They are persona-adjacent — handle with care.
 
-Temperature, frequency penalty, and presence penalty are configured in **Einstein Studio**, not Agent Builder. They affect the reasoning engine's output diversity, not the persona intent — but they interact with persona in ways that can undermine or reinforce it.
+Temperature, frequency penalty, and presence penalty are configured in **Einstein Studio**, not Agentforce Builder. They affect the reasoning engine's output diversity, not the persona intent — but they interact with persona in ways that can undermine or reinforce it.
 
 | Parameter | What It Controls |
 |---|---|
@@ -419,4 +403,20 @@ Temperature, frequency penalty, and presence penalty are configured in **Einstei
 - **High frequency penalty** can conflict with Terse Brevity — the model may avoid reusing short, functional words.
 - **High presence penalty** can conflict with focused, single-topic agents.
 
-**Recommendation:** Leave at platform defaults unless you have a specific reason. Do persona work in instructions, not in model parameters.
+**Recommendation:** Leave at defaults unless you have a specific reason. Do persona work in instructions, not in model parameters.
+
+---
+
+## What to Expect
+
+**Tool evolution:** Encoding patterns are based on current Agentforce capabilities. As the tools evolve, encoding may shift.
+
+**Precision:** LLM output generation is probabilistic, and the chain of custody between persona instructions and generated text is long. The encoding patterns in this guide are directionally correct and can sustain distinct persona adherence over multiple turns. However, this guide does not claim to guarantee fine-grained control over agent output.
+
+**Hosting and model:** Changing the hosting environment or model sometimes causes minor deviations in attributes such as Emotional Coloring.
+
+**Language scope:** All testing referenced in this guide was conducted in English. Results from other languages may vary.
+
+**Constraints are recommendations:** Attribute constraint notes in the framework are recommendations, not hard locks. No attribute value is ever unavailable — any combination is valid. Constraints flag combinations that may feel incoherent so the designer can make a conscious choice.
+
+

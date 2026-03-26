@@ -1,7 +1,7 @@
 ---
 name: sf-ai-agentforce-persona
 description: Designs an AI agent persona — identity, voice, tone, and behavioral style — through a fast input-to-sample-dialog loop with brand input support, 12 decomposed attributes, and 50-point scoring
-version: 2.0.0
+version: 2.2.0
 author: cascadi
 tags: [salesforce, agentforce, persona, identity, register, formality, warmth, personality, tone, brevity, humor, chatting-style, brand-input, sample-dialog]
 allowed-tools:
@@ -21,7 +21,7 @@ This skill designs an AI agent persona through a fast input-to-sample-dialog loo
 **What it produces:**
 - A persona document (`_local/generated/[agent-name]-persona.md`) defining who the agent is, how it sounds, and what it never does
 - Scoring available on request (50-point rubric)
-- Encoding available as a separate workflow (persona → platform-specific field values)
+- Encoding available as a separate workflow (persona → tool-specific field values)
 
 **What it drives downstream:** The persona document feeds into conversation design and Agentforce encoding. Those are separate steps — this skill defines the *persona*, not dialog flows or field configurations.
 
@@ -72,18 +72,20 @@ Detect the user's intent from their opening message:
 Two phases: **Phase 1 (Essentials)** gets to sample dialog as fast as possible. **Phase 2 (Electives)** lets the user choose what to do next.
 
 ```
-PHASE 1: INPUT → CONTEXT → IDENTITY → ATTRIBUTES → SAMPLE DIALOG
-                                                        │
-PHASE 2:                                          ┌─────┴─────┐
-                                                  │  HUB MENU │
-                                                  └─────┬─────┘
-                                            ┌───────────┼───────────┐
-                                            │           │           │
-                                       Refine     Electives     Export
-                                     (identity,  (phrase book,  (download,
-                                      attributes, never-say,    score,
-                                      scenario)   tone flex,    encode)
-                                                  lexicon)
+PHASE 1: INPUT → CONTEXT → DRAFT → PERSONA → SAMPLE DIALOG
+                                                    │
+PHASE 2:                                      ┌─────┴─────┐
+                                              │  HUB MENU │
+                                              └─────┬─────┘
+                                        ┌───────────┼───────────┐
+                                        │           │           │
+                                   Refine      Explore      Export
+                                 (identity,  (different   (download,
+                                  attributes, scenario)    score,
+                                  phrase book,              encode)
+                                  never-say,
+                                  tone flex,
+                                  lexicon)
 ```
 
 ### Phase 1: Essentials
@@ -97,7 +99,7 @@ Accept any starting input. No detection question needed — accept whatever the 
 - Organization URL
 - Prior persona document (persona.md from a previous session)
 - Free-text description (e.g., "a sales coach who talks like Crocodile Dundee")
-- Existing agent system prompt or .agent file
+- Existing agent system prompt or Agent Script file
 - Any combination of the above
 
 **If the user provides nothing** (invokes the skill without additional input):
@@ -111,18 +113,30 @@ Collect only what the input doesn't already answer. **Every question is skippabl
 
 **Context signals to extract or ask about (priority order):**
 
-1. **Internal vs. external audience** — affects register, formality, warmth. If the user says "internal sales coach," audience is already answered.
-2. **At least 1 use case or JTBD** — needed to generate meaningful sample dialog.
+1. **Company** — who they are, what they do, who they serve. If the user provided a brand guide or URL, extract this — don't re-ask.
+2. **Audience** — who the agent serves: internal employee, external customer, partner, vendor, investor, or other. Affects register, formality, warmth. If the user says "internal sales coach," audience is already answered.
+3. **Modality** — how the agent communicates: chat, email, telephony, multimodal, or other. Affects Chatting Style, Brevity, and whether emoji makes sense. Multiple modalities are valid.
+4. **At least 1 use case or JTBD** — needed to generate meaningful sample dialog.
 
-**Do NOT collect:** surface (encoding question, not persona), interaction model (agent design, not persona), agent type, topic list, agent name (comes after identity).
+**Do NOT collect:** interaction model (agent design, not persona), agent type (agent design, not persona), topic list, agent name (comes after identity).
 
 **Extraction before asking:** Parse the user's input for context signals before deciding what to ask. "Design an internal sales coach persona for Buc-ee's" already answers audience (internal), role (sales coach), and implies a brand context. Don't re-ask what's already given.
 
 **May ask 1-2 clarifying questions** to surface tensions in the input (e.g., "Your brand guide emphasizes both 'bold irreverence' and 'trusted expertise' — which should win when they conflict?"). But every question is skippable.
 
+#### One-Shot vs. Wizard
+
+After extracting context, assess the richness of the input:
+
+- **Rich input** (brand guide PDF, detailed description, prior persona, URL with strong brand copy): Offer the user a choice — "I have strong signals — I can draft the full persona now and show you how it sounds, or walk through each attribute category if you prefer." Default to **one-shot**: draft everything silently, present the persona, then show sample dialog.
+- **Minimal input** (brief description, just a company name): Default to **wizard**: ask context questions, walk through attributes by dependency tier.
+- **Blank slate** (no input at all): Prompt for input first, then wizard path.
+
+Either path leads to the same output. The user can always override — a one-shot user can refine afterward, and a wizard user can skip ahead.
+
 #### Step 3: Draft
 
-This step is the skill's intelligence — it must execute explicitly as specified below. The draft is **invisible to the user** — no intermediate output is shown. The first thing the designer sees is the sample dialog.
+This step is the skill's intelligence — it must execute explicitly as specified below.
 
 ##### 3A: Input Parsing
 
@@ -153,8 +167,14 @@ These annotations are shown during refinement so the designer knows where to foc
 
 From the attribute map, generate:
 - **Identity traits** — 3-5 adjectives with behavioral definitions
-- **Phrase Book** — example phrases tuned to all selected attributes, including affirmations
-- **Never-Say List** — anti-phrases derived from Tone Boundaries, Identity contradictions, and input's negative signals
+- **Phrase Book** — example phrases tuned to all selected attributes. Generate **2-4 phrases per category** — one example is not enough to establish a pattern. Categories include:
+  - **All agents:** Acknowledgement, Affirmation, Apologies (for agent mistakes only — not system errors), Off-Topic Redirect (steering back from out-of-scope requests), Welcome/Greeting
+  - **External-facing agents (customer, vendor, investor):** Escalation/Handoff (passing to a human)
+  - **Encouraging/Enthusiastic coloring:** Celebrating Progress
+  - **Coach register:** Teaching Moments
+  - **Humor ≠ None:** Humor Examples (showing the humor type in context)
+  - Do **not** include errors or system error handling in the Phrase Book — error messages are generated as required messages during encoding
+- **Never-Say List** — anti-phrases derived from Tone Boundaries, Identity contradictions, and input's negative signals. Generate **at least 5 entries** — cover generic chatbot filler, register violations, and persona-specific anti-phrases
 - **Tone Boundaries** — what the agent must never sound like
 - **Tone Flex** — baseline + triggers + shift rules
 - **Negative Identity** — 2-4 character-level anti-patterns. Generate from negative signals in the input and from Identity traits.
@@ -184,7 +204,51 @@ Maintain the full attribute map as an explicit **state object** across the conve
 
 Update the state object on every change. When regenerating sample dialog, read from the state object.
 
-#### Step 4: Sample Dialog
+##### Interaction Design
+
+These guidelines apply across all surfaces — CLI, TUI, web, IDE. Each environment adapts the patterns to its own idiom.
+
+**Output before questions.** Show generated content (attributes, phrase book, tone flex) as regular output first. Then ask a concise question with short options. Never embed long content inside question labels or option descriptions — it will be truncated in constrained environments and is harder to read everywhere.
+
+**Batch independent questions.** When multiple questions have no dependency relationship — meaning neither answer constrains the other — present them together rather than one at a time. This reduces round-trips and keeps the flow moving. Examples:
+- Context signals (modality + use case) are independent — ask together
+- Voice attributes (Formality, Warmth, Personality Intensity) are independent — ask together
+- Chatting Style attributes (Emoji, Formatting, Punctuation, Capitalization) are independent — ask together
+- Encoding context (tool + topics + actions) are independent — ask together
+
+Do **not** batch across dependency boundaries. Register must be answered before Voice. Voice before Tone. Tone before Delivery. Follow the framework's dependency order for sequential questions.
+
+**Short labels, descriptions underneath.** Question options should be scannable in under 2 seconds. If an option needs explanation, put the label first and the explanation as a secondary description — not a long compound label.
+
+**Compact output formats.** Use tables and structured lists for attributes, not prose paragraphs. One line per attribute with value and signal annotation. Phrase book entries grouped by category. Never-say entries as a compact list. Dense, scannable output respects the user's time.
+
+**Progress awareness.** Before presenting the hub menu after an elective, show a one-line status summary of what's been completed and what remains:
+> "Clover: ✓ Identity · ✓ Attributes · ✓ Phrase book (18) · ✓ Never-say (8) · Remaining: tone flex, lexicon, score, encode"
+
+**Summary before transitions.** Before moving into scoring, encoding, or any new phase, show a brief orientation line so the user knows the current state:
+> "Scoring Clover — Peer register, Professional, Warm, Encouraging, Concise."
+> "Encoding Clover for Agentforce Builder — external customer, chat."
+
+**Confidence callouts.** After presenting a drafted persona, highlight the 1-2 lowest-confidence attributes so the user knows where to focus refinement:
+> "Least certain: Humor (defaulted to Warm — no signal in input) and Emoji (defaulted to Functional). Adjust these first if they matter."
+
+#### Step 4: Present the Persona
+
+Before showing sample dialog, present the drafted persona in a compact, scannable format. This is NOT the full persona document — it's a summary for review. The user needs to see what was generated before seeing it in action.
+
+**Format:**
+- **Identity** — traits on one line, dot-separated
+- **Attributes** — compact table: one row per attribute with value and signal marker (★ = strong signal from input, no marker = default/inferred)
+- **Phrase Book** — entries grouped by category, showing actual phrases
+- **Never-Say** — compact list
+- **Tone Boundaries** — compact list
+- **Tone Flex** — table with trigger, coloring shift, empathy shift, humor guidance
+
+After the persona summary, note the lowest-confidence attributes (see Confidence callouts in Interaction Design) so the user knows where to focus if they want to refine.
+
+Then proceed directly to sample dialog — no confirmation question needed between persona presentation and sample dialog. The persona provides context for understanding the sample.
+
+#### Step 5: Sample Dialog
 
 Present a few turns of conversation (3-5 exchanges) based on the use case from Step 2.
 
@@ -193,32 +257,31 @@ Present a few turns of conversation (3-5 exchanges) based on the use case from S
 - Include at least one "interesting" turn: an error, a clarification, or an emotional moment — not just happy path
 - None of these agents say "Hello! How can I help you today?" — the sample should make the persona's impact obvious
 
-**With/without persona view:**
-On the **first** sample dialog, show two versions:
-1. **With persona** — the agent responding with the designed persona applied
-2. **Without persona** — a generic neutral agent with no persona instructions, responding to the same prompts
-
-This demonstrates the value of the design process. After the first showing, the with/without view is available on request only.
-
 **After presenting the sample dialog,** transition to Phase 2 by offering the hub menu.
 
 ### Phase 2: Electives
 
-After the sample dialog, offer next steps. The user picks what to do. After completing any elective, offer the hub menu again (minus completed items). The user decides when they're done.
+After the sample dialog, show a progress line (see Interaction Design) and offer next steps. The user picks what to do. After completing any elective, show the updated progress line and offer the hub menu again (minus completed items). The user decides when they're done.
 
-**Hub menu options:**
+**Hub menu options** (grouped for scannability):
+
+- "Refine the persona" — opens a sub-menu: identity, attributes, phrase book, never-say, tone flex, lexicon, or free-text addition
 - "Try a different sample dialog scenario"
-- "Refine the persona (identity or attributes)"
-- "Add phrase book entries"
-- "Add never-say list entries"
-- "Add tone flex rules"
-- "Add lexicon (per-topic vocabulary)"
-- "Add anything else" *(free-text — see Other below)*
 - "Score the persona"
 - "Download the persona document"
 - "Encode for Agentforce deployment"
+- "I'm done"
 
 #### Refine
+
+When the user selects "Refine the persona," offer a sub-menu:
+- "Identity traits"
+- "Attributes" (show current values for reference)
+- "Phrase book"
+- "Never-say list"
+- "Tone flex rules"
+- "Lexicon"
+- "Something else" (free-text — see Other below)
 
 Two editing modes, both available at any time. The user can mix them freely.
 
@@ -249,9 +312,10 @@ When a request is ambiguous, apply the primary mapping and narrate the change so
 **Deterministic Editing** — Invoked by asking to "show all settings," "show the attribute table," or "let me see the details." Display all attributes with confidence annotations. The user selects specific attributes to adjust. Present the full spectrum with the current value highlighted. After adjustment, regenerate sample dialog.
 
 **Diff-Based Regeneration** — After a single-attribute change:
-1. Hold ALL unchanged attributes constant
-2. Regenerate sample dialog varying only the changed attribute
-3. Narrate the change so the user sees exactly what it does
+1. Show the change explicitly: "Warmth: Warm → Cool"
+2. Hold ALL unchanged attributes constant
+3. Regenerate sample dialog varying only the changed attribute
+4. Narrate what shifted in the output so the user connects the attribute change to the behavioral difference
 
 #### Other (free-text additions)
 
@@ -265,11 +329,17 @@ Lexicon is optional. Introduce the concept: domain vocabulary scoped per topic. 
 - **Phrase Book** = how the agent sounds in common situations (acknowledgements, redirects, celebrations)
 - **Lexicon** = what specific words and terms the agent uses in particular domains (technical terms, brand language, industry jargon)
 
+#### Done
+
+When the user selects "I'm done," offer to download the persona document if it hasn't been saved yet. Show a final summary of what was produced and where files were written. Clean exit.
+
 ---
 
 ## Scoring
 
-Score the persona document against a 50-point rubric. Scoring is **on-demand** — triggered when the user asks. Write the scorecard to: `_local/generated/[agent-name]-persona-scorecard.md`.
+Score the persona document against a 50-point rubric. Scoring is **on-demand** — triggered when the user asks.
+
+**Before scoring,** show a brief orientation summary (see Interaction Design). Then display the scorecard inline. After displaying, offer to save to `_local/generated/[agent-name]-persona-scorecard.md`. Then return to the hub menu.
 
 *For an unbiased score, have a different person run the scoring rubric on the generated persona.*
 
@@ -279,7 +349,7 @@ Score the persona document against a 50-point rubric. Scoring is **on-demand** �
 | **Attribute Consistency** | /10 | Each attribute is independently set and coherent with Identity. Combinations respect constraint notes. Tone Boundaries are consistent with Emotional Coloring and Empathy Level. Tone Flex rules stay within flex range and never cross Tone Boundaries. |
 | **Behavioral Specificity** | /10 | Attribute selections include concrete behavioral examples. Rules are testable. Chatting Style, Tone Boundaries, and Tone Flex triggers are explicit. Never-Say List entries are specific and actionable. |
 | **Phrase Book Quality** | /10 | Phrases are consistent with all attributes. Never-Say List items are distinct from Tone Boundaries. Variety in acknowledgements and affirmations. Language matches register. |
-| **Sample Quality** | /10 | Sample dialog demonstrates persona attributes recognizably. A reader could identify which persona produced these responses without seeing the attribute table. With/without persona delta is clear. Samples cover happy path, uncertainty, and boundary scenarios. |
+| **Sample Quality** | /10 | Sample dialog demonstrates persona attributes recognizably. A reader could identify which persona produced these responses without seeing the attribute table. Samples cover happy path, uncertainty, and boundary scenarios. |
 
 **Scoring rules:**
 - Score each category independently. Provide a number and 1-2 sentences of justification.
@@ -291,20 +361,19 @@ Score the persona document against a 50-point rubric. Scoring is **on-demand** �
 
 ## Encode Flow
 
-A standalone entry point for encoding an existing persona document into platform-specific output. Accessible when the user provides a completed persona.md, or after the Design flow.
+A standalone entry point for encoding an existing persona document into tool-specific output. Accessible when the user provides a completed persona.md, or after the Design flow.
 
 Read `resources/persona-encoding-guide.md` for encoding architecture and `templates/persona-encoding-template.md` for the output structure.
 
+**Before encoding,** show a brief orientation summary (see Interaction Design) confirming the agent name, authoring tool, audience, and modality.
+
 ### Encoding Context
 
-Collect context needed for encoding:
+Company, audience, and modality are collected during design (Step 2). Encoding inherits them — don't re-ask. Collect only what's needed for encoding:
 
-1. **Platform** — "Are you encoding for Agent Builder or Agent Script (.agent file)?"
-2. **Company context** — For Builder: "The Company field (255 chars) describes what your company does and who it serves. What should go here?" For Agent Script: "What should the system instructions include about the company?" If the persona description already names the business or customers, use that — don't re-ask.
-3. **Surface** — Where the agent appears (web chat, Slack, voice, etc.). Affects Chatting Style encoding.
-4. **Agent type** — Employee Agent, Customer Agent, Service Agent, etc.
-5. **Topics** *(optional)* — "Do you have specific topics defined for this agent?" If provided, generate per-topic persona instructions with brevity calibration, phrase book entries, lexicon, and tone flex triggers. **Do not guess or invent topics.** If the user declines, generate only the global encoding.
-6. **Actions** *(optional)* — "Do you have specific actions defined?" If provided, generate persona-consistent loading text for each. **Do not guess or invent actions.**
+1. **Agent authoring tool** — "Are you encoding for Agentforce Builder or Agent Script?"
+2. **Topics** *(optional)* — "Do you have specific topics defined for this agent?" If provided, generate per-topic persona instructions with brevity calibration, phrase book entries, lexicon, and tone flex triggers. **Do not guess or invent topics.** If the user declines, generate only the global encoding.
+3. **Actions** *(optional)* — "Do you have specific actions defined?" If provided, generate persona-consistent loading text for each. If the user declines, offer: "No, generate a few examples." In that case, infer 2-3 plausible actions from the persona context and generate in-voice loading text for each, clearly labeled as examples.
 
 The user can do just the global encoding and return later with topics and actions.
 
@@ -316,9 +385,9 @@ Output ready-to-paste YAML blocks:
 
 **System block:**
 1. **`config.agent_name`** — The persona name.
-2. **`system.instructions`** — Full persona content as a YAML literal block scalar (`|`): Identity, attribute behavioral rules, phrase book, chatting style rules, tone boundaries, never-say list. No character limits.
-3. **`system.messages.welcome`** — Static welcome message.
-4. **`system.messages.error`** — Static error message.
+2. **`system.instructions`** — Full persona content as a YAML literal block scalar (`|`): Identity, attribute behavioral rules, phrase book, chatting style rules, tone rules, tone boundaries, never-say list. No character limits.
+3. **`system.messages.welcome`** — Generate a static in-persona welcome message. Default to static; note the option for dynamic as supplemental.
+4. **`system.messages.error`** — Generate one (1) static in-persona system error message. No dynamic option available for this field.
 
 **Per-topic overrides** (if topics provided):
 5. **`reasoning.instructions` per topic** — Persona calibration: brevity, lexicon, tone flex, phrase book entries, humor guidance, voice pointer.
@@ -330,19 +399,19 @@ Output ready-to-paste YAML blocks:
 **Deterministic response examples:**
 8. Example `| text` pipes for common if/else branches written in the persona's voice.
 
-**Optional static welcome message:**
+**Optional dynamic welcome message:**
 9. If the user wants a dynamic welcome message rather than static, note that this requires additional configuration outside Agent Script. Reference: [Design Better Greetings in Agentforce Builder](https://www.salesforce.com/blog/design-better-greetings-agentforce-builder/).
 
-#### If Agent Builder
+#### If Agentforce Builder
 
 **Agent Configuration Fields:**
 1. **Name** (80 chars) — Show character count.
 2. **Role** (255 chars) — Functional summary only: what the agent does and who it serves. "You are..." Do **not** encode persona style here. Show character count.
-3. **Company** (255 chars) — Show character count.
-4. **Welcome Message** (800 chars, aim for ≤ 255) — Reflect Identity + Register + Voice + Tone + Brevity. Show character count.
-5. **Error Message** — Reflect Formality + Warmth + Emotional Coloring + Brevity.
+3. **Company** (255 chars) — Populate from company context collected in Step 2. Show character count.
+4. **Welcome Message** (800 chars, aim for ≤ 255) — Generate a static in-persona welcome message reflecting Identity + Register + Voice + Tone + Brevity. Show character count.
+5. **Error Message** — Generate one (1) static in-persona system error message reflecting Formality + Warmth + Emotional Coloring + Brevity.
 
-**Platform Settings:**
+**Agentforce Builder Settings:**
 6. **Tone dropdown** — Recommend based on Register + Formality. Note it's a coarse approximation.
 7. **Conversation Recommendations on Welcome Screen** — On when use cases are defined; Off when open-ended.
 8. **Conversation Recommendations in Agent Responses** — On for proactive agents; Off for socratic agents.
@@ -354,17 +423,16 @@ Output ready-to-paste YAML blocks:
 10. Tailored instructions per topic with brevity calibration, phrase book entries, lexicon terms, tone flex triggers, humor guidance.
 
 **Loading Text:**
-11. **Generic loading text examples** — 3-4 examples reflecting Voice + Tone + Brevity.
-12. **Per-action loading text** — If actions were provided: persona-consistent loading text for each.
+11. **Per-action loading text** — If specific actions were provided, generate persona-consistent loading text for each. If the user chose "generate a few examples," infer 2-3 plausible actions and generate in-voice loading text for each, clearly labeled as examples.
 
 **Optional: Dynamic welcome message:**
 13. Note the option for a dynamic welcome message using a custom field, Context Variable, Prompt Template, and Omni-Channel Flow. Reference: [Design Better Greetings in Agentforce Builder](https://www.salesforce.com/blog/design-better-greetings-agentforce-builder/).
 
 #### Output
 
-Present all generated values and ask the user to review. Character-limited fields (Builder) show the count.
+Present encoding values inline for review. Character-limited fields (Name, Role, Company, Welcome, Error) display inline with character counts. Unbounded fields (Global Instructions, per-topic instructions) are too long to display inline — show a summary with character count and write the full content to file.
 
-Write the encoding output using the `Write` tool. Default path: `_local/generated/[agent-name]-persona-encoding.md`.
+Write the encoding output using the `Write` tool. Default path: `_local/generated/[agent-name]-persona-encoding.md`. Then return to the hub menu.
 
 ---
 
@@ -375,4 +443,4 @@ The skill produces up to four Markdown files:
 1. **Persona document** (`_local/generated/[agent-name]-persona.md`) — follows the `templates/persona-template.md` structure. The design artifact defining who the agent is, how it sounds, and what it never does.
 2. **Sample dialog** (`_local/generated/[agent-name]-sample-dialog.md`) — follows the `templates/sample-dialog-template.md` structure. Validation artifact demonstrating the persona in conversation.
 3. **Scorecard** (`_local/generated/[agent-name]-persona-scorecard.md`) — 50-point rubric evaluation. Generated on request.
-4. **Encoding output** (`_local/generated/[agent-name]-persona-encoding.md`) — follows the `templates/persona-encoding-template.md` structure. Platform-specific: Agent Builder field values and settings, or Agent Script YAML blocks. Generated on request via the Encode flow.
+4. **Encoding output** (`_local/generated/[agent-name]-persona-encoding.md`) — follows the `templates/persona-encoding-template.md` structure. Tool-specific: Agentforce Builder field values and settings, or Agent Script YAML blocks. Generated on request via the Encode flow.
