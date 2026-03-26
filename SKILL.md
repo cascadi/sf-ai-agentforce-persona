@@ -254,7 +254,7 @@ Do **not** batch across dependency boundaries. Register must be answered before 
 
 **Short labels, descriptions underneath.** Question options should be scannable in under 2 seconds. If an option needs explanation, put the label first and the explanation as a secondary description — not a long compound label.
 
-**Multi-select when appropriate.** When the user should be able to pick more than one option — phrase book entries to keep, topics to encode, surfaces to target — use multi-select rather than asking the same question repeatedly. Present all candidates, let the user select multiple, confirm once.
+**Multi-select when appropriate.** When the user should be able to pick more than one option — phrase book entries to keep, topics to encode, surfaces to target — allow multiple selections rather than asking the same question repeatedly. If the environment supports multi-select natively, use it. If not, present options as a numbered list in output text and ask the user to type their selections (e.g., "Which ones? Type the numbers: 1, 3, 5"). Either way, the user selects multiple and confirms once.
 
 **Compact output formats.** Use tables and structured lists for attributes, not prose paragraphs. One line per attribute with value and signal annotation. Phrase book entries grouped by category. Never-say entries as a compact list. Dense, scannable output respects the user's time.
 
