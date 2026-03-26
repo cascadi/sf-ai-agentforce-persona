@@ -375,8 +375,8 @@ Read `resources/persona-encoding-guide.md` for encoding architecture and `templa
 Company, audience, and modality are collected during design (Step 2). Encoding inherits them — don't re-ask. Collect only what's needed for encoding:
 
 1. **Agent authoring tool** — "Are you encoding for Agentforce Builder or Agent Script?"
-2. **Topics** *(optional)* — "Do you have specific topics defined for this agent?" If provided, generate per-topic persona instructions with brevity calibration, phrase book entries, lexicon, and tone flex triggers. **Do not guess or invent topics.** If the user declines, generate only the global encoding.
-3. **Actions** *(optional)* — "Do you have specific actions defined?" If provided, generate persona-consistent loading text for each. If the user declines, offer: "No, generate a few examples." In that case, infer 2-3 plausible actions from the persona context and generate in-voice loading text for each, clearly labeled as examples.
+2. **Topics** *(optional)* — "Do you have specific topics defined? Per-topic encoding tailors brevity, tone flex, and vocabulary to each topic." If provided, generate per-topic persona instructions. If the user declines, offer: "No, generate a few examples." In that case, infer 2-3 plausible topics from the persona context and generate per-topic instructions, clearly labeled: "These are examples inferred from the persona context — replace with your actual topics."
+3. **Actions** *(optional)* — "Do you have specific actions defined? Per-action encoding generates in-voice loading text users see while waiting." If provided, generate persona-consistent loading text for each. If the user declines, offer: "No, generate a few examples." In that case, infer 2-3 plausible actions from the persona context and generate in-voice loading text for each, clearly labeled: "These are examples inferred from the persona context — replace with your actual actions."
 
 The user can do just the global encoding and return later with topics and actions.
 
@@ -402,9 +402,6 @@ Output ready-to-paste YAML blocks:
 **Deterministic response examples:**
 8. Example `| text` pipes for common if/else branches written in the persona's voice.
 
-**Optional dynamic welcome message:**
-9. If the user wants a dynamic welcome message rather than static, note that this requires additional configuration outside Agent Script. Reference: [Design Better Greetings in Agentforce Builder](https://www.salesforce.com/blog/design-better-greetings-agentforce-builder/).
-
 #### If Agentforce Builder
 
 **Agent Configuration Fields:**
@@ -427,9 +424,6 @@ Output ready-to-paste YAML blocks:
 
 **Loading Text:**
 11. **Per-action loading text** — If specific actions were provided, generate persona-consistent loading text for each. If the user chose "generate a few examples," infer 2-3 plausible actions and generate in-voice loading text for each, clearly labeled as examples.
-
-**Optional: Dynamic welcome message:**
-13. Note the option for a dynamic welcome message using a custom field, Context Variable, Prompt Template, and Omni-Channel Flow. Reference: [Design Better Greetings in Agentforce Builder](https://www.salesforce.com/blog/design-better-greetings-agentforce-builder/).
 
 #### Output
 
