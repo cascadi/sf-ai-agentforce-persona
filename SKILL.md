@@ -173,6 +173,7 @@ From the attribute map, generate:
   - **Encouraging/Enthusiastic coloring:** Celebrating Progress
   - **Coach register:** Teaching Moments
   - **Humor ≠ None:** Humor Examples (showing the humor type in context)
+  - **Optional (any agent):** Returning Customer Greeting (personalized re-engagement)
   - Do **not** include errors or system error handling in the Phrase Book — error messages are generated as required messages during encoding
 - **Never-Say List** — anti-phrases derived from Tone Boundaries, Identity contradictions, and input's negative signals. Generate **at least 5 entries** — cover generic chatbot filler, register violations, and persona-specific anti-phrases
 - **Tone Boundaries** — what the agent must never sound like
@@ -219,6 +220,8 @@ These guidelines apply across all surfaces — CLI, TUI, web, IDE. Each environm
 Do **not** batch across dependency boundaries. Register must be answered before Voice. Voice before Tone. Tone before Delivery. Follow the framework's dependency order for sequential questions.
 
 **Short labels, descriptions underneath.** Question options should be scannable in under 2 seconds. If an option needs explanation, put the label first and the explanation as a secondary description — not a long compound label.
+
+**Multi-select when appropriate.** When the user should be able to pick more than one option — phrase book entries to keep, topics to encode, surfaces to target — use multi-select rather than asking the same question repeatedly. Present all candidates, let the user select multiple, confirm once.
 
 **Compact output formats.** Use tables and structured lists for attributes, not prose paragraphs. One line per attribute with value and signal annotation. Phrase book entries grouped by category. Never-say entries as a compact list. Dense, scannable output respects the user's time.
 
