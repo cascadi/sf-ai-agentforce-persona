@@ -138,23 +138,23 @@ Voice Reminder: [pointer back to global persona]
 
 *Include this section when modality includes telephony/voice. See `resources/persona-encoding-guide-voice.md` for full guidance.*
 
-### Voice Selection Criteria
+### Voice Selection
+
+**Recommended voices** (from default library — verify in your org, listen to previews):
+
+| Voice | Gender | Accent | Style | Speed | Stability | Similarity | Why |
+|---|---|---|---|---|---|---|---|
+| [name] | [m/f] | [accent] | [style] | [val] | [val] | [val] | [persona match reasoning] |
+| [name] | [m/f] | [accent] | [style] | [val] | [val] | [val] | [persona match reasoning] |
+| [name] | [m/f] | [accent] | [style] | [val] | [val] | [val] | [persona match reasoning] |
+
+**Selection criteria** (for evaluating other voices in your org):
 
 | Criteria | Target |
 |---|---|
 | **Language** | [primary language] |
 | **Gender** | [inferred or specified] |
-| **Voice Qualities** | [description of what to look for based on persona — e.g., warm, professional, measured pace] |
-
-Select from available voices in your org's voice library. Listen to previews before deciding.
-
-### Voice Fine-Tuning (starting points)
-
-| Parameter | Starting Point | Persona Rationale |
-|---|---|---|
-| **Speed** | [value] | [match to Brevity] |
-| **Stability** | [value] | [match to Emotional Coloring + Personality Intensity] |
-| **Similarity** | [value] | [default or adjusted] |
+| **Voice Qualities** | [what to look for — e.g., warm, professional, measured pace] |
 
 ### Key-Term Prompting
 

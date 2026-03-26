@@ -437,8 +437,7 @@ Output ready-to-paste YAML blocks:
 8. Example `| text` pipes for common if/else branches written in the persona's voice.
 
 **Voice encoding** (if modality includes telephony/voice — see `resources/persona-encoding-guide-voice.md`):
-9. **Voice selection criteria** — describe what to look for in a voice: target language, gender (inferred from persona context — only ask if ambiguous), and voice qualities that match persona attributes (e.g., "look for a warm, professional voice with a measured pace"). Don't name specific voices — available voices vary by org. The designer selects from their org's voice library using these criteria.
-10. **Speed / Stability / Similarity** — starting points based on persona profile. Frame as starting points for experimentation, not prescriptions.
+9. **Voice selection** — recommend at least 3 voices by name from the default voice library, with reasoning for each. Include per-voice starting points for Speed, Stability, and Similarity. Also share voice selection criteria (target language, gender, voice qualities) so the designer can evaluate other voices available in their org. Gender is inferred from persona context — only ask if ambiguous.
 11. **Key-term prompting** — populate from Global Lexicon (brand name, product names, domain terms). Plain text, no phonetics.
 12. **Pronunciation dictionary** *(optional — only if requested)* — generate entries for Global Lexicon terms with approximate IPA. Label as approximate and flag terms that need verification in voice preview.
 13. **Voice welcome message** — shorter than text welcome, ear-optimized, must include AI disclosure ("I'm an AI assistant" or equivalent in the persona's voice).
@@ -468,8 +467,7 @@ Output ready-to-paste YAML blocks:
 11. **Per-action loading text** — If specific actions were provided, generate persona-consistent loading text for each. If the user chose "generate a few examples," infer 2-3 plausible actions and generate in-voice loading text for each, clearly labeled as examples.
 
 **Voice encoding** (if modality includes telephony/voice — see `resources/persona-encoding-guide-voice.md`):
-12. **Voice selection criteria** — describe what to look for in a voice: target language, gender (inferred), and voice qualities matching persona attributes. Designer selects from their org's library.
-13. **Speed / Stability / Similarity** — starting points for experimentation.
+12. **Voice selection** — recommend at least 3 voices by name with reasoning and per-voice starting points for Speed, Stability, and Similarity. Share selection criteria for evaluating other voices.
 14. **Key-term prompting** — from Global Lexicon. Plain text.
 15. **Pronunciation dictionary** *(optional — only if requested)*.
 16. **Voice welcome message** — shorter than text, includes AI disclosure.
