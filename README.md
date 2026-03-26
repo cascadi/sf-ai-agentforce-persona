@@ -1,6 +1,6 @@
 ---
-version: "2.0.0"
-date: 2025-03-23
+version: "2.1.0"
+date: 2026-03-24
 ---
 
 # Agent Persona Design Skill
@@ -13,10 +13,6 @@ This skill provides a fast input-to-sample-dialog loop for designing consistent,
 
 ## Quick Start
 
-```
-/sf-ai-agentforce-persona
-```
-
 Provide any starting input — a brand guide PDF, a URL, a prior persona document, or a text description — and the skill drafts a complete persona, shows you how the agent sounds in sample dialog, and lets you refine until it's right.
 
 **Two-phase workflow:**
@@ -28,17 +24,17 @@ PHASE 2:  HUB MENU → refine / phrase book / never-say / lexicon / score / enco
 
 **Phase 1 (Essentials)** gets to sample dialog as fast as possible:
 1. **Input** — Brand guide PDF, URL, prior persona.md, or text description
-2. **Minimal Context** — Only asks what the input doesn't already answer
+2. **Minimal Context** — Company, audience, modality, use case (extracts from input or asks — all skippable)
 3. **Draft** — Auto-generates identity + attributes (silent)
 4. **Name** — Suggests names distilled from identity
-5. **Sample Dialog** — Shows how the agent sounds, with/without persona toggle
+5. **Sample Dialog** — Shows how the agent sounds in conversation
 
 **Phase 2 (Electives)** — user-driven hub menu:
 - Refine identity or attributes
 - Add phrase book, never-say list, tone flex, lexicon
 - Score the persona (50-point rubric)
 - Download the persona document
-- Encode for Agentforce (Agent Builder or Agent Script)
+- Encode for Agentforce (Agentforce Builder or Agent Script)
 
 ## Output
 
@@ -46,7 +42,7 @@ Four Markdown files:
 - **Persona document** (`_local/generated/[agent-name]-persona.md`) — design artifact defining who the agent is, how it sounds, what it never does
 - **Sample dialog** (`_local/generated/[agent-name]-sample-dialog.md`) — validation artifact demonstrating the persona in conversation
 - **Scorecard** (`_local/generated/[agent-name]-persona-scorecard.md`) — 50-point rubric evaluation (on request)
-- **Encoding output** (`_local/generated/[agent-name]-persona-encoding.md`) — Agent Builder field values or Agent Script YAML blocks (via Encode flow)
+- **Encoding output** (`_local/generated/[agent-name]-persona-encoding.md`) — Agentforce Builder field values or Agent Script YAML blocks (via Encode flow)
 
 ## Files
 
@@ -57,7 +53,7 @@ Four Markdown files:
 | `resources/persona-encoding-guide.md` | How to encode persona into Agentforce (architecture-first) |
 | `templates/persona-template.md` | Persona document output template |
 | `templates/sample-dialog-template.md` | Sample dialog output template |
-| `templates/persona-encoding-template.md` | Encoding output template (Agent Builder + Agent Script) |
+| `templates/persona-encoding-template.md` | Encoding output template (Agentforce Builder + Agent Script) |
 | `CHANGELOG.md` | Version history |
 
 ## Framework Overview
@@ -86,7 +82,7 @@ Attributes are ordered by dependency — upstream choices constrain downstream o
 
 ## Encoding Architecture
 
-Persona encoding follows a three-layer model on both Agent Script and legacy Agentforce Builder:
+Persona encoding follows a three-layer model on both Agent Script and Agentforce Builder:
 
 1. **Global instructions** — baseline identity + all attributes (Agent Script: `system.instructions`, Builder: dedicated global instructions topic)
 2. **Topic calibration** — per-topic overrides for brevity, tone flex, lexicon, phrase book, humor
@@ -110,7 +106,7 @@ This framework synthesizes ideas from multiple published sources into an origina
 - **Nielsen Norman Group (NN/g)** — Research on voice and tone in UX writing, the distinction between voice (persistent) and tone (contextual), and usability heuristics that inform dimension boundaries
 - **Google Conversation Design Guidelines** — Principles for persona definition, error handling patterns, and turn-taking
 - **Amazon Alexa Design Guidelines** — Voice channel parameters and voice-specific persona considerations
-- **Salesforce** — Agentforce platform architecture, Agent Builder field constraints, and design patterns that shape the encoding guide
+- **Salesforce** — Agentforce architecture, Agentforce Builder field constraints, and design patterns that shape the encoding guide
 
 ## License
 

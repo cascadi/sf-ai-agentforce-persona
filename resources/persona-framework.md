@@ -1,6 +1,6 @@
 ---
-version: "2.0.0"
-date: 2025-03-23
+version: "2.1.0"
+date: 2026-03-24
 ---
 
 # Agent Persona Framework
@@ -54,7 +54,7 @@ A well-designed persona delivers:
 - **Likability and trustworthiness:** Users are more likely to like and trust agents when they sound natural and speak consistently. This improves adoption and retention.
 - **Model-independent:** Persona encoded in configuration means the agent sounds the same when the underlying model changes.
 - **Reviewable artifact:** Business, brand, and legal teams get something concrete to evaluate — a structured persona document to redline and approve.
-- **Engineering-ready:** Developers get a clear design specification that respects platform limits and capabilities.
+- **Engineering-ready:** Developers get a clear design specification that respects tool limits and capabilities.
 
 ---
 
@@ -85,14 +85,15 @@ Categories group related attributes:
 
 ### Workflow
 
-1. **Start with Identity.** Write 3-5 adjectives that capture your agent's character. This is the anchor — everything derives from here.
-2. **Name the agent.** Distill the identity into a name. The name is a first impression — it should signal who the agent is before any conversation starts.
-3. **Work through attributes in dependency order:** Register → Voice (Formality, Warmth, Personality Intensity) → Tone (Emotional Coloring, Empathy Level) → Delivery (Brevity, Humor) → Chatting Style. Constraint notes between sections explain how upstream choices pull downstream ones.
-4. **Define Tone Boundaries** — what the agent must never sound like.
-5. **Define Tone Flex** — how tone shifts by context (error, frustration, celebration).
-6. **Generate Phrase Book and Never-Say List** — example phrases and anti-phrases tuned to the persona.
-7. **Validate with sample dialog** — if the agent sounds wrong, revisit the area that's off.
-8. **Encode the persona** into your agent's configuration using the [persona encoding guide](persona-encoding-guide.md).
+1. **Establish context.** Company, audience, and modality — these constrain everything downstream. Extract from input or collect explicitly.
+2. **Start with Identity.** Write 3-5 adjectives that capture your agent's character. This is the anchor — everything derives from here.
+3. **Name the agent.** Distill the identity into a name. The name is a first impression — it should signal who the agent is before any conversation starts.
+4. **Work through attributes in dependency order:** Register → Voice (Formality, Warmth, Personality Intensity) → Tone (Emotional Coloring, Empathy Level) → Delivery (Brevity, Humor) → Chatting Style. Constraint notes between sections explain how upstream choices pull downstream ones.
+5. **Define Tone Boundaries** — what the agent must never sound like.
+6. **Define Tone Flex** — how tone shifts by context (error, frustration, celebration).
+7. **Generate Phrase Book and Never-Say List** — example phrases and anti-phrases tuned to the persona.
+8. **Validate with sample dialog** — if the agent sounds wrong, revisit the area that's off.
+9. **Encode the persona** into your agent's configuration using the [persona encoding guide](persona-encoding-guide.md).
 
 ### Attribute Boundaries
 
@@ -120,6 +121,22 @@ When attributes seem to overlap, use these boundary tests:
 | | Accessibility | |
 
 The persona document is an input to conversation design, not a replacement for it. Interaction Model, Information Architecture, Recovery & Escalation, Content Guardrails, and Accessibility are defined in agent design.
+
+---
+
+## Design Inputs
+
+*Context that shapes every downstream decision. Collect before Identity.*
+
+Three inputs set the context for persona design. They are not attributes — they constrain attribute choices.
+
+**Company** — who the organization is, what it does, who it serves. A support agent for a B2B SaaS company sounds different from one at a luxury retail brand, even with identical attribute selections. Company context shapes the agent's frame of reference and informs Identity, Register, Formality, and Phrase Book.
+
+**Audience** — who the agent serves: internal employee, external customer, partner, vendor, investor, or other. Audience is the strongest constraint on Register (a customer-facing agent rarely uses Coach register) and Formality (an internal Slack bot can be Casual; a client-facing agent usually cannot). It also determines which Phrase Book categories apply — for example, Escalation/Handoff is relevant for external-facing agents but typically not for internal ones.
+
+**Modality** — how the agent communicates: chat, email, telephony, multimodal, or other. Modality constrains Chatting Style (no emoji in email, no formatting in telephony), Brevity (phone needs shorter responses), and can affect Tone (telephony has prosodic considerations). An agent may support multiple modalities.
+
+All three may be inferred from a brand guide, URL, or brief provided at the start of the design process. If not provided, collect them before proceeding to Identity.
 
 ---
 
