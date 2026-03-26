@@ -63,6 +63,7 @@ Detect the user's intent from their opening message:
 - **User provides brand input, text description, or no document** → **Design flow** (below)
 - **User provides a completed persona.md document and asks to encode** → **Encode flow** (below)
 - **User provides a persona.md + a list of topics or actions** → **Encode flow**
+- **User provides a completed persona.md without stating intent** → Show a compact summary of the loaded persona, then offer the hub menu (refine, score, encode). Do not assume encode.
 - **Ambiguous** → Ask: "Are you designing a new persona or encoding an existing one for Agentforce?"
 
 ---
@@ -410,7 +411,7 @@ Output ready-to-paste YAML blocks:
 **System block:**
 1. **`config.agent_name`** — The persona name.
 2. **`system.instructions`** — Full persona content as a YAML literal block scalar (`|`): Identity, attribute behavioral rules, phrase book, chatting style rules, tone rules, tone boundaries, never-say list. No character limits.
-3. **`system.messages.welcome`** — Generate a static in-persona welcome message. Default to static; note the option for dynamic as supplemental.
+3. **`system.messages.welcome`** — Generate a static in-persona welcome message. For multimodal agents (chat + telephony), generate two: a text welcome and a shorter voice welcome with AI disclosure. Default to static; note the option for dynamic as supplemental.
 4. **`system.messages.error`** — Generate one (1) static in-persona system error message. No dynamic option available for this field.
 
 **Per-topic overrides** (if topics provided):
@@ -436,7 +437,7 @@ Output ready-to-paste YAML blocks:
 1. **Name** (80 chars) — Show character count.
 2. **Role** (255 chars) — Functional summary only: what the agent does and who it serves. "You are..." Do **not** encode persona style here. Show character count.
 3. **Company** (255 chars) — Populate from company context collected in Step 2. Show character count.
-4. **Welcome Message** (800 chars, aim for ≤ 255) — Generate a static in-persona welcome message reflecting Identity + Register + Voice + Tone + Brevity. Show character count.
+4. **Welcome Message** (800 chars, aim for ≤ 255) — Generate a static in-persona welcome message reflecting Identity + Register + Voice + Tone + Brevity. For multimodal agents, generate two: a text welcome and a shorter voice welcome with AI disclosure. Show character count.
 5. **Error Message** — Generate one (1) static in-persona system error message reflecting Formality + Warmth + Emotional Coloring + Brevity.
 
 **Agentforce Builder Settings:**
