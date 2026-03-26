@@ -292,6 +292,7 @@ Present a few turns of conversation (3-5 exchanges) based on the use case from S
 - The dialog demonstrates the persona in action — word choice, tone, brevity, humor, formatting
 - Include at least one "interesting" turn: an error, a clarification, or an emotional moment — not just happy path
 - None of these agents say "Hello! How can I help you today?" — the sample should make the persona's impact obvious
+- For voice/telephony modality, start the dialog with the welcome message including AI disclosure so the user sees it in context
 
 **After presenting the sample dialog,** transition to Phase 2 by offering the hub menu.
 
@@ -436,7 +437,7 @@ Output ready-to-paste YAML blocks:
 8. Example `| text` pipes for common if/else branches written in the persona's voice.
 
 **Voice encoding** (if modality includes telephony/voice — see `resources/persona-encoding-guide-voice.md`):
-9. **Voice selection** — recommend 2-4 voices from the library, matched to persona attributes (Identity, Register, Formality, Warmth, Personality Intensity). Filter by primary language and gender (inferred from persona context — only ask if ambiguous).
+9. **Voice selection criteria** — describe what to look for in a voice: target language, gender (inferred from persona context — only ask if ambiguous), and voice qualities that match persona attributes (e.g., "look for a warm, professional voice with a measured pace"). Don't name specific voices — available voices vary by org. The designer selects from their org's voice library using these criteria.
 10. **Speed / Stability / Similarity** — starting points based on persona profile. Frame as starting points for experimentation, not prescriptions.
 11. **Key-term prompting** — populate from Global Lexicon (brand name, product names, domain terms). Plain text, no phonetics.
 12. **Pronunciation dictionary** *(optional — only if requested)* — generate entries for Global Lexicon terms with approximate IPA. Label as approximate and flag terms that need verification in voice preview.
@@ -467,7 +468,7 @@ Output ready-to-paste YAML blocks:
 11. **Per-action loading text** — If specific actions were provided, generate persona-consistent loading text for each. If the user chose "generate a few examples," infer 2-3 plausible actions and generate in-voice loading text for each, clearly labeled as examples.
 
 **Voice encoding** (if modality includes telephony/voice — see `resources/persona-encoding-guide-voice.md`):
-12. **Voice selection** — recommend 2-4 voices, matched to persona attributes. Filter by primary language and gender (inferred from persona context).
+12. **Voice selection criteria** — describe what to look for in a voice: target language, gender (inferred), and voice qualities matching persona attributes. Designer selects from their org's library.
 13. **Speed / Stability / Similarity** — starting points for experimentation.
 14. **Key-term prompting** — from Global Lexicon. Plain text.
 15. **Pronunciation dictionary** *(optional — only if requested)*.

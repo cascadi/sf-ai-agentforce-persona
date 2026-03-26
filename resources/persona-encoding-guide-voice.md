@@ -53,7 +53,7 @@ Select voices by matching persona attributes to voice properties:
 | Audience context | Age | Match voice age to audience expectations. |
 | Regional context | Accent | Match to brand or audience region. |
 
-Recommend **2-4 voices** with brief reasoning. The designer makes the final selection after listening to audio previews in Agentforce Builder. Available voices vary by org — always verify in the target org.
+Describe the voice qualities to look for based on persona attributes — e.g., "look for a warm, professional voice with a moderate pace and an American accent." The designer selects from their org's voice library after listening to audio previews in Agentforce Builder. Available voices vary by org — always verify in the target org.
 
 ---
 

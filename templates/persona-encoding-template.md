@@ -138,12 +138,15 @@ Voice Reminder: [pointer back to global persona]
 
 *Include this section when modality includes telephony/voice. See `resources/persona-encoding-guide-voice.md` for full guidance.*
 
-### Voice Selection
+### Voice Selection Criteria
 
-| Recommendation | Name | Gender | Accent | Style | Why |
-|---|---|---|---|---|---|
-| 1 | [name] | [gender] | [accent] | [style] | [persona match reasoning] |
-| 2 | [name] | [gender] | [accent] | [style] | [persona match reasoning] |
+| Criteria | Target |
+|---|---|
+| **Language** | [primary language] |
+| **Gender** | [inferred or specified] |
+| **Voice Qualities** | [description of what to look for based on persona — e.g., warm, professional, measured pace] |
+
+Select from available voices in your org's voice library. Listen to previews before deciding.
 
 ### Voice Fine-Tuning (starting points)
 
