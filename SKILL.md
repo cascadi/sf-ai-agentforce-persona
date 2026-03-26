@@ -141,43 +141,19 @@ This step is the skill's intelligence — it must execute explicitly as specifie
 
 ##### 3A: Input Parsing
 
-Extract persona signals from the user's input. Brand guides and style documents are often much richer than they appear — mine them thoroughly. A good brand guide can populate identity, attributes, phrase book, never-say list, AND lexicon in a single pass.
+Extract persona signals from the user's input. Brand guides are often much richer than they appear — mine them thoroughly. A good brand guide can populate identity, attributes, phrase book, never-say list, AND lexicon in a single pass. Aim to use **80%+ of actionable content.**
 
-**Voice and tone signals:**
-- Adjectives, "we are..." statements, competitive positioning language, formality markers
-- Voice pillars or principles (e.g., "clear, concise, authoritative") → map directly to Identity traits and attributes
-
-**Negative signals:**
-- "Never," "don't," "we are NOT" statements — often the strongest persona signals. These feed the Never-Say List.
-- Prohibited words or phrasings (e.g., "say 'complimentary' not 'free'") → Never-Say List entries
-- Prohibited greetings, salutations, or sign-offs → Never-Say + Phrase Book
-
-**Vocabulary and terminology:**
-- Brand name, company name, product line names → Global Lexicon (used everywhere, and feeds Pronunciation Dictionary + Key-Term Prompting for voice)
-- Brand-specific vocabulary lists, "isms," or preferred terms → Global or per-topic Lexicon entries
-- Domain-specific vocabulary (fabrication terms, technical jargon, product categories) → per-topic Lexicon entries
-- Preferred vs. prohibited word choices (e.g., "earn" not "get," "beauty" not "cosmetics") → Phrase Book always-say / Never-Say pairs
-
-**Formatting and style rules:**
-- Capitalization rules (title case, sentence case, brand name casing) → Capitalization attribute + specific rules
-- Punctuation opinions (Oxford comma, em dash usage, smart quotes, exclamation points) → Punctuation attribute + specific rules
-- Number, date, and price formatting → custom section or encoding-level rules
-- Foreign word formatting, attribution formatting → custom section
-
-**CTA and interaction patterns:**
-- Call-to-action patterns ("SHOP NOW," "Tap to...") → Phrase Book entries
-- Promotional language rules (gift-with-purchase phrasing, discount language) → Phrase Book + Never-Say
-
-**Preposition and usage rules:**
-- Specific preposition preferences (e.g., "at [brand]" not "from [brand]") → Never-Say + Phrase Book
-- Usage standards that would sound wrong if violated → Never-Say entries
-
-**Audience signals:**
-- Who the brand talks to, formal vs. informal examples, relationship language
+| Signal Type | What to Look For | Maps To |
+|---|---|---|
+| **Voice/tone** | Adjectives, "we are..." statements, voice pillars ("clear, concise, authoritative") | Identity traits, attributes |
+| **Negative** | "Never," "don't," prohibited words/phrasings ("say 'complimentary' not 'free'"), prohibited greetings | Never-Say List, Phrase Book |
+| **Vocabulary** | Brand name, product lines → global. Brand "isms," preferred terms → global or per-topic. Domain jargon → per-topic. Preferred vs. prohibited word pairs | Global Lexicon, per-topic Lexicon, Never-Say + Phrase Book pairs |
+| **Formatting** | Capitalization rules, punctuation opinions (Oxford comma, em dashes), number/date/price formatting, foreign word formatting | Chatting Style attributes + custom section |
+| **CTAs/interaction** | CTA patterns ("SHOP NOW"), promotional language rules | Phrase Book + Never-Say |
+| **Usage rules** | Preposition preferences ("at [brand]" not "from [brand]"), standards that would sound wrong if violated | Never-Say + Phrase Book |
+| **Audience** | Who the brand talks to, formal vs. informal examples, relationship language | Design Inputs, Register, Formality |
 
 **If input is a prior persona.md:** Extract attributes directly.
-
-**Extraction target:** Aim to use 80%+ of actionable content from a brand guide. If the guide contains vocabulary lists, formatting rules, or usage standards, those are encoding-ready — don't leave them on the floor.
 
 ##### 3B: Attribute Selection
 
@@ -391,13 +367,13 @@ Score the persona document against a 50-point rubric. Scoring is **on-demand** �
 
 *For an unbiased score, have a different person run the scoring rubric on the generated persona.*
 
-| Category | Points | What It Measures |
+| Category | /10 | Criteria |
 |---|---|---|
-| **Identity Coherence** | /10 | Traits are distinct, non-contradictory, and behaviorally defined. Each trait generates specific, observable agent behaviors — not vague aspirations. Design Inputs (Company, Audience, Modality, Primary Language) are present and coherent with identity — audience aligns with register, modality aligns with chatting style, company context shapes the agent's frame of reference. |
-| **Attribute Consistency** | /10 | Each attribute is independently set and coherent with Identity. Combinations respect constraint notes. Tone Boundaries are consistent with Emotional Coloring and Empathy Level. Tone Flex rules stay within flex range and never cross Tone Boundaries. Chatting Style is correctly adapted for modality (emoji/formatting suppressed for voice). When voice encoding is present: Stability aligns with Emotional Coloring + Personality Intensity, Speed aligns with Brevity. |
-| **Behavioral Specificity** | /10 | Attribute selections include concrete behavioral examples. Rules are testable. Chatting Style, Tone Boundaries, and Tone Flex triggers are explicit. Never-Say List has ≥5 entries covering chatbot filler, register violations, and persona-specific anti-phrases. Global Lexicon is populated (brand name, product names, domain terms). When voice: key-term prompting entries drawn from lexicon. When brand guide was provided: extraction depth — did the skill capture vocabulary, formatting rules, usage standards, and CTA patterns, or leave actionable content on the floor? |
-| **Phrase Book Quality** | /10 | All applicable categories populated with 2-4 phrases each: Acknowledgement, Affirmation, Apologies (agent mistakes only), Off-Topic Redirect, Welcome/Greeting for all agents. Escalation/Handoff for external-facing agents. Celebrating Progress for Encouraging/Enthusiastic coloring. Teaching Moments for Coach register. Humor Examples when Humor ≠ None. Returning Customer Greeting when relevant. Phrases are consistent with all attributes. Never-Say List items are distinct from Tone Boundaries. Language matches register. Brand guide content captured (preferred/prohibited terms, CTAs, preposition rules). |
-| **Sample Quality** | /10 | Sample dialog demonstrates persona attributes recognizably. A reader could identify which persona produced these responses without seeing the attribute table. Samples cover happy path, uncertainty, and boundary scenarios. Dialog matches modality — no emoji/formatting for voice, natural turn-taking for phone. When voice: sample starts with welcome message including AI disclosure. Brand guide vocabulary appears naturally in dialog. |
+| **Identity Coherence** | /10 | • Traits distinct, non-contradictory, behaviorally defined — observable behaviors, not aspirations • Design Inputs present and coherent: audience → register, modality → chatting style, company → frame of reference |
+| **Attribute Consistency** | /10 | • Each attribute coherent with Identity, constraints respected • Tone Boundaries consistent with Emotional Coloring/Empathy; Tone Flex within range • Chatting Style adapted for modality (suppressed for voice) • Voice encoding: Stability ↔ Coloring + Personality, Speed ↔ Brevity |
+| **Behavioral Specificity** | /10 | • Concrete behavioral examples, testable rules • Never-Say ≥5 (chatbot filler + register violations + persona-specific) • Global Lexicon populated • Voice: key-term prompting from lexicon • Brand guide: extraction depth — vocabulary, formatting, usage, CTAs captured? |
+| **Phrase Book Quality** | /10 | • 2-4 phrases per applicable category • All-agent: Acknowledgement, Affirmation, Apologies (mistakes only), Off-Topic Redirect, Welcome • Conditional: Escalation/Handoff (external), Celebrating Progress (Encouraging), Teaching Moments (Coach), Humor Examples (Humor ≠ None) • Phrases match register and attributes • Brand guide content captured |
+| **Sample Quality** | /10 | • Persona recognizable without seeing attribute table • Happy path + uncertainty + boundary scenarios • Modality-appropriate (voice: no formatting, starts with AI disclosure) • Brand vocabulary appears naturally |
 
 **Scoring rules:**
 - Score each category independently. Provide a number and 1-2 sentences of justification.
@@ -449,10 +425,10 @@ Output ready-to-paste YAML blocks:
 
 **Voice encoding** (if modality includes telephony/voice — see `resources/persona-encoding-guide-voice.md`):
 9. **Voice selection** — recommend at least 3 voices by name from the default voice library, with reasoning for each. Include per-voice starting points for Speed, Stability, and Similarity. Also share voice selection criteria (target language, gender, voice qualities) so the designer can evaluate other voices available in their org. Gender is inferred from persona context — only ask if ambiguous.
-11. **Key-term prompting** — populate from Global Lexicon (brand name, product names, domain terms). Plain text, no phonetics.
-12. **Pronunciation dictionary** *(optional — only if requested)* — generate entries for Global Lexicon terms with approximate IPA. Label as approximate and flag terms that need verification in voice preview.
-13. **Voice welcome message** — shorter than text welcome, ear-optimized, must include AI disclosure ("I'm an AI assistant" or equivalent in the persona's voice).
-14. **Instruction adjustments** — note brevity recalibration (one position shorter for voice), formatting suppression (no emoji, bullets → ordinals), and any pausing guidance for structured data.
+10. **Key-term prompting** — populate from Global Lexicon (brand name, product names, domain terms). Plain text, no phonetics.
+11. **Pronunciation dictionary** *(optional — only if requested)* — generate entries for Global Lexicon terms with approximate IPA. Label as approximate and flag terms that need verification in voice preview.
+12. **Voice welcome message** — shorter than text welcome, ear-optimized, must include AI disclosure ("I'm an AI assistant" or equivalent in the persona's voice).
+13. **Instruction adjustments** — note brevity recalibration (one position shorter for voice), formatting suppression (no emoji, bullets → ordinals), and any pausing guidance for structured data.
 
 #### If Agentforce Builder
 
@@ -477,12 +453,7 @@ Output ready-to-paste YAML blocks:
 **Loading Text:**
 11. **Per-action loading text** — If specific actions were provided, generate persona-consistent loading text for each. If the user chose "generate a few examples," infer 2-3 plausible actions and generate in-voice loading text for each, clearly labeled as examples.
 
-**Voice encoding** (if modality includes telephony/voice — see `resources/persona-encoding-guide-voice.md`):
-12. **Voice selection** — recommend at least 3 voices by name with reasoning and per-voice starting points for Speed, Stability, and Similarity. Share selection criteria for evaluating other voices.
-14. **Key-term prompting** — from Global Lexicon. Plain text.
-15. **Pronunciation dictionary** *(optional — only if requested)*.
-16. **Voice welcome message** — shorter than text, includes AI disclosure.
-17. **Instruction adjustments** — brevity recalibration, formatting suppression.
+**Voice encoding** (if modality includes telephony/voice): Same items as Agent Script voice encoding above. See `resources/persona-encoding-guide-voice.md`.
 
 #### Output
 
