@@ -1,6 +1,6 @@
 ---
-version: "2.1.0"
-date: 2026-03-24
+version: "2.2.0"
+date: 2026-03-25
 ---
 
 # Agent Persona Framework
@@ -336,16 +336,18 @@ Personality Intensity is about *how much* character, not *what kind*. Two Bold a
 
 *Constraint note → Humor: Reserved pulls toward Humor: None (strong personality needed to land humor).*
 
-### Voice Channel Parameters *(optional)*
+### Voice Channel Parameters *(optional — voice/telephony modality only)*
 
-When the agent's surface is a voice channel (phone, voice assistant, IVR), define these additional characteristics:
+When the agent's modality includes voice or telephony, these additional parameters apply. They are configured in Agentforce Builder under Connections → Voice Settings, separate from the main agent configuration.
 
-- **Pitch range** — Low / Mid / High. Affects perceived authority and warmth.
-- **Speaking rate** — Slow / Moderate / Fast. Match to Formality and Brevity.
-- **Energy level** — Calm / Moderate / Energetic. Match to Warmth and Emotional Coloring.
-- **Warmth ("aural smile")** — Neutral / Warm / Bright. Match to the Warmth attribute.
+- **Voice Selection** — choose from a library of pre-built voices. Each voice bundles gender, age, accent, style, and language. Match to Identity, Register, Formality, and Warmth. Pitch is a property of the selected voice, not an independent slider.
+- **Speed** (0.7–1.2) — speaking rate. Match to Brevity. Starting point, not a prescription — experiment.
+- **Stability** (0–1, Variable ↔ Monotone) — emotional range vs. consistency. The primary persona lever for voice. Match to Emotional Coloring and Personality Intensity. Lower = more expressive, higher = more consistent. Starting point — experiment.
+- **Similarity** (0–1) — adherence to base voice model. Keep at or above 0.75 unless there's a reason to deviate.
+- **Pronunciation Dictionary** *(optional)* — phonetic definitions for brand names, product names, domain terms. The voice counterpart to the Lexicon. Use IPA or CMU/ARPAbet format.
+- **Key-Term Prompting** — plain-text list of important terms to improve speech-to-text recognition accuracy. The input counterpart to the Pronunciation Dictionary.
 
-These parameters are only relevant for voice surfaces and should be omitted for text-based agents.
+These parameters are only relevant for voice surfaces. See the [Voice Encoding Guide](persona-encoding-guide-voice.md) for full guidance.
 
 ### Skill-Level Adaptation *(optional)*
 
@@ -587,19 +589,21 @@ The Never-Say List is authored alongside the Phrase Book and encoded into tone b
 
 ## Lexicon
 
-*Brand terminology and domain vocabulary scoped per topic.*
+*Brand terminology and domain vocabulary — global and per-topic.*
 
-When an agent operates across multiple topics, each topic may have its own vocabulary — technical terms, brand-specific language, industry jargon. Lexicon defines which words belong where.
+Lexicon has two scopes:
 
-**Example:** A luxury watch agent has watch-specific vocabulary ("movement," "chronograph," "caliber") that belongs in product topics but NOT in order-tracking topics. Loading it globally wastes context and can cause the agent to over-use jargon in simple service interactions.
+**Global Lexicon** — terms used across all topics: brand name, company name, product line names, industry terms that apply everywhere. Global lexicon entries are the primary source for Pronunciation Dictionary and Key-Term Prompting when encoding for voice.
+
+**Per-Topic Lexicon** — terms scoped to specific topics. A luxury watch agent has watch-specific vocabulary ("movement," "chronograph," "caliber") that belongs in product topics but NOT in order-tracking topics. Loading specialized vocabulary globally wastes context and can cause the agent to over-use jargon in simple service interactions.
 
 **How Lexicon differs from Phrase Book:**
 - **Phrase Book** = how the agent *sounds* in common situations — organized by situation (acknowledgement, redirect, celebration)
-- **Lexicon** = what *words and terms* the agent uses in specific domains — organized by topic
+- **Lexicon** = what *words and terms* the agent uses in specific domains — organized by scope (global or per-topic)
 
-The Phrase Book captures the agent's verbal fingerprint across all interactions. The Lexicon captures domain-specific vocabulary that only applies in certain contexts.
+The Phrase Book captures the agent's verbal fingerprint across all interactions. The Lexicon captures domain-specific vocabulary.
 
-**In encoding:** Lexicon maps to per-topic instructions — each topic gets a vocabulary block with the relevant domain terms and usage notes.
+**In encoding:** Global lexicon goes in global instructions. Per-topic lexicon maps to per-topic instructions — each topic gets a vocabulary block with the relevant domain terms and usage notes. For voice modality, global lexicon entries also feed the Pronunciation Dictionary and Key-Term Prompting configuration.
 
 ---
 

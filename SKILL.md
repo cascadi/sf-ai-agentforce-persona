@@ -1,7 +1,7 @@
 ---
 name: sf-ai-agentforce-persona
 description: Designs an AI agent persona — identity, voice, tone, and behavioral style — through a fast input-to-sample-dialog loop with brand input support, 12 decomposed attributes, and 50-point scoring
-version: 2.2.0
+version: 2.3.0
 author: cascadi
 tags: [salesforce, agentforce, persona, identity, register, formality, warmth, personality, tone, brevity, humor, chatting-style, brand-input, sample-dialog]
 allowed-tools:
@@ -116,7 +116,8 @@ Collect only what the input doesn't already answer. **Every question is skippabl
 1. **Company** — who they are, what they do, who they serve. If the user provided a brand guide or URL, extract this — don't re-ask.
 2. **Audience** — who the agent serves: internal employee, external customer, partner, vendor, investor, or other. Affects register, formality, warmth. If the user says "internal sales coach," audience is already answered.
 3. **Modality** — how the agent communicates: chat, email, telephony, multimodal, or other. Affects Chatting Style, Brevity, and whether emoji makes sense. Multiple modalities are valid.
-4. **At least 1 use case or JTBD** — needed to generate meaningful sample dialog.
+4. **Primary language** — especially important when modality includes voice/telephony, as it constrains voice selection. Also affects formality norms and cultural adaptation.
+5. **At least 1 use case or JTBD** — needed to generate meaningful sample dialog.
 
 **Do NOT collect:** interaction model (agent design, not persona), agent type (agent design, not persona), topic list, agent name (comes after identity).
 
@@ -152,8 +153,9 @@ Extract persona signals from the user's input. Brand guides and style documents 
 - Prohibited greetings, salutations, or sign-offs → Never-Say + Phrase Book
 
 **Vocabulary and terminology:**
-- Brand-specific vocabulary lists, "isms," or preferred terms → Lexicon entries
-- Domain-specific vocabulary (fabrication terms, technical jargon, product categories) → Lexicon entries scoped to relevant topics
+- Brand name, company name, product line names → Global Lexicon (used everywhere, and feeds Pronunciation Dictionary + Key-Term Prompting for voice)
+- Brand-specific vocabulary lists, "isms," or preferred terms → Global or per-topic Lexicon entries
+- Domain-specific vocabulary (fabrication terms, technical jargon, product categories) → per-topic Lexicon entries
 - Preferred vs. prohibited word choices (e.g., "earn" not "get," "beauty" not "cosmetics") → Phrase Book always-say / Never-Say pairs
 
 **Formatting and style rules:**
@@ -209,6 +211,7 @@ From the attribute map, generate:
 - **Tone Boundaries** — what the agent must never sound like
 - **Tone Flex** — baseline + triggers + shift rules
 - **Negative Identity** — 2-4 character-level anti-patterns. Generate from negative signals in the input and from Identity traits.
+- **Global Lexicon** — brand name, company name, product line names, industry terms used across all topics. These feed Pronunciation Dictionary and Key-Term Prompting when encoding for voice.
 - **Values** *(optional)* — Only if the user explicitly stated beliefs, values, or worldview. Never infer values.
 
 ##### 3E: Name
@@ -432,6 +435,14 @@ Output ready-to-paste YAML blocks:
 **Deterministic response examples:**
 8. Example `| text` pipes for common if/else branches written in the persona's voice.
 
+**Voice encoding** (if modality includes telephony/voice — see `resources/persona-encoding-guide-voice.md`):
+9. **Voice selection** — recommend 2-4 voices from the library, matched to persona attributes (Identity, Register, Formality, Warmth, Personality Intensity). Filter by primary language and gender (inferred from persona context — only ask if ambiguous).
+10. **Speed / Stability / Similarity** — starting points based on persona profile. Frame as starting points for experimentation, not prescriptions.
+11. **Key-term prompting** — populate from Global Lexicon (brand name, product names, domain terms). Plain text, no phonetics.
+12. **Pronunciation dictionary** *(optional — only if requested)* — generate entries for Global Lexicon terms with approximate IPA. Label as approximate and flag terms that need verification in voice preview.
+13. **Voice welcome message** — shorter than text welcome, ear-optimized, must include AI disclosure ("I'm an AI assistant" or equivalent in the persona's voice).
+14. **Instruction adjustments** — note brevity recalibration (one position shorter for voice), formatting suppression (no emoji, bullets → ordinals), and any pausing guidance for structured data.
+
 #### If Agentforce Builder
 
 **Agent Configuration Fields:**
@@ -454,6 +465,14 @@ Output ready-to-paste YAML blocks:
 
 **Loading Text:**
 11. **Per-action loading text** — If specific actions were provided, generate persona-consistent loading text for each. If the user chose "generate a few examples," infer 2-3 plausible actions and generate in-voice loading text for each, clearly labeled as examples.
+
+**Voice encoding** (if modality includes telephony/voice — see `resources/persona-encoding-guide-voice.md`):
+12. **Voice selection** — recommend 2-4 voices, matched to persona attributes. Filter by primary language and gender (inferred from persona context).
+13. **Speed / Stability / Similarity** — starting points for experimentation.
+14. **Key-term prompting** — from Global Lexicon. Plain text.
+15. **Pronunciation dictionary** *(optional — only if requested)*.
+16. **Voice welcome message** — shorter than text, includes AI disclosure.
+17. **Instruction adjustments** — brevity recalibration, formatting suppression.
 
 #### Output
 

@@ -1,6 +1,6 @@
 ---
-version: "2.1.0"
-date: 2026-03-24
+version: "2.2.0"
+date: 2026-03-25
 ---
 
 # [Agent Name] — Persona Encoding
@@ -131,3 +131,50 @@ Voice Reminder: [pointer back to global persona]
 | [action name] | [in-character loading text] |
 | [action name] | [in-character loading text] |
 | Generic (fallback) | [in-character loading text] |
+
+---
+
+## Voice Encoding
+
+*Include this section when modality includes telephony/voice. See `resources/persona-encoding-guide-voice.md` for full guidance.*
+
+### Voice Selection
+
+| Recommendation | Name | Gender | Accent | Style | Why |
+|---|---|---|---|---|---|
+| 1 | [name] | [gender] | [accent] | [style] | [persona match reasoning] |
+| 2 | [name] | [gender] | [accent] | [style] | [persona match reasoning] |
+
+### Voice Fine-Tuning (starting points)
+
+| Parameter | Starting Point | Persona Rationale |
+|---|---|---|
+| **Speed** | [value] | [match to Brevity] |
+| **Stability** | [value] | [match to Emotional Coloring + Personality Intensity] |
+| **Similarity** | [value] | [default or adjusted] |
+
+### Key-Term Prompting
+
+| Term |
+|---|
+| [brand name] |
+| [product name] |
+| [domain term] |
+
+### Pronunciation Dictionary *(optional)*
+
+| Word | Pronunciation (IPA) | Verified? |
+|---|---|---|
+| [term] | [approximate IPA] | ⚠️ Verify in voice preview |
+
+### Voice Welcome Message
+
+```
+[Shorter than text welcome. Includes AI disclosure. In persona voice.]
+```
+
+### Voice Instruction Adjustments
+
+- Brevity: [text default] → [voice adjustment, one position shorter]
+- Formatting: suppressed (no emoji, bullets → ordinals)
+- [Any pausing guidance for structured data]
