@@ -280,6 +280,10 @@ Before showing sample dialog, present the drafted persona in a compact, scannabl
 - **Tone Boundaries** — compact list
 - **Tone Flex** — table with trigger, coloring shift, empathy shift, humor guidance
 
+**Design rationale.** Before the persona summary, introduce it with a brief narrative explaining the key design choices — why these identity traits, why this register, what in the input drove the major decisions. This is a design partner explaining their thinking, not a data dump. Keep it to 2-4 sentences. This rationale is conversational context only — it does not get written to the persona document.
+
+> Example: "I went with Gracious and Composed because luxury hospitality needs poise under pressure. Peer register rather than Subordinate — Coral Cloud's brand is warm and personal, not deferential. Encouraging coloring felt right for a resort that wants guests to feel excited, not just served."
+
 After the persona summary, note the lowest-confidence attributes (see Confidence callouts in Interaction Design) so the user knows where to focus if they want to refine.
 
 Then proceed directly to sample dialog — no confirmation question needed between persona presentation and sample dialog. The persona provides context for understanding the sample.
