@@ -140,21 +140,29 @@ Voice Reminder: [pointer back to global persona]
 
 ### Voice Selection
 
+**Selection criteria:**
+
+| Criteria | Target | Persona Rationale |
+|---|---|---|
+| **Language** | [primary language] | [why] |
+| **Gender** | [inferred or specified] | [source — name, pronouns, or user input] |
+| **Voice Qualities** | [what to look for — e.g., warm, professional, measured pace] | [which persona attributes drive this] |
+
 **Recommended voices** (from default library — verify in your org, listen to previews):
 
-| Voice | Gender | Accent | Style | Speed | Stability | Similarity | Why |
-|---|---|---|---|---|---|---|---|
-| [name] | [m/f] | [accent] | [style] | [val] | [val] | [val] | [persona match reasoning] |
-| [name] | [m/f] | [accent] | [style] | [val] | [val] | [val] | [persona match reasoning] |
-| [name] | [m/f] | [accent] | [style] | [val] | [val] | [val] | [persona match reasoning] |
+| Voice | Gender | Accent | Style | Why |
+|---|---|---|---|---|
+| [name] | [m/f] | [accent] | [style] | [persona match reasoning] |
+| [name] | [m/f] | [accent] | [style] | [persona match reasoning] |
+| [name] | [m/f] | [accent] | [style] | [persona match reasoning] |
 
-**Selection criteria** (for evaluating other voices in your org):
+**Fine-tuning starting points** (experiment in voice preview — these are starting points, not prescriptions):
 
-| Criteria | Target |
-|---|---|
-| **Language** | [primary language] |
-| **Gender** | [inferred or specified] |
-| **Voice Qualities** | [what to look for — e.g., warm, professional, measured pace] |
+| Parameter | Starting Point | Why |
+|---|---|---|
+| **Speed** | [value] | [e.g., "Concise brevity + hospitality warmth → moderate pace, not rushed"] |
+| **Stability** | [value] | [e.g., "Encouraging coloring needs expressiveness → lower stability"] |
+| **Similarity** | [value] | [e.g., "Default — no reason to deviate from base voice"] |
 
 ### Key-Term Prompting
 
