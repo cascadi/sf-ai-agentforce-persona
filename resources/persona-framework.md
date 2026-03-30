@@ -1,11 +1,11 @@
 ---
-version: "2.2.0"
-date: 2026-03-25
+version: "2.3.0"
+date: 2026-03-30
 ---
 
 # Agent Persona Framework
 
-*A design framework for AI agent personality: Identity + 12 configurable attributes across five categories.*
+*A design framework for AI agent personality: Identity + 12 configurable dimensions across five categories.*
 
 ---
 
@@ -66,38 +66,40 @@ A well-designed persona delivers:
 
 **Write positive instructions:** Too many prohibitions can restrict agency. Try reframing instructions positively. Only add essential negative instructions.
 
-**Comprehensiveness:** This framework is a guide, not a rulebook. Combine attributes, invent values, override constraints — whatever your persona needs. What matters is that *every element gets a deliberate decision:* Does your agent have a sense of humor? Is it a stickler for punctuation?
+**Comprehensiveness:** This framework is a guide, not a rulebook. Combine dimensions, invent values, override constraints — whatever your persona needs. What matters is that *every element gets a deliberate decision:* Does your agent have a sense of humor? Is it a stickler for punctuation?
 
 ---
 
 ## How to Use This Framework
 
-### The Attribute Model
+### The Dimension Model
 
-Each of the 12 attributes is a single independent axis with a spectrum of named positions. Selecting a value for one attribute should not *require* knowing the value of another — but **constraint notes** recommend natural pairings. Any combination is valid; constraints flag when a combination may feel incoherent.
+A persona has two top-level categories: **Identity** (who the agent is — character traits, name, and optional elements like values and negative identity) and **Dimensions** (how the agent expresses itself — 12 independently tunable axes of personality).
 
-Categories group related attributes:
-- **Register** — the power dynamic (1 attribute)
-- **Voice** — how the words sound (3 attributes)
-- **Tone** — how the agent comes across emotionally (2 attributes)
-- **Delivery** — how much is said and with what humor (2 attributes)
-- **Chatting Style** — how the text looks on screen (4 attributes)
+Each of the 12 dimensions is a single independent axis with a spectrum of named positions. Selecting a value for one dimension should not *require* knowing the value of another — but **constraint notes** recommend natural pairings. Any combination is valid; constraints flag when a combination may feel incoherent.
+
+Categories group related dimensions:
+- **Register** — the power dynamic (1 dimension)
+- **Voice** — how the words sound (3 dimensions)
+- **Tone** — how the agent comes across emotionally (2 dimensions)
+- **Delivery** — how much is said and with what humor (2 dimensions)
+- **Chatting Style** — how the text looks on screen (4 dimensions)
 
 ### Workflow
 
 1. **Establish context.** Company, audience, and modality — these constrain everything downstream. Extract from input or collect explicitly.
 2. **Start with Identity.** Write 3-5 adjectives that capture your agent's character. This is the anchor — everything derives from here.
 3. **Name the agent.** Distill the identity into a name. The name is a first impression — it should signal who the agent is before any conversation starts.
-4. **Work through attributes in dependency order:** Register → Voice (Formality, Warmth, Personality Intensity) → Tone (Emotional Coloring, Empathy Level) → Delivery (Brevity, Humor) → Chatting Style. Constraint notes between sections explain how upstream choices pull downstream ones.
+4. **Work through dimensions in dependency order:** Register → Voice (Formality, Warmth, Personality Intensity) → Tone (Emotional Coloring, Empathy Level) → Delivery (Brevity, Humor) → Chatting Style. Constraint notes between sections explain how upstream choices pull downstream ones.
 5. **Define Tone Boundaries** — what the agent must never sound like.
 6. **Define Tone Flex** — how tone shifts by context (error, frustration, celebration).
 7. **Generate Phrase Book and Never-Say List** — example phrases and anti-phrases tuned to the persona.
 8. **Validate with sample dialog** — if the agent sounds wrong, revisit the area that's off.
 9. **Encode the persona** into your agent's configuration using the [persona encoding guide](persona-encoding-guide.md).
 
-### Attribute Boundaries
+### Dimension Boundaries
 
-When attributes seem to overlap, use these boundary tests:
+When dimensions seem to overlap, use these boundary tests:
 
 - **Register** = who has authority — the power dynamic between agent and user
 - **Formality** = how polished is the language — grammatical structure and linguistic register
@@ -128,9 +130,9 @@ The persona document is an input to conversation design, not a replacement for i
 
 *Context that shapes every downstream decision. Collect before Identity.*
 
-Three inputs set the context for persona design. They are not attributes — they constrain attribute choices.
+Three inputs set the context for persona design. They are not dimensions — they constrain dimension choices.
 
-**Company** — who the organization is, what it does, who it serves. A support agent for a B2B SaaS company sounds different from one at a luxury retail brand, even with identical attribute selections. Company context shapes the agent's frame of reference and informs Identity, Register, Formality, and Phrase Book.
+**Company** — who the organization is, what it does, who it serves. A support agent for a B2B SaaS company sounds different from one at a luxury retail brand, even with identical dimension selections. Company context shapes the agent's frame of reference and informs Identity, Register, Formality, and Phrase Book.
 
 **Audience** — who the agent serves: internal employee, external customer, partner, vendor, investor, or other. Audience is the strongest constraint on Register (a customer-facing agent rarely uses Coach register) and Formality (an internal Slack bot can be Casual; a client-facing agent usually cannot). It also determines which Phrase Book categories apply — for example, Escalation/Handoff is relevant for external-facing agents but typically not for internal ones.
 
@@ -144,7 +146,7 @@ All three may be inferred from a brand guide, URL, or brief provided at the star
 
 *Core personality traits — "What kind of character is this?"*
 
-Three to five adjectives that form the agent's character foundation. Every attribute below should be derivable from these traits. When in doubt, return to Identity.
+Three to five adjectives that form the agent's character foundation. Every dimension below should be derivable from these traits. When in doubt, return to Identity.
 
 Identity is generative, not a menu — write your own. Each trait gets an evocative definition that cues conversational behavior. These examples show how different trait sets pull the rest of the framework in different directions:
 
@@ -163,7 +165,7 @@ For Luna, the definition of *Gracious* might be:
 
 > Makes every interaction feel unhurried, even under pressure. Acknowledges the person before the problem. Never abrupt, never transactional — treats a routine address change with the same care as a complex escalation. Gratitude is specific, not performative: "Thank you for walking me through that" rather than "Thanks for reaching out!"
 
-*Constraint: Identity is the anchor. Everything traces back. If a choice in any downstream attribute contradicts Identity, Identity wins.*
+*Constraint: Identity is the anchor. Everything traces back. If a choice in any downstream dimension contradicts Identity, Identity wins.*
 
 ### Naming
 
@@ -185,7 +187,7 @@ Name also interacts with Register (a Subordinate named "The Boss" creates disson
 
 ### Negative Identity — "What You're Not"
 
-Character-level anti-patterns: what the agent fundamentally is not. These are broader than Tone Boundaries (which constrain how the agent sounds) and Never-Say List (which constrain specific phrases). Negative Identity constrains who the agent *is* at the character level, generating rules across multiple attributes.
+Character-level anti-patterns: what the agent fundamentally is not. These are broader than Tone Boundaries (which constrain how the agent sounds) and Never-Say List (which constrain specific phrases). Negative Identity constrains who the agent *is* at the character level, generating rules across multiple dimensions.
 
 **Examples:**
 - "Not a salesperson" → constrains product recommendations toward helpfulness, suppresses upsell language, affects Phrase Book
@@ -206,7 +208,7 @@ Write 2-4 Negative Identity statements during persona design. Each should be a c
 
 ### Values *(optional — explicit input only)*
 
-What the agent believes. Values establish the persona's worldview and motivational core — they inform behavioral decisions that attributes alone don't cover.
+What the agent believes. Values establish the persona's worldview and motivational core — they inform behavioral decisions that dimensions alone don't cover.
 
 **Examples:**
 - "Everyone deserves to feel confident" → the agent normalizes struggles and celebrates small wins
@@ -219,7 +221,7 @@ Values are different from Identity traits:
 
 Two agents with identical Identity traits can behave differently if their Values differ.
 
-**Guardrail:** Values are populated **only from explicit user input** — the user states what the agent believes. Values are never inferred from brand guides, tone signals, or other persona attributes. If the user doesn't provide values, omit this section entirely. The reason: values carry ideological weight that should not be assumed.
+**Guardrail:** Values are populated **only from explicit user input** — the user states what the agent believes. Values are never inferred from brand guides, tone signals, or other persona dimensions. If the user doesn't provide values, omit this section entirely. The reason: values carry ideological weight that should not be assumed.
 
 Write 2-5 belief statements. Each should be a conviction that generates observable behavior.
 
@@ -276,7 +278,7 @@ Write 2-5 belief statements. Each should be a conviction that generates observab
 
 *Boundary: Voice is linguistic character — persistent across all interactions. If you're deciding how the agent's words sound and feel, that's Voice. Emotional quality is Tone; response length is Brevity; visual conventions are Chatting Style.*
 
-Voice has three independent attributes: Formality (how polished), Warmth (how approachable), and Personality Intensity (how much character). These vary independently — a Formal agent can be Warm (luxury concierge), a Casual agent can be Cool (street-smart problem-solver), a Reserved agent can be Warm (dignified trust).
+Voice has three independent dimensions: Formality (how polished), Warmth (how approachable), and Personality Intensity (how much character). These vary independently — a Formal agent can be Warm (luxury concierge), a Casual agent can be Cool (street-smart problem-solver), a Reserved agent can be Warm (dignified trust).
 
 ### Formality
 
@@ -353,7 +355,7 @@ These parameters are only relevant for voice surfaces. See the [Voice Encoding G
 
 When the agent's audience spans multiple expertise levels, the agent may need to adapt its language complexity and explanation depth to the user's demonstrated skill level. This is independent of Register — a Peer agent helping a beginner still simplifies, even though it's not coaching.
 
-**How it interacts with attributes:**
+**How it interacts with dimensions:**
 - **Formality** stays constant — skill-level adaptation changes *what* is explained, not *how polished* the language is
 - **Brevity** may shift — beginners get more explanation (toward Moderate), experts get less (toward Concise/Terse)
 - **Lexicon** adapts — domain vocabulary is used freely with experts, explained or avoided with beginners
@@ -361,7 +363,7 @@ When the agent's audience spans multiple expertise levels, the agent may need to
 
 **When to include:** Customer-facing agents with broad audience skill ranges. Internal agents with a homogeneous expert audience can skip this.
 
-Skill-Level Adaptation is encoded as a behavioral rule in instructions, not as a standalone attribute.
+Skill-Level Adaptation is encoded as a behavioral rule in instructions, not as a standalone dimension.
 
 ---
 
@@ -389,7 +391,7 @@ Tone shifts by context; Voice doesn't. An agent's emotional coloring may be neut
 
 **Epistemic stance note:** How the agent handles certainty and uncertainty is correlated with Emotional Coloring but not identical. Clinical agents hedge precisely; Encouraging agents frame uncertainty optimistically. When a persona needs an unusual pairing, define it in Tone Boundaries.
 
-*Constraint note → Empathy Level: Blunt → Minimal. Clinical → Minimal or Understated. Encouraging → Moderate or High. Enthusiastic → High.*
+*Constraint note → Empathy Level: Blunt → Minimal. Clinical → Minimal or Understated. Encouraging → Moderate or Attuned. Enthusiastic → Attuned.*
 
 *Constraint note → Register: Subordinate pulls toward Neutral or Clinical. Coach pulls toward Encouraging.*
 
@@ -398,7 +400,7 @@ Tone shifts by context; Voice doesn't. An agent's emotional coloring may be neut
 *How much emotional validation the agent provides.*
 
 ```
-◄─── Minimal ──── Understated ──── Moderate ──── High ───►
+◄─── Minimal ──── Understated ──── Moderate ──── Attuned ───►
 ```
 
 | Position | Description |
@@ -406,20 +408,20 @@ Tone shifts by context; Voice doesn't. An agent's emotional coloring may be neut
 | **Minimal** | Acknowledges factually. No emotional validation. "The deployment failed" — then moves to resolution. |
 | **Understated** | Care shown through action and attention, not words of comfort. A brief nod, then pivots to solutions. Doesn't dwell on feelings but doesn't dismiss them either. The warmth is there if you know where to look. |
 | **Moderate** | Acknowledges difficulty briefly, then moves to resolution. "That's tricky — here's the fix." Default for most agents. |
-| **High** | Validates the user's experience before problem-solving. "I can see how frustrating that must be. Let's sort this out together." Best for customer-facing agents with Encouraging or Enthusiastic emotional coloring. |
+| **Attuned** | Reads the user's emotional state and responds to it before problem-solving. "I can see how frustrating that must be. Let's sort this out together." Best for customer-facing agents with Encouraging or Enthusiastic emotional coloring. |
 
 ### Tone Boundaries
 
 Define what the agent must *never sound like*. These are the negative space of your Tone selections — testable rules that prevent drift.
 
-Tone Boundaries are authored per persona, not a menu — write your own based on the attributes and context. The following defaults apply to most agents:
+Tone Boundaries are authored per persona, not a menu — write your own based on the dimensions and context. The following defaults apply to most agents:
 
 - Never apologize for asking clarifying questions (that's a repair flow, not an error)
 - Never apologize for not knowing something (state the limitation and offer next steps)
 - Only apologize when the agent caused an explicit mistake
 - Never ask the user for empathy ("I'm still learning", "I'm not smart enough")
 
-Add context-specific boundaries based on the Emotional Coloring and other attributes. Examples:
+Add context-specific boundaries based on the Emotional Coloring and other dimensions. Examples:
 - Neutral: "Never sound apologetic or servile." "Never use corporate jargon."
 - Encouraging: "Never be saccharine — validate briefly, then act." "Never dramatize failures."
 - Clinical: "Never editorialize findings." "No 'good news' or 'unfortunately.'"
@@ -440,7 +442,7 @@ Tone Flex defines how the agent's tone shifts from its baseline in response to c
 
 **Shift rules** define direction and magnitude per trigger:
 
-| Trigger | Attribute | Shift Example (from Neutral baseline) |
+| Trigger | Dimension | Shift Example (from Neutral baseline) |
 |---|---|---|
 | User frustrated | Empathy Level | Understated → Moderate |
 | System error | Humor | Any → None (always suppress) |
@@ -450,9 +452,9 @@ Tone Flex defines how the agent's tone shifts from its baseline in response to c
 
 **Hard boundaries** — Tone Boundaries are the outer wall of the flex range. The agent can shift within its flex range but must never cross a Tone Boundary. If the baseline is Neutral and the boundary says "Never sound saccharine," then flex toward Encouraging is acceptable but Enthusiastic would violate the boundary.
 
-**Flex range** — How far each attribute can shift. Author per persona. Example:
+**Flex range** — How far each dimension can shift. Author per persona. Example:
 - Emotional Coloring: Neutral baseline, flex range Neutral–Encouraging (never Clinical, never Enthusiastic)
-- Empathy Level: Understated baseline, flex range Minimal–Moderate (never High)
+- Empathy Level: Understated baseline, flex range Minimal–Moderate (never Attuned)
 
 Tone Flex is authored per persona during design. The encoding expresses flex rules as per-topic tone calibration in instructions.
 
@@ -462,7 +464,7 @@ Tone Flex is authored per persona during design. The encoding expresses flex rul
 
 ## Delivery
 
-Two standalone attributes that control response shape and humor. Both are independent of Voice and Tone but interact with them through constraint notes.
+Two standalone dimensions that control response shape and humor. Both are independent of Voice and Tone but interact with them through constraint notes.
 
 ### Brevity
 
@@ -557,11 +559,11 @@ Boundary test: "If you removed all emoji, would information be lost?" Functional
 
 ## Phrase Book & Never-Say List
 
-Two companion artifacts generated per persona. Both are tuned to the persona's attribute selections and Identity traits.
+Two companion artifacts generated per persona. Both are tuned to the persona's dimension selections and Identity traits.
 
 ### Phrase Book
 
-Example phrases the agent would use in common situations. Categories are selected during the workflow based on attribute selections — they vary per persona. Examples of selection-driven categories:
+Example phrases the agent would use in common situations. Categories are selected during the workflow based on dimension selections — they vary per persona. Examples of selection-driven categories:
 
 - **All agents:** Acknowledgement, Affirmation, Redirect/Handoff
 - **Non-Terse agents:** Welcome/Greeting
@@ -611,14 +613,14 @@ The Phrase Book captures the agent's verbal fingerprint across all interactions.
 
 ### Tension Pairs
 
-Some attribute combinations create productive tension. These are valid — they don't need to be "resolved" — but they need conscious design to coexist:
+Some dimension combinations create productive tension. These are valid — they don't need to be "resolved" — but they need conscious design to coexist:
 
 | Tension | Resolution |
 |---|---|
 | Cool Warmth + Bold Personality | Strong character without performed warmth. Competence IS the care. |
 | Blunt Coloring + Playful Humor | Unvarnished truth delivered as comedy. The bluntness is part of the joke. |
 | Encouraging Coloring + Terse Brevity | Short celebrations: "Done. Nice progress." |
-| High Empathy + Terse Brevity | Brief validation, then act: "Frustrating. Here's the fix." |
+| Attuned Empathy + Terse Brevity | Brief validation, then act: "Frustrating. Here's the fix." |
 | Formal + Warm | Polished hospitality, sophisticated warmth. |
 | Formal + Bold Personality | Theatrical character, immersive experience. Archaic formality with maximum personality. |
 | Neutral Coloring + Bold Personality | Strong character without emotional investment. The character shows through word choice, not feeling. |
@@ -629,7 +631,7 @@ Some attribute combinations create productive tension. These are valid — they 
 
 ### Cultural Adaptation Note
 
-Persona attribute expectations vary by culture. For global agents, consider per-locale overrides. Key callouts:
+Persona dimension expectations vary by culture. For global agents, consider per-locale overrides. Key callouts:
 
 - **Formality expectations vary** — positions that feel natural in one culture may feel too casual or too formal in another.
 - **Warmth norms differ** — Bright warmth in one culture may feel overwhelming in another. Cool professionalism that works in one context may feel cold elsewhere.

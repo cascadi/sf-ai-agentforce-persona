@@ -7,7 +7,7 @@ date: 2026-03-24
 
 How to encode a persona document into Agentforce. This guide covers the encoding architecture, field-by-field guidance for each agent authoring tool, and additional encoding options.
 
-**Prerequisite:** A completed persona document — identity traits, 12 attribute selections across 5 categories (Register, Voice, Tone, Delivery, Chatting Style), tone boundaries, tone flex rules, phrase book, never-say list, and optionally a lexicon. See the **Agent Persona Framework** (`resources/persona-framework.md`) for how to create one.
+**Prerequisite:** A completed persona document — identity traits, 12 dimension selections across 5 categories (Register, Voice, Tone, Delivery, Chatting Style), tone boundaries, tone flex rules, phrase book, never-say list, and optionally a lexicon. See the **Agent Persona Framework** (`resources/persona-framework.md`) for how to create one.
 
 ---
 
@@ -24,20 +24,20 @@ Global Instructions (who the agent is, baseline persona)
     │     ├── Phrase book entries
     │     ├── Humor guidance
     │     ├── Lexicon
-    │     └── Pointers (voice reminders)
+    │     └── Persona reminders
     │
     └── Static Messages (welcome, error, loading, deterministic)
 ```
 
 | Layer | What It Carries | Where It Lives |
 |---|---|---|
-| **Global instructions** | Baseline identity + all attributes + phrase book + never-say + tone boundaries | Agent Script: `system.instructions`. Builder: a dedicated global instructions topic. |
+| **Global instructions** | Baseline identity + all dimensions + phrase book + never-say + tone boundaries | Agent Script: `system.instructions`. Builder: a dedicated global instructions topic. |
 | **Topic calibration** | Per-topic overrides: brevity, tone flex, lexicon, phrase book entries, humor | Agent Script: `reasoning.instructions` per topic. Builder: per-topic instructions. |
 | **Static messages** | Welcome, error, loading text, deterministic responses | Tool-specific fields (see below). |
 
 ### Global Instructions
 
-Most persona content goes in global instructions. They carry the agent's baseline identity and attributes into every conversation.
+Most persona content goes in global instructions. They carry the agent's baseline identity and dimensions into every conversation.
 
 | Agent Authoring Tool | Where Global Instructions Go |
 |---|---|
@@ -135,7 +135,7 @@ here — label confirmed data vs. inferred data.
 
 **Topic lexicon** — domain vocabulary scoped to where it belongs. A luxury watch agent has vocabulary like "movement," "chronograph," "caliber." These belong in product topics, not shipping topics. Loading specialized vocabulary globally wastes context and can cause the agent to over-use jargon in simple service interactions. Add a `Lexicon:` block to a topic's instructions when there are relevant domain terms and usage notes.
 
-**Pointers** — for long sessions where context may drift, include short directives in topic instructions that reference back to the global persona. The pointer pattern is a practical workaround for context window behavior:
+**Persona reminders** — include short directives in topic instructions that reference back to the global persona. These reminders sharpen persona and mitigate drift in longer sessions:
 
 ```
 Voice Reminder: Stay in Drover's voice: laconic, direct, no-nonsense.
@@ -272,8 +272,8 @@ topic deal_analysis:
 
 ### Encoding Priority
 
-1. **`system.instructions`** — Full persona: Identity, attribute behavioral rules, phrase book, chatting style rules, tone boundaries, never-say list. This is the primary persona surface.
-2. **`reasoning.instructions` per topic** — Lighter calibration: brevity, lexicon, tone flex triggers, phrase book entries, humor guidance. Extends rather than replaces the global persona. Include **pointers** for long-running topics.
+1. **`system.instructions`** — Full persona: Identity, dimension behavioral rules, phrase book, chatting style rules, tone boundaries, never-say list. This is the primary persona surface.
+2. **`reasoning.instructions` per topic** — Lighter calibration: brevity, lexicon, tone flex triggers, phrase book entries, humor guidance. Extends rather than replaces the global persona. Include **persona reminders** for long-running topics.
 3. **Topic-level `system:`** — **Replaces** global `system.instructions` for that topic. Reserve for major persona shifts (e.g., escalation shifts Register from Peer to Advisor). Remember to duplicate *all* instructions when using this.
 4. **`progress_indicator_message`** — In-character loading text per action.
 5. **`system.messages.welcome`** — Static welcome reflecting Identity + Register + Voice + Brevity.
@@ -307,7 +307,7 @@ manage orders and returns.
 
 #### Company (255 chars) — brief business context
 
-What the company does, who it serves, what makes it different. This field shapes the agent's frame of reference. A support agent for a B2B SaaS company sounds different from one at a luxury retail brand, even with identical attribute selections.
+What the company does, who it serves, what makes it different. This field shapes the agent's frame of reference. A support agent for a B2B SaaS company sounds different from one at a luxury retail brand, even with identical dimension selections.
 
 #### Description (1,000 chars)
 
@@ -325,7 +325,7 @@ The Tone dropdown is a coarse tool setting. It maps roughly to Register + Formal
 | Neutral | Peer, Advisor, or Coach register, Professional formality |
 | Formal | Subordinate register, Formal formality |
 
-Set the dropdown to match the intended Register. A misaligned setting can cause drift toward model defaults, and Register is the first attribute to degrade. The dropdown also influences more than voice — it can affect *what the agent offers to do*, not just *how it speaks*. Test to ensure it works with rather than against your persona.
+Set the dropdown to match the intended Register. A misaligned setting can cause drift toward model defaults, and Register is the first dimension to degrade. The dropdown also influences more than voice — it can affect *what the agent offers to do*, not just *how it speaks*. Test to ensure it works with rather than against your persona.
 
 #### Conversation Recommendations
 
@@ -413,10 +413,10 @@ Temperature, frequency penalty, and presence penalty are configured in **Einstei
 
 **Precision:** LLM output generation is probabilistic, and the chain of custody between persona instructions and generated text is long. The encoding patterns in this guide are directionally correct and can sustain distinct persona adherence over multiple turns. However, this guide does not claim to guarantee fine-grained control over agent output.
 
-**Hosting and model:** Changing the hosting environment or model sometimes causes minor deviations in attributes such as Emotional Coloring.
+**Hosting and model:** Changing the hosting environment or model sometimes causes minor deviations in dimensions such as Emotional Coloring.
 
 **Language scope:** All testing referenced in this guide was conducted in English. Results from other languages may vary.
 
-**Constraints are recommendations:** Attribute constraint notes in the framework are recommendations, not hard locks. No attribute value is ever unavailable — any combination is valid. Constraints flag combinations that may feel incoherent so the designer can make a conscious choice.
+**Constraints are recommendations:** Dimension constraint notes in the framework are recommendations, not hard locks. No dimension value is ever unavailable — any combination is valid. Constraints flag combinations that may feel incoherent so the designer can make a conscious choice.
 
 

@@ -1,11 +1,11 @@
 ---
-version: "2.1.0"
-date: 2026-03-24
+version: "2.2.0"
+date: 2026-03-30
 ---
 
 # Agent Persona Design Skill
 
-Design AI agent personas for Salesforce Agentforce using the **Identity + 12 decomposed attributes** framework.
+Design AI agent personas for Salesforce Agentforce using the **Identity + 12 decomposed dimensions** framework.
 
 An agent persona is a designed personality that tells an AI agent who it is and how to express itself so it comes across naturally as a consistent character suited to its context and users.
 
@@ -18,19 +18,19 @@ Provide any starting input — a brand guide PDF, a URL, a prior persona documen
 **Two-phase workflow:**
 
 ```
-PHASE 1:  INPUT → CONTEXT → IDENTITY → ATTRIBUTES → SAMPLE DIALOG
+PHASE 1:  INPUT → CONTEXT → IDENTITY → DIMENSIONS → SAMPLE DIALOG
 PHASE 2:  HUB MENU → refine / phrase book / never-say / lexicon / score / encode
 ```
 
 **Phase 1 (Essentials)** gets to sample dialog as fast as possible:
 1. **Input** — Brand guide PDF, URL, prior persona.md, or text description
 2. **Minimal Context** — Company, audience, modality, use case (extracts from input or asks — all skippable)
-3. **Draft** — Auto-generates identity + attributes (silent)
+3. **Draft** — Auto-generates identity + dimensions (silent)
 4. **Name** — Suggests names distilled from identity
 5. **Sample Dialog** — Shows how the agent sounds in conversation
 
 **Phase 2 (Electives)** — user-driven hub menu:
-- Refine identity or attributes
+- Refine identity or dimensions
 - Add phrase book, never-say list, tone flex, lexicon
 - Score the persona (50-point rubric)
 - Download the persona document
@@ -49,7 +49,7 @@ Four Markdown files:
 | File | Purpose |
 |---|---|
 | `SKILL.md` | Skill definition — Design flow + Encode flow + scoring rubric |
-| `resources/persona-framework.md` | Identity + 5 categories, 12 attributes — the deep reference |
+| `resources/persona-framework.md` | Identity + 5 categories, 12 dimensions — the deep reference |
 | `resources/persona-encoding-guide.md` | How to encode persona into Agentforce (architecture-first) |
 | `resources/persona-encoding-guide-voice.md` | Voice encoding — voice selection, tuning, pronunciation, AI disclosure |
 | `templates/persona-template.md` | Persona document output template |
@@ -59,33 +59,33 @@ Four Markdown files:
 
 ## Framework Overview
 
-12 attributes across 5 categories, each independently selectable:
+12 dimensions across 5 categories, each independently selectable:
 
-- **Register** (1 attribute) — Subordinate / Peer / Advisor / Coach
-- **Voice** (3 attributes)
+- **Register** (1 dimension) — Subordinate / Peer / Advisor / Coach
+- **Voice** (3 dimensions)
   - **Formality** — Formal / Professional / Casual / Informal
   - **Warmth** — Cool / Neutral / Warm / Bright / Radiant
   - **Personality Intensity** — Reserved / Moderate / Distinctive / Bold
-- **Tone** (2 attributes)
+- **Tone** (2 dimensions)
   - **Emotional Coloring** — Blunt / Clinical / Neutral / Encouraging / Enthusiastic
-  - **Empathy Level** — Minimal / Understated / Moderate / High
+  - **Empathy Level** — Minimal / Understated / Moderate / Attuned
   - *+ Tone Boundaries, Tone Flex*
-- **Delivery** (2 attributes)
+- **Delivery** (2 dimensions)
   - **Brevity** — Terse / Concise / Moderate / Expansive
   - **Humor** — None / Dry / Warm / Playful
-- **Chatting Style** (4 attributes)
+- **Chatting Style** (4 dimensions)
   - **Emoji** — None / Functional / Expressive
   - **Formatting** — Plain / Selective / Heavy
   - **Punctuation** — Conservative / Standard / Expressive
   - **Capitalization** — Standard / Casual
 
-Attributes are ordered by dependency — upstream choices constrain downstream ones. Constraints are recommendations, not hard locks. The persona document also includes a **Phrase Book** (with affirmations), **Never-Say List**, **Tone Flex** rules, and optional **Lexicon** for per-topic vocabulary.
+Dimensions are ordered by dependency — upstream choices constrain downstream ones. Constraints are recommendations, not hard locks. The persona document also includes a **Phrase Book** (with affirmations), **Never-Say List**, **Tone Flex** rules, and optional **Lexicon** for per-topic vocabulary.
 
 ## Encoding Architecture
 
 Persona encoding follows a three-layer model on both Agent Script and Agentforce Builder:
 
-1. **Global instructions** — baseline identity + all attributes (Agent Script: `system.instructions`, Builder: dedicated global instructions topic)
+1. **Global instructions** — baseline identity + all dimensions (Agent Script: `system.instructions`, Builder: dedicated global instructions topic)
 2. **Topic calibration** — per-topic overrides for brevity, tone flex, lexicon, phrase book, humor
 3. **Static messages** — welcome, error, loading text, deterministic responses
 

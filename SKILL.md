@@ -1,6 +1,6 @@
 ---
 name: sf-ai-agentforce-persona
-description: Designs an AI agent persona — identity, voice, tone, and behavioral style — through a fast input-to-sample-dialog loop with brand input support, 12 decomposed attributes, and 50-point scoring
+description: Designs an AI agent persona — identity, voice, tone, and behavioral style — through a fast input-to-sample-dialog loop with brand input support, 12 decomposed dimensions, and 50-point scoring
 version: 2.3.0
 author: cascadi
 tags: [salesforce, agentforce, persona, identity, register, formality, warmth, personality, tone, brevity, humor, chatting-style, brand-input, sample-dialog]
@@ -42,9 +42,9 @@ This skill designs an AI agent persona through a fast input-to-sample-dialog loo
 Read `resources/persona-framework.md` for the full framework. It defines:
 
 - **Identity** — 3-5 personality adjectives that anchor every other decision
-- **12 attributes** across 5 categories:
+- **12 dimensions** across 5 categories:
   - **Register** — Subordinate / Peer / Advisor / Coach
-  - **Voice** — Formality, Warmth, Personality Intensity (3 independent attributes)
+  - **Voice** — Formality, Warmth, Personality Intensity (3 independent dimensions)
   - **Tone** — Emotional Coloring, Empathy Level (+ Tone Boundaries, Tone Flex)
   - **Delivery** — Brevity, Humor
   - **Chatting Style** — Emoji, Formatting, Punctuation, Capitalization
@@ -82,7 +82,7 @@ PHASE 2:                                      ┌─────┴────�
                                         │           │           │
                                    Refine      Explore      Export
                                  (identity,  (different   (download,
-                                  attributes, scenario)    score,
+                                  dimensions, scenario)    score,
                                   phrase book,              encode)
                                   never-say,
                                   tone flex,
@@ -130,8 +130,8 @@ Collect only what the input doesn't already answer. **Every question is skippabl
 
 After extracting context, assess the richness of the input:
 
-- **Rich input** (brand guide PDF, detailed description, prior persona, URL with strong brand copy): Offer the user a choice — "I have strong signals — I can draft the full persona now and show you how it sounds, or walk through each attribute category if you prefer." Default to **one-shot**: draft everything silently, present the persona, then show sample dialog.
-- **Minimal input** (brief description, just a company name): Default to **wizard**: ask context questions, walk through attributes by dependency tier.
+- **Rich input** (brand guide PDF, detailed description, prior persona, URL with strong brand copy): Offer the user a choice — "I have strong signals — I can draft the full persona now and show you how it sounds, or walk through each dimension category if you prefer." Default to **one-shot**: draft everything silently, present the persona, then show sample dialog.
+- **Minimal input** (brief description, just a company name): Default to **wizard**: ask context questions, walk through dimensions by dependency tier.
 - **Blank slate** (no input at all): Prompt for input first, then wizard path.
 
 Either path leads to the same output. The user can always override — a one-shot user can refine afterward, and a wizard user can skip ahead.
@@ -142,31 +142,31 @@ This step is the skill's intelligence — it must execute explicitly as specifie
 
 ##### 3A: Input Parsing
 
-Extract persona signals from the user's input. Brand guides are often much richer than they appear — mine them thoroughly. A good brand guide can populate identity, attributes, phrase book, never-say list, AND lexicon in a single pass. Aim to use **80%+ of actionable content.**
+Extract persona signals from the user's input. Brand guides are often much richer than they appear — mine them thoroughly. A good brand guide can populate identity, dimensions, phrase book, never-say list, AND lexicon in a single pass. Aim to use **80%+ of actionable content.**
 
 | Signal Type | What to Look For | Maps To |
 |---|---|---|
-| **Voice/tone** | Adjectives, "we are..." statements, voice pillars ("clear, concise, authoritative") | Identity traits, attributes |
+| **Voice/tone** | Adjectives, "we are..." statements, voice pillars ("clear, concise, authoritative") | Identity traits, dimensions |
 | **Negative** | "Never," "don't," prohibited words/phrasings ("say 'complimentary' not 'free'"), prohibited greetings | Never-Say List, Phrase Book |
 | **Vocabulary** | Brand name, product lines → global. Brand "isms," preferred terms → global or per-topic. Domain jargon → per-topic. Preferred vs. prohibited word pairs | Global Lexicon, per-topic Lexicon, Never-Say + Phrase Book pairs |
-| **Formatting** | Capitalization rules, punctuation opinions (Oxford comma, em dashes), number/date/price formatting, foreign word formatting | Chatting Style attributes + custom section |
+| **Formatting** | Capitalization rules, punctuation opinions (Oxford comma, em dashes), number/date/price formatting, foreign word formatting | Chatting Style dimensions + custom section |
 | **CTAs/interaction** | CTA patterns ("SHOP NOW"), promotional language rules | Phrase Book + Never-Say |
 | **Usage rules** | Preposition preferences ("at [brand]" not "from [brand]"), standards that would sound wrong if violated | Never-Say + Phrase Book |
 | **Audience** | Who the brand talks to, formal vs. informal examples, relationship language | Design Inputs, Register, Formality |
 
-**If input is a prior persona.md:** Extract attributes directly.
+**If input is a prior persona.md:** Extract dimensions directly.
 
 ##### 3B: Attribute Selection
 
-Map extracted signals to the 12 framework attributes:
+Map extracted signals to the 12 framework dimensions:
 
-1. Pre-populate all 12 attributes from the input signals
-2. Override attributes where the input provides clear signals (e.g., brand guide says "never use slang" → Formality: Formal)
-3. For each attribute, show the full spectrum and indicate which value is recommended and why when there's a strong signal
+1. Pre-populate all 12 dimensions from the input signals
+2. Override dimensions where the input provides clear signals (e.g., brand guide says "never use slang" → Formality: Formal)
+3. For each dimension, show the full spectrum and indicate which value is recommended and why when there's a strong signal
 
 ##### 3C: Confidence Annotations
 
-Mark each attribute as:
+Mark each dimension as:
 - **Strong signal** — clear evidence in input (quote or cite the source)
 - **Default** — inferred from context, no direct evidence in input
 
@@ -174,9 +174,9 @@ These annotations are shown during refinement so the designer knows where to foc
 
 ##### 3D: Generation
 
-From the attribute map, generate:
+From the dimension map, generate:
 - **Identity traits** — 3-5 adjectives with behavioral definitions
-- **Phrase Book** — example phrases tuned to all selected attributes. Generate **2-4 phrases per category** — one example is not enough to establish a pattern. Categories include:
+- **Phrase Book** — example phrases tuned to all selected dimensions. Generate **2-4 phrases per category** — one example is not enough to establish a pattern. Categories include:
   - **All agents:** Acknowledgement, Affirmation, Apologies (for agent mistakes only — not system errors), Off-Topic Redirect (steering back from out-of-scope requests), Welcome/Greeting
   - **External-facing agents (customer, vendor, investor):** Escalation/Handoff (passing to a human)
   - **Encouraging/Enthusiastic coloring:** Celebrating Progress
@@ -202,9 +202,9 @@ If a name was provided in input, use it and skip this sub-step.
 
 ##### 3F: State Object
 
-Maintain the full attribute map as an explicit **state object** across the conversation. Every regeneration works from this state, not from conversation history. The state object contains:
-- All 12 attribute values
-- Confidence annotation per attribute (strong signal / default)
+Maintain the full dimension map as an explicit **state object** across the conversation. Every regeneration works from this state, not from conversation history. The state object contains:
+- All 12 dimension values
+- Confidence annotation per dimension (strong signal / default)
 - Identity traits
 - Negative Identity statements
 - Values (if provided by user — never inferred)
@@ -219,12 +219,12 @@ Update the state object on every change. When regenerating sample dialog, read f
 
 These guidelines apply across all surfaces — CLI, TUI, web, IDE. Each environment adapts the patterns to its own idiom.
 
-**Output before questions.** Show generated content (attributes, phrase book, tone flex) as regular output first. Then ask a concise question with short options. Never embed long content inside question labels or option descriptions — it will be truncated in constrained environments and is harder to read everywhere.
+**Output before questions.** Show generated content (dimensions, phrase book, tone flex) as regular output first. Then ask a concise question with short options. Never embed long content inside question labels or option descriptions — it will be truncated in constrained environments and is harder to read everywhere.
 
 **Batch independent questions.** When multiple questions have no dependency relationship — meaning neither answer constrains the other — present them together rather than one at a time. This reduces round-trips and keeps the flow moving. Examples:
 - Context signals (modality + use case) are independent — ask together
-- Voice attributes (Formality, Warmth, Personality Intensity) are independent — ask together
-- Chatting Style attributes (Emoji, Formatting, Punctuation, Capitalization) are independent — ask together
+- Voice dimensions (Formality, Warmth, Personality Intensity) are independent — ask together
+- Chatting Style dimensions (Emoji, Formatting, Punctuation, Capitalization) are independent — ask together
 - Encoding context (tool + topics + actions) are independent — ask together
 
 Do **not** batch across dependency boundaries. Register must be answered before Voice. Voice before Tone. Tone before Delivery. Follow the framework's dependency order for sequential questions.
@@ -233,7 +233,7 @@ Do **not** batch across dependency boundaries. Register must be answered before 
 
 **Multi-select when appropriate.** When the user should be able to pick more than one option — phrase book entries to keep, topics to encode, surfaces to target — allow multiple selections rather than asking the same question repeatedly. If the environment supports multi-select natively, use it. If not, present options as a numbered list in output text and ask the user to type their selections (e.g., "Which ones? Type the numbers: 1, 3, 5"). Either way, the user selects multiple and confirms once.
 
-**Compact output formats.** Use tables and structured lists for attributes, not prose paragraphs. One line per attribute with value and signal annotation. Phrase book entries grouped by category. Never-say entries as a compact list. Dense, scannable output respects the user's time.
+**Compact output formats.** Use tables and structured lists for dimensions, not prose paragraphs. One line per dimension with value and signal annotation. Phrase book entries grouped by category. Never-say entries as a compact list. Dense, scannable output respects the user's time.
 
 **Progress awareness.** Before presenting the hub menu after an elective, show a one-line status summary of what's been completed and what remains:
 > "Clover: ✓ Identity · ✓ Attributes · ✓ Phrase book (18) · ✓ Never-say (8) · Remaining: tone flex, lexicon, score, encode"
@@ -242,7 +242,7 @@ Do **not** batch across dependency boundaries. Register must be answered before 
 > "Scoring Clover — Peer register, Professional, Warm, Encouraging, Concise."
 > "Encoding Clover for Agentforce Builder — external customer, chat."
 
-**Confidence callouts.** After presenting a drafted persona, highlight the 1-2 lowest-confidence attributes so the user knows where to focus refinement:
+**Confidence callouts.** After presenting a drafted persona, highlight the 1-2 lowest-confidence dimensions so the user knows where to focus refinement:
 > "Least certain: Humor (defaulted to Warm — no signal in input) and Emoji (defaulted to Functional). Adjust these first if they matter."
 
 #### Step 4: Present the Persona
@@ -251,7 +251,7 @@ Before showing sample dialog, present the drafted persona in a compact, scannabl
 
 **Format:**
 - **Identity** — traits on one line, dot-separated
-- **Attributes** — compact table: one row per attribute with value and signal marker (★ = strong signal from input, no marker = default/inferred)
+- **Dimensions** — compact table: one row per dimension with value and signal marker (★ = strong signal from input, no marker = default/inferred)
 - **Phrase Book** — entries grouped by category, showing actual phrases
 - **Never-Say** — compact list
 - **Tone Boundaries** — compact list
@@ -261,7 +261,7 @@ Before showing sample dialog, present the drafted persona in a compact, scannabl
 
 > Example: "I went with Gracious and Composed because luxury hospitality needs poise under pressure. Peer register rather than Subordinate — Coral Cloud's brand is warm and personal, not deferential. Encouraging coloring felt right for a resort that wants guests to feel excited, not just served."
 
-After the persona summary, note the lowest-confidence attributes (see Confidence callouts in Interaction Design) so the user knows where to focus if they want to refine.
+After the persona summary, note the lowest-confidence dimensions (see Confidence callouts in Interaction Design) so the user knows where to focus if they want to refine.
 
 Then proceed directly to sample dialog — no confirmation question needed between persona presentation and sample dialog. The persona provides context for understanding the sample.
 
@@ -290,7 +290,7 @@ After the sample dialog, show a progress line (see Interaction Design) and offer
 
 **Hub menu options** (grouped for scannability):
 
-- "Refine the persona" — opens a sub-menu: identity, attributes, phrase book, never-say, tone flex, lexicon, or free-text addition
+- "Refine the persona" — opens a sub-menu: identity, dimensions, phrase book, never-say, tone flex, lexicon, or free-text addition
 - "Try a different sample dialog scenario"
 - "Score the persona"
 - "Download the persona document"
@@ -310,7 +310,7 @@ When the user selects "Refine the persona," offer a sub-menu:
 
 Two editing modes, both available at any time. The user can mix them freely.
 
-**Conversational Editing** — The user describes changes in natural language. Map common requests to specific attribute changes:
+**Conversational Editing** — The user describes changes in natural language. Map common requests to specific dimension changes:
 
 | User says | Attribute change | Also consider |
 |---|---|---|
@@ -326,7 +326,7 @@ Two editing modes, both available at any time. The user can mix them freely.
 | "more professional" | Formality: Professional, Humor: None or Dry | Personality Intensity: Moderate |
 | "friendlier" | Warmth: increase + Emotional Coloring: Encouraging | Empathy Level: increase |
 | "more direct" / "blunter" | Emotional Coloring: toward Blunt, Brevity: toward Terse | Empathy Level: toward Minimal |
-| "more encouraging" | Emotional Coloring: Encouraging | Empathy Level: Moderate or High |
+| "more encouraging" | Emotional Coloring: Encouraging | Empathy Level: Moderate or Attuned |
 | "funnier" | Humor: increase one position | Personality Intensity: increase if Reserved |
 | "no humor" | Humor: None | |
 | "more emoji" | Emoji: increase one position | |
@@ -334,13 +334,13 @@ Two editing modes, both available at any time. The user can mix them freely.
 
 When a request is ambiguous, apply the primary mapping and narrate the change so the user can correct.
 
-**Deterministic Editing** — Invoked by asking to "show all settings," "show the attribute table," or "let me see the details." Display all attributes with confidence annotations. The user selects specific attributes to adjust. Present the full spectrum with the current value highlighted. After adjustment, regenerate sample dialog.
+**Deterministic Editing** — Invoked by asking to "show all settings," "show the dimension table," or "let me see the details." Display all dimensions with confidence annotations. The user selects specific dimensions to adjust. Present the full spectrum with the current value highlighted. After adjustment, regenerate sample dialog.
 
-**Diff-Based Regeneration** — After a single-attribute change:
+**Diff-Based Regeneration** — After a single-dimension change:
 1. Show the change explicitly: "Warmth: Warm → Cool"
-2. Hold ALL unchanged attributes constant
-3. Regenerate sample dialog varying only the changed attribute
-4. Narrate what shifted in the output so the user connects the attribute change to the behavioral difference
+2. Hold ALL unchanged dimensions constant
+3. Regenerate sample dialog varying only the changed dimension
+4. Narrate what shifted in the output so the user connects the dimension change to the behavioral difference
 
 #### Other (free-text additions)
 
@@ -371,14 +371,14 @@ Score the persona document against a 50-point rubric. Scoring is **on-demand** �
 | Category | /10 | Criteria |
 |---|---|---|
 | **Identity Coherence** | /10 | • Traits distinct, non-contradictory, behaviorally defined — observable behaviors, not aspirations • Design Inputs present and coherent: audience → register, modality → chatting style, company → frame of reference |
-| **Attribute Consistency** | /10 | • Each attribute coherent with Identity, constraints respected • Tone Boundaries consistent with Emotional Coloring/Empathy; Tone Flex within range • Chatting Style adapted for modality (suppressed for voice) • Voice encoding: Stability ↔ Coloring + Personality, Speed ↔ Brevity |
+| **Dimension Consistency** | /10 | • Each dimension coherent with Identity, constraints respected • Tone Boundaries consistent with Emotional Coloring/Empathy; Tone Flex within range • Chatting Style adapted for modality (suppressed for voice) • Voice encoding: Stability ↔ Coloring + Personality, Speed ↔ Brevity |
 | **Behavioral Specificity** | /10 | • Concrete behavioral examples, testable rules • Never-Say ≥5 (chatbot filler + register violations + persona-specific) • Global Lexicon populated • Voice: key-term prompting from lexicon • Brand guide: extraction depth — vocabulary, formatting, usage, CTAs captured? |
-| **Phrase Book Quality** | /10 | • 2-4 phrases per applicable category • All-agent: Acknowledgement, Affirmation, Apologies (mistakes only), Off-Topic Redirect, Welcome • Conditional: Escalation/Handoff (external), Celebrating Progress (Encouraging), Teaching Moments (Coach), Humor Examples (Humor ≠ None) • Phrases match register and attributes • Brand guide content captured |
-| **Sample Quality** | /10 | • Persona recognizable without seeing attribute table • Happy path + uncertainty + boundary scenarios • Modality-appropriate (voice: no formatting, starts with AI disclosure) • Brand vocabulary appears naturally |
+| **Phrase Book Quality** | /10 | • 2-4 phrases per applicable category • All-agent: Acknowledgement, Affirmation, Apologies (mistakes only), Off-Topic Redirect, Welcome • Conditional: Escalation/Handoff (external), Celebrating Progress (Encouraging), Teaching Moments (Coach), Humor Examples (Humor ≠ None) • Phrases match register and dimensions • Brand guide content captured |
+| **Sample Quality** | /10 | • Persona recognizable without seeing dimension table • Happy path + uncertainty + boundary scenarios • Modality-appropriate (voice: no formatting, starts with AI disclosure) • Brand vocabulary appears naturally |
 
 **Scoring rules:**
 - Score each category independently. Provide a number and 1-2 sentences of justification.
-- Flag inconsistencies between attributes. Note productive tensions vs. contradictions.
+- Flag inconsistencies between dimensions. Note productive tensions vs. contradictions.
 - If any category scores below 7, provide a specific suggestion for improvement.
 - Total: 45-50 production-ready, 35-44 strong foundation, 25-34 needs revision, below 25 restart.
 
@@ -410,12 +410,12 @@ Output ready-to-paste YAML blocks:
 
 **System block:**
 1. **`config.agent_name`** — The persona name.
-2. **`system.instructions`** — Full persona content as a YAML literal block scalar (`|`): Identity, attribute behavioral rules, phrase book, chatting style rules, tone rules, tone boundaries, never-say list. No character limits.
+2. **`system.instructions`** — Full persona content as a YAML literal block scalar (`|`): Identity, dimension behavioral rules, phrase book, chatting style rules, tone rules, tone boundaries, never-say list. No character limits.
 3. **`system.messages.welcome`** — Generate a static in-persona welcome message. For multimodal agents (chat + telephony), generate two: a text welcome and a shorter voice welcome with AI disclosure. Default to static; note the option for dynamic as supplemental.
 4. **`system.messages.error`** — Generate one (1) static in-persona system error message. No dynamic option available for this field.
 
 **Per-topic overrides** (if topics provided):
-5. **`reasoning.instructions` per topic** — Persona calibration: brevity, lexicon, tone flex, phrase book entries, humor guidance, voice pointer.
+5. **`reasoning.instructions` per topic** — Persona calibration: brevity, lexicon, tone flex, phrase book entries, humor guidance, persona reminder.
 6. **Topic-level `system:` override** — Only when a topic's tone flex warrants a full system-level override. Rare.
 
 **Per-action loading text** (if actions provided):

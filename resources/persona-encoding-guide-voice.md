@@ -39,7 +39,7 @@ These properties are read-only — they describe the selected voice but are not 
 
 ### Matching persona to voice
 
-Select voices by matching persona attributes to voice properties:
+Select voices by matching persona dimensions to voice properties:
 
 | Persona Signal | Voice Property | Match Logic |
 |---|---|---|
@@ -134,7 +134,7 @@ When encoding persona instructions for a voice agent, adjust from the text defau
 
 **Brevity recalibration.** Voice benefits from shorter responses — there's no scrollback, no re-reading. Shift Brevity one position shorter than the text default. A Moderate text persona becomes Concise for voice.
 
-**Formatting suppression.** Chatting Style attributes that control visual presentation don't apply to voice:
+**Formatting suppression.** Chatting Style dimensions that control visual presentation don't apply to voice:
 - Emoji → suppress entirely
 - Formatting (bullets, bold, headers) → convert to natural speech patterns. Bullets become ordinals ("First... Second... Third..."). Bold becomes vocal emphasis (handled by the TTS engine).
 - Links → "I'll send you a link" or "You can find that at..."

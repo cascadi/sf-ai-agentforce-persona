@@ -1,11 +1,29 @@
 ---
-version: "1.6.0"
-date: 2025-03-23
+version: "1.7.0"
+date: 2026-03-30
 ---
 
 # Agent Persona Framework — Change History
 
 Change history for the [Agent Persona Framework](resources/persona-framework.md).
+
+---
+
+### 2026-03-30 — Terminology: Attributes → Dimensions, Empathy: High → Attuned
+
+**Terminology overhaul across all files:**
+- "Attributes" → "Dimensions" throughout framework, encoding guide, skill, templates, README, and AGENTS. The 12 persona axes are now called "dimensions" — better fit for independently tunable spectrums, avoids CPQ/CS connotation in the Salesforce audience, and aligns with NN/g source vocabulary.
+- "Attribute Model" → "Dimension Model", "Attribute Boundaries" → "Dimension Boundaries", "Attribute Consistency" → "Dimension Consistency" (scoring rubric).
+- Categories (Register, Voice, Tone, Delivery, Chatting Style) retained as grouping layer within Dimensions.
+
+**Taxonomy update (framework):**
+- Established Identity and Dimensions as the two top-level categories of persona. Identity contains Character Traits, Name, and optional elements (Values, Negative Identity). Dimensions contains the 12 individual axes, grouped by category.
+
+**Empathy Level spectrum:**
+- "High" → "Attuned" — captures the defining behavior (reads the user's emotional state and responds to it before problem-solving). Updated position description, constraint notes, and all references.
+
+**Pointers → Persona reminders:**
+- "Pointers" / "voice pointer" renamed to "persona reminders" in encoding guide, skill, and templates.
 
 ---
 

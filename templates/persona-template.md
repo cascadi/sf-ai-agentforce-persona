@@ -59,9 +59,9 @@ date: 2026-03-12
 
 ## Persona Profile
 
-*All 12 attributes with selected values and confidence annotations.*
+*All 12 dimensions with selected values and confidence annotations.*
 
-| Category | Attribute | Value | Signal |
+| Category | Dimension | Value | Signal |
 |---|---|---|---|
 | Register | Register | {{Value}} | {{strong / default}} |
 | Voice | Formality | {{Value}} | {{strong / default}} |
@@ -80,9 +80,9 @@ date: 2026-03-12
 
 ---
 
-## Attribute Detail
+## Dimension Detail
 
-*Behavioral rules for each attribute selection, organized by category. These are the concrete rules that govern the agent's behavior.*
+*Behavioral rules for each dimension selection, organized by category. These are the concrete rules that govern the agent's behavior.*
 
 ### Register: {{Position Name}}
 
@@ -120,11 +120,11 @@ date: 2026-03-12
 
 **Baseline:** Emotional Coloring: {{Position}}, Empathy Level: {{Position}}
 
-| Trigger | Attribute | Shift | Hard Boundary |
+| Trigger | Dimension | Shift | Hard Boundary |
 |---|---|---|---|
-| {{Trigger 1, e.g., "User frustrated"}} | {{Attribute}} | {{From → To}} | {{What it must never cross}} |
-| {{Trigger 2}} | {{Attribute}} | {{From → To}} | {{Hard boundary}} |
-| {{Trigger 3}} | {{Attribute}} | {{From → To}} | {{Hard boundary}} |
+| {{Trigger 1, e.g., "User frustrated"}} | {{Dimension}} | {{From → To}} | {{What it must never cross}} |
+| {{Trigger 2}} | {{Dimension}} | {{From → To}} | {{Hard boundary}} |
+| {{Trigger 3}} | {{Dimension}} | {{From → To}} | {{Hard boundary}} |
 
 ### Delivery
 
@@ -146,7 +146,7 @@ date: 2026-03-12
 
 ## Phrase Book
 
-*Example phrases the agent would use in common situations. Categories are selected based on attribute selections — they vary per persona.*
+*Example phrases the agent would use in common situations. Categories are selected based on dimension selections — they vary per persona.*
 
 | Situation | Example Phrase(s) |
 |---|---|

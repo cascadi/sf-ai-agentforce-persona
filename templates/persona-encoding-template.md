@@ -23,7 +23,7 @@ config:
 
 system:
   instructions: |
-    [Full persona content: identity, attribute behavioral rules,
+    [Full persona content: identity, dimension behavioral rules,
     phrase book, chatting style, tone boundaries, never-say list.
     Use literal block scalar (|) — no character limits apply.]
 
@@ -46,7 +46,7 @@ topic [topic_name]:
       Lexicon: [domain terms for this topic]
       Phrase book: [situational phrases for this topic]
       Humor: [guidance for this topic]
-      Voice Reminder: [pointer back to global persona]
+      Voice Reminder: [persona reminder — reference global instructions]
 ```
 
 *Repeat for each topic.*
@@ -103,7 +103,7 @@ topic [topic_name]:
 *For a dedicated global instructions topic.*
 
 ```
-[Full persona content: identity, attributes, phrase book, tone
+[Full persona content: identity, dimensions, phrase book, tone
 boundaries, never-say list, chatting style rules. This is the
 primary encoding surface in Builder.]
 ```
@@ -119,7 +119,7 @@ Tone: [tone flex encoding]
 Lexicon: [domain terms and usage notes]
 Phrase book: [situational phrases]
 Humor: [guidance]
-Voice Reminder: [pointer back to global persona]
+Voice Reminder: [persona reminder — reference global instructions]
 ```
 
 *Repeat for each topic.*
@@ -146,7 +146,7 @@ Voice Reminder: [pointer back to global persona]
 |---|---|---|
 | **Language** | [primary language] | [why] |
 | **Gender** | [inferred or specified] | [source — name, pronouns, or user input] |
-| **Voice Qualities** | [what to look for — e.g., warm, professional, measured pace] | [which persona attributes drive this] |
+| **Voice Qualities** | [what to look for — e.g., warm, professional, measured pace] | [which persona dimensions drive this] |
 
 **Recommended voices** (from default library — verify in your org, listen to previews):
 
