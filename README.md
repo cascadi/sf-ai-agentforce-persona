@@ -1,5 +1,5 @@
 ---
-version: "2.2.0"
+version: "2.3.0"
 date: 2026-03-30
 ---
 
@@ -42,7 +42,7 @@ Four Markdown files:
 - **Persona document** (`_local/generated/[agent-name]-persona.md`) — design artifact defining who the agent is, how it sounds, what it never does
 - **Sample dialog** (`_local/generated/[agent-name]-sample-dialog.md`) — validation artifact demonstrating the persona in conversation
 - **Scorecard** (`_local/generated/[agent-name]-persona-scorecard.md`) — 50-point rubric evaluation (on request)
-- **Encoding output** (`_local/generated/[agent-name]-persona-encoding.md`) — Agentforce Builder field values or Agent Script YAML blocks, plus voice configuration (voice selection, tuning, key-term prompting) when modality includes telephony (via Encode flow)
+- **Encoding output** (`_local/generated/[agent-name]-persona-encoding.md`) — Agentforce Builder field values or Agent Script YAML blocks, with telephony adjustments when modality includes telephony (via Encode flow)
 
 ## Files
 
@@ -51,7 +51,7 @@ Four Markdown files:
 | `SKILL.md` | Skill definition — Design flow + Encode flow + scoring rubric |
 | `resources/persona-framework.md` | Identity + 5 categories, 12 dimensions — the deep reference |
 | `resources/persona-encoding-guide.md` | How to encode persona into Agentforce (architecture-first) |
-| `resources/persona-encoding-guide-voice.md` | Voice encoding — voice selection, tuning, pronunciation, AI disclosure |
+| `resources/persona-encoding-guide-voice.md` | Voice encoding reference — voice selection, tuning, pronunciation (not used in design or encoding flows yet) |
 | `templates/persona-template.md` | Persona document output template |
 | `templates/sample-dialog-template.md` | Sample dialog output template |
 | `templates/persona-encoding-template.md` | Encoding output template (Agentforce Builder + Agent Script) |

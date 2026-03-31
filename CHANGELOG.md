@@ -1,11 +1,27 @@
 ---
-version: "1.7.0"
-date: 2026-03-30
+version: "1.8.0"
+date: 2026-03-31
 ---
 
 # Agent Persona Framework — Change History
 
 Change history for the [Agent Persona Framework](resources/persona-framework.md).
+
+---
+
+### 2026-03-31 — Voice encoding → backlog, telephony adjustments
+
+**Voice encoding deferred:**
+- Removed voice selection, key-term prompting, pronunciation dictionary, and voice fine-tuning from SKILL.md encode flow. The skill has no voice catalog to select from yet — this is future work.
+- Removed voice encoding criteria from scoring rubric (Dimension Consistency, Behavioral Specificity).
+- Voice encoding guide (`resources/persona-encoding-guide-voice.md`) retained as reference but not used in design or encoding flows.
+
+**Telephony adjustments (framework + skill):**
+- Replaced "Voice Channel Parameters" section in framework with "Telephony Adjustments" — brevity recalibration (one position shorter), formatting suppression (emoji suppressed, bullets → ordinals), welcome message (shorter, ear-optimized, AI disclosure), pausing guidance.
+- These are design-time adjustments triggered by telephony modality, not voice encoding settings.
+- Updated SKILL.md encode flow: telephony modality generates instruction adjustments and a telephony welcome message, not voice selection or tuning.
+
+**Files changed:** SKILL.md (v2.4.0), persona-framework.md (v2.4.0), README.md (v2.3.0), CHANGELOG.md
 
 ---
 

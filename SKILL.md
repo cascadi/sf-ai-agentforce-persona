@@ -1,7 +1,7 @@
 ---
 name: sf-ai-agentforce-persona
 description: Designs an AI agent persona — identity, voice, tone, and behavioral style — through a fast input-to-sample-dialog loop with brand input support, 12 decomposed dimensions, and 50-point scoring
-version: 2.3.0
+version: 2.4.0
 author: cascadi
 tags: [salesforce, agentforce, persona, identity, register, formality, warmth, personality, tone, brevity, humor, chatting-style, brand-input, sample-dialog]
 allowed-tools:
@@ -117,7 +117,7 @@ Collect only what the input doesn't already answer. **Every question is skippabl
 1. **Company** — who they are, what they do, who they serve. If the user provided a brand guide or URL, extract this — don't re-ask.
 2. **Audience** — who the agent serves: internal employee, external customer, partner, vendor, investor, or other. Affects register, formality, warmth. If the user says "internal sales coach," audience is already answered.
 3. **Modality** — how the agent communicates: chat, email, telephony, multimodal, or other. Affects Chatting Style, Brevity, and whether emoji makes sense. Multiple modalities are valid.
-4. **Primary language** — especially important when modality includes voice/telephony, as it constrains voice selection. Also affects formality norms and cultural adaptation.
+4. **Primary language** — affects formality norms and cultural adaptation.
 5. **At least 1 use case or JTBD** — needed to generate meaningful sample dialog.
 
 **Do NOT collect:** interaction model (agent design, not persona), agent type (agent design, not persona), topic list, agent name (comes after identity).
@@ -188,7 +188,7 @@ From the dimension map, generate:
 - **Tone Boundaries** — what the agent must never sound like
 - **Tone Flex** — baseline + triggers + shift rules
 - **Negative Identity** — 2-4 character-level anti-patterns. Generate from negative signals in the input and from Identity traits.
-- **Global Lexicon** — brand name, company name, product line names, industry terms used across all topics. These feed Pronunciation Dictionary and Key-Term Prompting when encoding for voice.
+- **Global Lexicon** — brand name, company name, product line names, industry terms used across all topics.
 - **Values** *(optional)* — Only if the user explicitly stated beliefs, values, or worldview. Never infer values.
 
 ##### 3E: Name
@@ -371,10 +371,10 @@ Score the persona document against a 50-point rubric. Scoring is **on-demand** �
 | Category | /10 | Criteria |
 |---|---|---|
 | **Identity Coherence** | /10 | • Traits distinct, non-contradictory, behaviorally defined — observable behaviors, not aspirations • Design Inputs present and coherent: audience → register, modality → chatting style, company → frame of reference |
-| **Dimension Consistency** | /10 | • Each dimension coherent with Identity, constraints respected • Tone Boundaries consistent with Emotional Coloring/Empathy; Tone Flex within range • Chatting Style adapted for modality (suppressed for voice) • Voice encoding: Stability ↔ Coloring + Personality, Speed ↔ Brevity |
-| **Behavioral Specificity** | /10 | • Concrete behavioral examples, testable rules • Never-Say ≥5 (chatbot filler + register violations + persona-specific) • Global Lexicon populated • Voice: key-term prompting from lexicon • Brand guide: extraction depth — vocabulary, formatting, usage, CTAs captured? |
+| **Dimension Consistency** | /10 | • Each dimension coherent with Identity, constraints respected • Tone Boundaries consistent with Emotional Coloring/Empathy; Tone Flex within range • Chatting Style adapted for modality (suppressed for telephony) |
+| **Behavioral Specificity** | /10 | • Concrete behavioral examples, testable rules • Never-Say ≥5 (chatbot filler + register violations + persona-specific) • Global Lexicon populated • Brand guide: extraction depth — vocabulary, formatting, usage, CTAs captured? |
 | **Phrase Book Quality** | /10 | • 2-4 phrases per applicable category • All-agent: Acknowledgement, Affirmation, Apologies (mistakes only), Off-Topic Redirect, Welcome • Conditional: Escalation/Handoff (external), Celebrating Progress (Encouraging), Teaching Moments (Coach), Humor Examples (Humor ≠ None) • Phrases match register and dimensions • Brand guide content captured |
-| **Sample Quality** | /10 | • Persona recognizable without seeing dimension table • Happy path + uncertainty + boundary scenarios • Modality-appropriate (voice: no formatting, starts with AI disclosure) • Brand vocabulary appears naturally |
+| **Sample Quality** | /10 | • Persona recognizable without seeing dimension table • Happy path + uncertainty + boundary scenarios • Modality-appropriate (telephony: brevity recalibrated, formatting suppressed) • Brand vocabulary appears naturally |
 
 **Scoring rules:**
 - Score each category independently. Provide a number and 1-2 sentences of justification.
@@ -411,7 +411,7 @@ Output ready-to-paste YAML blocks:
 **System block:**
 1. **`config.agent_name`** — The persona name.
 2. **`system.instructions`** — Full persona content as a YAML literal block scalar (`|`): Identity, dimension behavioral rules, phrase book, chatting style rules, tone rules, tone boundaries, never-say list. No character limits.
-3. **`system.messages.welcome`** — Generate a static in-persona welcome message. For multimodal agents (chat + telephony), generate two: a text welcome and a shorter voice welcome with AI disclosure. Default to static; note the option for dynamic as supplemental.
+3. **`system.messages.welcome`** — Generate a static in-persona welcome message. For multimodal agents with a telephony channel, generate two: a text welcome and a shorter telephony welcome (ear-optimized, includes AI disclosure). Default to static; note the option for dynamic as supplemental.
 4. **`system.messages.error`** — Generate one (1) static in-persona system error message. No dynamic option available for this field.
 
 **Per-topic overrides** (if topics provided):
@@ -424,12 +424,8 @@ Output ready-to-paste YAML blocks:
 **Deterministic response examples:**
 8. Example `| text` pipes for common if/else branches written in the persona's voice.
 
-**Voice encoding** (if modality includes telephony/voice — see `resources/persona-encoding-guide-voice.md`):
-9. **Voice selection** — recommend at least 3 voices by name from the default voice library, with reasoning for each. Include per-voice starting points for Speed, Stability, and Similarity. Also share voice selection criteria (target language, gender, voice qualities) so the designer can evaluate other voices available in their org. Gender is inferred from persona context — only ask if ambiguous.
-10. **Key-term prompting** — populate from Global Lexicon (brand name, product names, domain terms). Plain text, no phonetics.
-11. **Pronunciation dictionary** *(optional — only if requested)* — generate entries for Global Lexicon terms with approximate IPA. Label as approximate and flag terms that need verification in voice preview.
-12. **Voice welcome message** — shorter than text welcome, ear-optimized, must include AI disclosure ("I'm an AI assistant" or equivalent in the persona's voice).
-13. **Instruction adjustments** — note brevity recalibration (one position shorter for voice), formatting suppression (no emoji, bullets → ordinals), and any pausing guidance for structured data.
+**Telephony adjustments** (if modality includes telephony):
+9. **Instruction adjustments** — note brevity recalibration (one position shorter for telephony), formatting suppression (no emoji, bullets → ordinals), and any pausing guidance for structured data.
 
 #### If Agentforce Builder
 
@@ -437,7 +433,7 @@ Output ready-to-paste YAML blocks:
 1. **Name** (80 chars) — Show character count.
 2. **Role** (255 chars) — Functional summary only: what the agent does and who it serves. "You are..." Do **not** encode persona style here. Show character count.
 3. **Company** (255 chars) — Populate from company context collected in Step 2. Show character count.
-4. **Welcome Message** (800 chars, aim for ≤ 255) — Generate a static in-persona welcome message reflecting Identity + Register + Voice + Tone + Brevity. For multimodal agents, generate two: a text welcome and a shorter voice welcome with AI disclosure. Show character count.
+4. **Welcome Message** (800 chars, aim for ≤ 255) — Generate a static in-persona welcome message reflecting Identity + Register + Voice + Tone + Brevity. For multimodal agents with a telephony channel, generate two: a text welcome and a shorter telephony welcome (ear-optimized, includes AI disclosure). Show character count.
 5. **Error Message** — Generate one (1) static in-persona system error message reflecting Formality + Warmth + Emotional Coloring + Brevity.
 
 **Agentforce Builder Settings:**
@@ -454,7 +450,7 @@ Output ready-to-paste YAML blocks:
 **Loading Text:**
 11. **Per-action loading text** — If specific actions were provided, generate persona-consistent loading text for each. If the user chose "generate a few examples," infer 2-3 plausible actions and generate in-voice loading text for each, clearly labeled as examples.
 
-**Voice encoding** (if modality includes telephony/voice): Same items as Agent Script voice encoding above. See `resources/persona-encoding-guide-voice.md`.
+**Telephony adjustments** (if modality includes telephony): Same items as Agent Script telephony adjustments above.
 
 #### Output
 
