@@ -1,9 +1,29 @@
 ---
-name: sf-ai-agentforce-persona
-description: Designs an AI agent persona — identity, voice, tone, and behavioral style — through a fast input-to-sample-dialog loop with brand input support, 12 decomposed dimensions, and 50-point scoring
-version: 2.4.0
+name: agent-persona
+description: >
+  Designs AI agent personas — identity, voice, tone, behavioral style — and
+  encodes them into Agentforce Builder field values (Name, Role, Welcome, Error,
+  Tone), Agent Script YAML blocks (system.instructions, welcome, error, per-topic
+  reasoning.instructions, per-action progress_indicator_message), or standalone
+  persona documents. Fast input-to-sample-dialog loop: accepts brand guides,
+  URLs, prior personas, or free-text; drafts across 13 dimensions; iterates on
+  feedback. Includes 100-point evaluation rubric. Evaluates existing agent
+  instructions for persona consistency.
+
+  TRIGGER when: user designs a new agent persona, retrofits persona consistency,
+  translates brand guidelines into agent voice, defines agent
+  tone/register/formality/warmth/humor, encodes a persona for Agentforce Builder
+  or Agent Script, scores or evaluates an existing persona, or audits existing
+  agent instructions for persona quality.
+
+  DO NOT TRIGGER when: building Agentforce topics/actions/metadata
+  (use sf-ai-agentforce); authoring Agent Script FSM/slot-filling without
+  persona work (use sf-ai-agentscript); testing agent conversations
+  (use sf-ai-agentforce-testing); writing non-persona brand/marketing copy.
+version: 2.7.0
+date: 2026-04-23
 author: cascadi
-tags: [salesforce, agentforce, persona, identity, register, formality, warmth, personality, tone, brevity, humor, chatting-style, brand-input, sample-dialog]
+tags: [salesforce, agentforce, agent-script, persona, identity, register, formality, warmth, personality, tone, brevity, humor, chatting-style, brand-input, sample-dialog, encoding]
 allowed-tools:
   - Read
   - Write
@@ -20,7 +40,7 @@ This skill designs an AI agent persona through a fast input-to-sample-dialog loo
 
 **What it produces:**
 - A persona document (`_local/generated/[agent-name]-persona.md`) defining who the agent is, how it sounds, and what it never does
-- Scoring available on request (50-point rubric)
+- Evaluation available on request (100-point rubric) — works on designed personas or existing agent instructions
 - Encoding available as a separate workflow (persona → tool-specific field values)
 
 **What it drives downstream:** The persona document feeds into conversation design and Agentforce encoding. Those are separate steps — this skill defines the *persona*, not dialog flows or field configurations.
@@ -41,16 +61,17 @@ This skill designs an AI agent persona through a fast input-to-sample-dialog loo
 
 Read `resources/persona-framework.md` for the full framework. It defines:
 
+- **Personification Spectrum** — zeroth-order identity decision: Talking System / Familiar Thing / Personal Assistant
 - **Identity** — 3-5 personality adjectives that anchor every other decision
-- **12 dimensions** across 5 categories:
+- **13 dimensions** across 5 categories:
   - **Register** — Subordinate / Peer / Advisor / Coach
-  - **Voice** — Formality, Warmth, Personality Intensity (3 independent dimensions)
+  - **Voice** — Formality, Warmth, Personality Intensity, Reading Level (4 dimensions)
   - **Tone** — Emotional Coloring, Empathy Level (+ Tone Boundaries, Tone Flex)
   - **Delivery** — Brevity, Humor
   - **Chatting Style** — Emoji, Formatting, Punctuation, Capitalization
-- **Phrase Book & Never-Say List** — what to say and what to never say
-- **Tone Flex** — how tone shifts by context
-- **Lexicon** — per-topic vocabulary
+- **Persona Artifacts** — organized as Identity (traits + negative identity), Expression (tone boundaries + never-say), Phrasing (phrase book + discourse markers + lexicon)
+- **Tone Flex** — how tone shifts by context, including content-sensitivity triggers
+- **Lexicon** — global and per-topic vocabulary, including immutable terms
 
 Attributes are ordered by dependency — upstream choices constrain downstream ones. Constraint notes in the framework explain how earlier choices pull later ones. Constraints are recommendations, not hard locks — any combination is valid.
 
@@ -61,10 +82,23 @@ Attributes are ordered by dependency — upstream choices constrain downstream o
 Detect the user's intent from their opening message:
 
 - **User provides brand input, text description, or no document** → **Design flow** (below)
+- **User provides a completed persona.md and asks to build on it** → **Design flow** with the existing persona loaded as input (retain + extend). All existing content is preserved; the design flow adds to it.
 - **User provides a completed persona.md document and asks to encode** → **Encode flow** (below)
 - **User provides a persona.md + a list of topics or actions** → **Encode flow**
-- **User provides a completed persona.md without stating intent** → Show a compact summary of the loaded persona, then offer the hub menu (refine, score, encode). Do not assume encode.
-- **Ambiguous** → Ask: "Are you designing a new persona or encoding an existing one for Agentforce?"
+- **User provides agent instructions (.agent file, system prompt, topic instructions) and asks to evaluate, score, or audit** → **Evaluate flow** (below)
+- **User provides a completed persona.md and asks to score or evaluate** → **Evaluate flow**
+- **User provides a completed persona.md without stating intent** → Show a compact summary of the loaded persona, then offer the hub menu (refine, evaluate, encode). Do not assume encode.
+- **User wants to start from an archetype** → Show available archetypes:
+
+  | Archetype | Use Case | Style | File |
+  |---|---|---|---|
+  | **Drover** | Internal Sales Coach | Bold — blunt, laconic, Australian idiom | `archetypes/drover-persona.md` |
+  | **The Steady Hand** | Internal Sales Coach | Mild — methodical, data-grounded, consistent | `archetypes/steady-hand-persona.md` |
+  | **Y.T.** | External Service Agent | Bold — fast, blunt, courier culture | `archetypes/yt-persona.md` |
+  | **The Concierge** | External Service Agent | Mild — attentive, composed, white-glove | `archetypes/concierge-persona.md` |
+
+  Selected archetype loads → Design flow (retain + extend).
+- **Ambiguous** → Ask: "Are you designing a new persona, evaluating an existing one, or encoding for Agentforce?"
 
 ---
 
@@ -115,12 +149,16 @@ Collect only what the input doesn't already answer. **Every question is skippabl
 **Context signals to extract or ask about (priority order):**
 
 1. **Company** — who they are, what they do, who they serve. If the user provided a brand guide or URL, extract this — don't re-ask.
-2. **Audience** — who the agent serves: internal employee, external customer, partner, vendor, investor, or other. Affects register, formality, warmth. If the user says "internal sales coach," audience is already answered.
-3. **Modality** — how the agent communicates: chat, email, telephony, multimodal, or other. Affects Chatting Style, Brevity, and whether emoji makes sense. Multiple modalities are valid.
+2. **Audience** — who the agent serves: internal employee, external customer, partner, vendor, investor, or other. Affects register, formality, warmth. If the user says "internal sales coach," audience is already answered. Include target audience demographics when available — these inform register, reading level, empathy, and accessibility decisions.
+3. **Modality** — how the agent communicates: chat, email, SMS, telephony, multimodal, or other. Affects Chatting Style, Brevity, and whether emoji makes sense. Multiple modalities are valid. **SMS is a text-based channel** — it does not require voice encoding. Only telephony and multimodal-with-audio channels require voice encoding.
 4. **Primary language** — affects formality norms and cultural adaptation.
 5. **At least 1 use case or JTBD** — needed to generate meaningful sample dialog.
+6. **Business goals and success metrics** — what the agent is meant to achieve and how success is measured. Informs proactivity, register, empathy, and the executive summary. If the user doesn't state goals, infer from context but mark as default.
+7. **Legal/compliance requirements** *(ask only when signals suggest it)* — whether the agent operates in a regulated industry or has legal-team-approved content that must be preserved. Do NOT front-load this as a gating question for every persona. Ask when: (a) the input mentions healthcare, finance, insurance, legal, or other regulated domains; (b) the input contains language that looks like it was written by a legal team (disclaimers, compliance wording, specific prohibited-claims language).
 
 **Do NOT collect:** interaction model (agent design, not persona), agent type (agent design, not persona), topic list, agent name (comes after identity).
+
+**Regulated industry flag:** When the user confirms or the input clearly indicates a regulated industry, set this flag in the state object. It triggers stricter handling of immutable content during Draft and Evaluate.
 
 **Extraction before asking:** Parse the user's input for context signals before deciding what to ask. "Design an internal sales coach persona for Buc-ee's" already answers audience (internal), role (sales coach), and implies a brand context. Don't re-ask what's already given.
 
@@ -152,15 +190,30 @@ Extract persona signals from the user's input. Brand guides are often much riche
 | **Formatting** | Capitalization rules, punctuation opinions (Oxford comma, em dashes), number/date/price formatting, foreign word formatting | Chatting Style dimensions + custom section |
 | **CTAs/interaction** | CTA patterns ("SHOP NOW"), promotional language rules | Phrase Book + Never-Say |
 | **Usage rules** | Preposition preferences ("at [brand]" not "from [brand]"), standards that would sound wrong if violated | Never-Say + Phrase Book |
+| **Verbatim/Immutable** | Content the designer marks as must-not-change: legal disclaimers, compliance wording, brand-defined terminology (warranty names, product families, mottos, value propositions). Also detect: language that reads like it was written by a legal team, especially in regulated industries. | Immutable content blocks (preserved exactly as written). Ask: "This looks like it needs to be preserved exactly as written — should I treat it as immutable?" |
+| **Term collisions** | After extracting both brand-preferred and legal/immutable terms, check for terms that reference the same thing but use different language (e.g., brand says "ClaimTrack" but legal disclaimer says "claims tracking system"). | Surface the conflict to the user with a recommendation and let them decide. Do this during design, not encoding — the persona document should resolve term collisions before it reaches encoding. |
 | **Audience** | Who the brand talks to, formal vs. informal examples, relationship language | Design Inputs, Register, Formality |
 
-**If input is a prior persona.md:** Extract dimensions directly.
+**If input is a prior persona.md:** Extract dimensions directly. Then run a schema check against the current framework version:
+
+1. **Missing dimensions** — If a dimension is absent (e.g., Reading Level didn't exist in earlier versions), backfill with the framework default and mark confidence as "default — backfilled from framework."
+2. **Missing structural sections** — If Personification Spectrum, executive summary, business goals, or immutable content sections are absent, note them as "not yet set" in the state object. Do not infer or auto-generate these — surface them to the user: "This persona predates a few framework additions. I'll preserve everything and ask about the new fields as we go: [list missing]."
+3. **Terminology updates** — Map old field names to current ones (e.g., "Preset" → "Archetype"). Note the change to the user: "Updated terminology from the previous framework version." This falls under the general Extract & Map principle: recognize different labels for the same things.
+4. **Phrase Book gaps** — If Discourse Markers are missing, note the gap but don't auto-generate. Surface during refinement.
+
+The retain+extend contract: every existing value is preserved unless the user explicitly changes it. New fields are surfaced, not silently filled.
+
+##### 3A½: Personification Level
+
+Before selecting dimensions, determine personification level — it constrains naming, pronoun use, and pulls certain dimensions (see framework §Personification Spectrum). If the input doesn't signal personification, ask the binary: "Should this agent have a character name and speak as 'I,' or present as a system/tool?"
+
+Set personification in the state object before proceeding to 3B. Dimension selection in 3B should reflect the personification level (e.g., Talking System pulls toward Reserved personality, lower small talk).
 
 ##### 3B: Attribute Selection
 
-Map extracted signals to the 12 framework dimensions:
+Map extracted signals to the 13 framework dimensions:
 
-1. Pre-populate all 12 dimensions from the input signals
+1. Pre-populate all 13 dimensions from the input signals
 2. Override dimensions where the input provides clear signals (e.g., brand guide says "never use slang" → Formality: Formal)
 3. For each dimension, show the full spectrum and indicate which value is recommended and why when there's a strong signal
 
@@ -174,6 +227,8 @@ These annotations are shown during refinement so the designer knows where to foc
 
 ##### 3D: Generation
 
+**Cross-cutting rule — verbatim guardrail:** Never alter content the designer marks as verbatim or immutable. This applies to brand-defined terminology AND legal/compliance content. When generating or refining, preserve immutable content blocks exactly as provided. If a phrase book entry or lexicon term conflicts with immutable content, the immutable content wins.
+
 From the dimension map, generate:
 - **Identity traits** — 3-5 adjectives with behavioral definitions
 - **Phrase Book** — example phrases tuned to all selected dimensions. Generate **2-4 phrases per category** — one example is not enough to establish a pattern. Categories include:
@@ -183,19 +238,23 @@ From the dimension map, generate:
   - **Coach register:** Teaching Moments
   - **Humor ≠ None:** Humor Examples (showing the humor type in context)
   - **Optional (any agent):** Returning Customer Greeting (personalized re-engagement)
+  - **All agents:** Discourse Markers — conversational connectors ("So," "Right," "Here's the thing") tuned to Formality and Personality Intensity
   - Do **not** include errors or system error handling in the Phrase Book — error messages are generated as required messages during encoding
-- **Never-Say List** — anti-phrases derived from Tone Boundaries, Identity contradictions, and input's negative signals. Generate **at least 5 entries** — cover generic chatbot filler, register violations, and persona-specific anti-phrases
+- **Never-Say List** — anti-phrases derived from Tone Boundaries, Identity contradictions, and input's negative signals. Generate **at least 5 entries** — cover generic chatbot filler, register violations, cognitive-processing markers ("Let me think about that" — reframe as action: "Let me check"), and persona-specific anti-phrases
 - **Tone Boundaries** — what the agent must never sound like
 - **Tone Flex** — baseline + triggers + shift rules
 - **Negative Identity** — 2-4 character-level anti-patterns. Generate from negative signals in the input and from Identity traits.
-- **Global Lexicon** — brand name, company name, product line names, industry terms used across all topics.
+- **Global Lexicon** — brand name, company name, product line names, industry terms used across all topics. Distinguish editable terms from immutable terms (legal or brand-defined). Two formats supported: (a) key-value pairs (term + definition/usage context), (b) term list only. Both are valid — key-value when usage context matters, term list when the terms speak for themselves.
 - **Values** *(optional)* — Only if the user explicitly stated beliefs, values, or worldview. Never infer values.
 
 ##### 3E: Name
 
-After identity traits are established:
-- Suggest up to 3 names that distill the identity
-- Allow the user to write their own
+Personification level was set in 3A½. Name based on that level:
+
+- **If Talking System:** No character name. Use the app, brand, or product name. Skip name suggestion.
+- **If Familiar Thing:** Suggest 2-3 short functional names. Optional.
+- **If Personal Assistant:** Suggest up to 3 names that distill the identity.
+- Allow the user to write their own at any level.
 - Reassure: "You can change this later."
 
 If a name was provided in input, use it and skip this sub-step.
@@ -203,15 +262,20 @@ If a name was provided in input, use it and skip this sub-step.
 ##### 3F: State Object
 
 Maintain the full dimension map as an explicit **state object** across the conversation. Every regeneration works from this state, not from conversation history. The state object contains:
-- All 12 dimension values
+- Personification level (Talking System / Familiar Thing / Personal Assistant)
+- All 13 dimension values (including Reading Level)
 - Confidence annotation per dimension (strong signal / default)
 - Identity traits
 - Negative Identity statements
 - Values (if provided by user — never inferred)
-- Phrase Book
+- Phrase Book (including discourse markers)
 - Never-Say List
 - Tone Boundaries
 - Tone Flex rules
+- Immutable content blocks (verbatim legal/brand content, preserved exactly)
+- Business goals and success metrics
+- Legal/compliance requirements (if any)
+- Regulated industry flag (boolean)
 
 Update the state object on every change. When regenerating sample dialog, read from the state object.
 
@@ -292,7 +356,8 @@ After the sample dialog, show a progress line (see Interaction Design) and offer
 
 - "Refine the persona" — opens a sub-menu: identity, dimensions, phrase book, never-say, tone flex, lexicon, or free-text addition
 - "Try a different sample dialog scenario"
-- "Score the persona"
+- "Compare contrasting responses" — show two versions varying one dimension
+- "Evaluate the persona"
 - "Download the persona document"
 - "Encode for Agentforce deployment"
 - "I'm done"
@@ -342,6 +407,17 @@ When a request is ambiguous, apply the primary mapping and narrate the change so
 3. Regenerate sample dialog varying only the changed dimension
 4. Narrate what shifted in the output so the user connects the dimension change to the behavioral difference
 
+#### Contrasting Response Comparison
+
+Not a flow step — a user-triggered capability. When the user asks to compare options ("show me two different ways this agent could respond"), generate:
+
+1. A user utterance from one of the collected use cases
+2. Two contrasting agent responses that vary along **one dimension or identity trait** — not multiple axes at once
+3. A brief explanation of what's different between the two responses and which dimension/trait drives the difference
+4. Ask which the user prefers
+
+Update the state object from the user's choice. Only vary one axis at a time so the preference maps cleanly to a dimension change. If the user wants to explore a different axis, repeat with the new dimension.
+
 #### Other (free-text additions)
 
 When the user wants to add something that doesn't fit a standard framework concept, accept it. Review the input:
@@ -360,27 +436,71 @@ When the user selects "I'm done," offer to download the persona document if it h
 
 ---
 
-## Scoring
+## Evaluate
 
-Score the persona document against a 50-point rubric. Scoring is **on-demand** — triggered when the user asks.
+A unified behavior for scoring designed personas and auditing existing agent instructions. One rubric, one output format, two entry points. Triggered when the user asks to score, evaluate, or audit.
 
-**Before scoring,** show a brief orientation summary (see Interaction Design). Then display the scorecard inline. After displaying, offer to save to `_local/generated/[agent-name]-persona-scorecard.md`. Then return to the hub menu.
+**Key design principle:** Existing agent instructions may cover the same territory as the framework but with different labels. Evaluate the substance, not whether they used the framework's vocabulary. "Personality guidelines" = Identity. "Communication rules" = dimensions. "Banned phrases" = Never-Say. Map first, then score.
 
-*For an unbiased score, have a different person run the scoring rubric on the generated persona.*
+### Entry Points
 
-| Category | /10 | Criteria |
+1. **Designed persona** — user completed the design flow and asks to evaluate, or provides a persona.md
+2. **Existing agent instructions** — user provides an .agent file, system prompt, topic instructions, or any combination
+
+Both entry points produce the same output.
+
+### Evaluate Flow
+
+1. **Ingest** — Accept persona doc, .agent file, system prompt, topic instructions, static messages, or any combination.
+2. **Extract & Map** — For the audit path (existing instructions), extract persona elements and map them to framework concepts. Build an implicit state object from the extraction.
+
+   **Common label mappings** — agent instructions use many names for framework concepts:
+
+   | If you find... | It likely maps to... |
+   |---|---|
+   | "Personality," "communication principles," "voice guidelines," "brand personality" | Identity traits |
+   | "Communication rules," "response guidelines," "behavioral rules," "style guide" | Dimension selections (parse for specific axes) |
+   | "Banned phrases," "forbidden phrases," "don't say," "language restrictions" | Never-Say List |
+   | "Vocabulary," "terminology," "glossary," "word list" | Lexicon |
+   | "Tone rules," "emotional guidelines" | Tone Flex / Tone Boundaries |
+   | "Example responses," "sample language," "approved phrases" | Phrase Book |
+   | "Error handling tone," "escalation language" | Tone Flex triggers |
+
+   **Resolution rules:**
+   - Map by substance, not label. "Communication principles: Be warm and concise" maps to Warmth + Brevity, not Identity.
+   - When a block blends multiple framework concepts (e.g., "Response guidelines" contains both dimension-like rules and anti-phrases), split it during extraction. Note the split in the output.
+   - When extraction is ambiguous, mark the category as "inferred — [source label]" in the evaluation output so the user can verify.
+   - Absence of a framework concept ≠ zero score. Score what's present against its category. A missing Phrase Book with strong inline examples in instructions still earns Phrase Book points.
+3. **Score static messages** — Evaluate all static strings (welcome, error, loading text, handoff messages) against the extracted/designed persona. Do they sound like the same agent?
+4. **Score** — Apply the 100-point rubric (below).
+5. **Output** — Single evaluative document: score per category + non-judgmental gap analysis + actionable improvement suggestions. Explain how to improve the score, not just where it's low.
+6. **Offer gap-filling** — After evaluation, offer: "Want me to fill in the gaps? I'll start from what you have and extend it." → Design flow with extracted persona as input (retain + extend).
+
+**Before evaluating,** show a brief orientation summary (see Interaction Design). Then display the evaluation inline. After displaying, offer to save to `_local/generated/[agent-name]-evaluation.md`. Then return to the hub menu.
+
+*For an unbiased evaluation, have a different person run the rubric on the persona or instructions.*
+
+### 100-Point Rubric
+
+| Category | Points | Criteria |
 |---|---|---|
-| **Identity Coherence** | /10 | • Traits distinct, non-contradictory, behaviorally defined — observable behaviors, not aspirations • Design Inputs present and coherent: audience → register, modality → chatting style, company → frame of reference |
-| **Dimension Consistency** | /10 | • Each dimension coherent with Identity, constraints respected • Tone Boundaries consistent with Emotional Coloring/Empathy; Tone Flex within range • Chatting Style adapted for modality (suppressed for telephony) |
-| **Behavioral Specificity** | /10 | • Concrete behavioral examples, testable rules • Never-Say ≥5 (chatbot filler + register violations + persona-specific) • Global Lexicon populated • Brand guide: extraction depth — vocabulary, formatting, usage, CTAs captured? |
-| **Phrase Book Quality** | /10 | • 2-4 phrases per applicable category • All-agent: Acknowledgement, Affirmation, Apologies (mistakes only), Off-Topic Redirect, Welcome • Conditional: Escalation/Handoff (external), Celebrating Progress (Encouraging), Teaching Moments (Coach), Humor Examples (Humor ≠ None) • Phrases match register and dimensions • Brand guide content captured |
-| **Sample Quality** | /10 | • Persona recognizable without seeing dimension table • Happy path + uncertainty + boundary scenarios • Modality-appropriate (telephony: brevity recalibrated, formatting suppressed) • Brand vocabulary appears naturally |
+| **Identity Coherence** | /12 | • Traits distinct, non-contradictory, behaviorally defined — observable behaviors, not aspirations • Personification level clear and consistent (naming, pronoun use, personality pull) • Negative Identity present (2-4 character-level anti-patterns) • Design Inputs present and coherent: audience → register, modality → chatting style, company → frame of reference |
+| **Dimension Consistency** | /12 | • Each of the 13 dimensions (including Reading Level) coherent with Identity, constraints respected • Tone Boundaries consistent with Emotional Coloring/Empathy; Tone Flex within range • Chatting Style adapted for modality (suppressed for telephony, no voice encoding for SMS) • Productive tensions flagged vs. contradictions |
+| **Behavioral Specificity** | /10 | • Concrete behavioral examples, testable rules • Never-Say ≥5 (chatbot filler + register violations + cognitive-processing markers + persona-specific) • Global Lexicon populated, immutable terms distinguished where applicable • Brand guide: extraction depth — vocabulary, formatting, usage, CTAs captured? |
+| **Phrase Book Quality** | /12 | • 2-4 phrases per applicable category • All-agent: Acknowledgement, Affirmation, Apologies (mistakes only), Off-Topic Redirect, Welcome, Discourse Markers • Conditional: Escalation/Handoff (external), Celebrating Progress (Encouraging), Teaching Moments (Coach), Humor Examples (Humor ≠ None) • Phrases match register and dimensions • Brand guide content captured • For Talking Systems: depersonalized phrasing expected ("We apologize" not "I'm sorry") — score for consistency with personification level, not Personal Assistant norms |
+| **Tone Flex & Boundaries** | /10 | • Tone Flex rules defined with triggers, shift directions, and magnitudes • Content-sensitivity default present (or explicitly overridden) • Tone Boundaries testable — specific enough to catch violations • Flex range stays within boundaries |
+| **Lexicon & Vocabulary** | /8 | • Global lexicon populated • Per-topic lexicon where applicable • Reading Level position clear and appropriate for audience • Immutable terms preserved (if applicable) • Lexicon format appropriate (key-value or term list) |
+| **Static Messages** | /8 | • Welcome message reflects Identity + Register + Voice + Tone + Brevity • Error message reflects Formality + Warmth + Emotional Coloring + Brevity • All static strings sound like the same agent • Telephony: welcome includes AI disclosure, brevity recalibrated • SMS: first message serves as welcome — system identification + AI disclosure in-message (no chat header) • Talking Systems: welcome uses brand/app name, not character name |
+| **Business Context Alignment** | /8 | • Business goals and success metrics inform persona design choices • Persona supports stated objectives (e.g., adoption → warmth, efficiency → brevity) • Target audience demographics reflected in register, reading level, empathy |
+| **Sample Quality** | /10 | • Persona recognizable without seeing dimension table • Happy path + uncertainty + boundary scenarios • Modality-appropriate (telephony: brevity recalibrated, formatting suppressed) • Brand vocabulary appears naturally • For Talking Systems: persona recognizable through vocabulary, procedural efficiency, and tonal consistency — not through character personality; distinctiveness at this level is subtler by design |
+| **Completeness** | /10 | • All framework sections addressed (identity, 13 dimensions, phrase book, never-say, lexicon, tone flex, tone boundaries) • Values present only if user-provided • Executive summary captures the essence • No gaps where the framework expects a deliberate decision • Optional sections (Backstory, per-topic Lexicon, Immutable Content) scored only when applicable — don't penalize legitimate omissions |
 
 **Scoring rules:**
-- Score each category independently. Provide a number and 1-2 sentences of justification.
+- Score each category independently. Provide a number and 1-2 sentences of non-judgmental justification.
+- For each category below 70% of its points, provide a specific, actionable suggestion for improvement.
 - Flag inconsistencies between dimensions. Note productive tensions vs. contradictions.
-- If any category scores below 7, provide a specific suggestion for improvement.
-- Total: 45-50 production-ready, 35-44 strong foundation, 25-34 needs revision, below 25 restart.
+- Total: 90-100 production-ready, 75-89 strong foundation, 50-74 needs revision, below 50 significant gaps.
+- Present the total as a percentage for readability.
 
 ---
 
@@ -388,7 +508,7 @@ Score the persona document against a 50-point rubric. Scoring is **on-demand** �
 
 A standalone entry point for encoding an existing persona document into tool-specific output. Accessible when the user provides a completed persona.md, or after the Design flow.
 
-Read `resources/persona-encoding-guide.md` for encoding architecture and `templates/persona-encoding-template.md` for the output structure.
+Read `resources/persona-encoding-guide.md` for encoding architecture and `templates/persona-encoding-template.md` for the output structure. For voice encoding (telephony or multimodal-with-audio only — not SMS), read `resources/persona-encoding-guide-voice.md`.
 
 **Before encoding,** show a brief orientation summary (see Interaction Design) confirming the agent name, authoring tool, audience, and modality.
 
@@ -411,7 +531,7 @@ Output ready-to-paste YAML blocks:
 **System block:**
 1. **`config.agent_name`** — The persona name.
 2. **`system.instructions`** — Full persona content as a YAML literal block scalar (`|`): Identity, dimension behavioral rules, phrase book, chatting style rules, tone rules, tone boundaries, never-say list. No character limits.
-3. **`system.messages.welcome`** — Generate a static in-persona welcome message. For multimodal agents with a telephony channel, generate two: a text welcome and a shorter telephony welcome (ear-optimized, includes AI disclosure). Default to static; note the option for dynamic as supplemental.
+3. **`system.messages.welcome`** — Generate a static in-persona welcome message. For multimodal agents with a telephony channel, generate two: a text welcome and a shorter telephony welcome (ear-optimized, includes AI disclosure). Default to static. **Dynamic welcome message option:** After generating the static welcome, offer: "Want a dynamic welcome message that adapts to context (time of day, returning user, etc.)?" If yes, generate a dynamic welcome message using the methodology from the [Salesforce greeting design guide](https://www.salesforce.com/blog/design-better-greetings-agentforce-builder/). The dynamic message supplements the static one — it doesn't replace it.
 4. **`system.messages.error`** — Generate one (1) static in-persona system error message. No dynamic option available for this field.
 
 **Per-topic overrides** (if topics provided):
@@ -433,7 +553,7 @@ Output ready-to-paste YAML blocks:
 1. **Name** (80 chars) — Show character count.
 2. **Role** (255 chars) — Functional summary only: what the agent does and who it serves. "You are..." Do **not** encode persona style here. Show character count.
 3. **Company** (255 chars) — Populate from company context collected in Step 2. Show character count.
-4. **Welcome Message** (800 chars, aim for ≤ 255) — Generate a static in-persona welcome message reflecting Identity + Register + Voice + Tone + Brevity. For multimodal agents with a telephony channel, generate two: a text welcome and a shorter telephony welcome (ear-optimized, includes AI disclosure). Show character count.
+4. **Welcome Message** (800 chars, aim for ≤ 255) — Generate a static in-persona welcome message reflecting Identity + Register + Voice + Tone + Brevity. For multimodal agents with a telephony channel, generate two: a text welcome and a shorter telephony welcome (ear-optimized, includes AI disclosure). Show character count. **Dynamic welcome message option:** After generating the static welcome, offer: "Want a dynamic welcome message that adapts to context?" If yes, generate using the [Salesforce greeting design guide](https://www.salesforce.com/blog/design-better-greetings-agentforce-builder/) methodology. The dynamic message supplements the static one.
 5. **Error Message** — Generate one (1) static in-persona system error message reflecting Formality + Warmth + Emotional Coloring + Brevity.
 
 **Agentforce Builder Settings:**
@@ -466,5 +586,5 @@ The skill produces up to four Markdown files:
 
 1. **Persona document** (`_local/generated/[agent-name]-persona.md`) — follows the `templates/persona-template.md` structure. The design artifact defining who the agent is, how it sounds, and what it never does.
 2. **Sample dialog** (`_local/generated/[agent-name]-sample-dialog.md`) — follows the `templates/sample-dialog-template.md` structure. Validation artifact demonstrating the persona in conversation.
-3. **Scorecard** (`_local/generated/[agent-name]-persona-scorecard.md`) — 50-point rubric evaluation. Generated on request.
+3. **Evaluation** (`_local/generated/[agent-name]-evaluation.md`) — 100-point rubric evaluation with gap analysis and improvement suggestions. Generated on request. Works on designed personas or existing agent instructions.
 4. **Encoding output** (`_local/generated/[agent-name]-persona-encoding.md`) — follows the `templates/persona-encoding-template.md` structure. Tool-specific: Agentforce Builder field values and settings, or Agent Script YAML blocks. Generated on request via the Encode flow.

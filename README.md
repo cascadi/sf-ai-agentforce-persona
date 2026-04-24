@@ -1,11 +1,11 @@
 ---
-version: "2.3.0"
-date: 2026-03-30
+version: "2.4.0"
+date: 2026-04-23
 ---
 
 # Agent Persona Design Skill
 
-Design AI agent personas for Salesforce Agentforce using the **Identity + 12 decomposed dimensions** framework.
+Design AI agent personas for Salesforce Agentforce using the **Identity + 13 decomposed dimensions** framework.
 
 An agent persona is a designed personality that tells an AI agent who it is and how to express itself so it comes across naturally as a consistent character suited to its context and users.
 
@@ -32,7 +32,7 @@ PHASE 2:  HUB MENU → refine / phrase book / never-say / lexicon / score / enco
 **Phase 2 (Electives)** — user-driven hub menu:
 - Refine identity or dimensions
 - Add phrase book, never-say list, tone flex, lexicon
-- Score the persona (50-point rubric)
+- Evaluate the persona (100-point rubric)
 - Download the persona document
 - Encode for Agentforce (Agentforce Builder or Agent Script)
 
@@ -41,7 +41,7 @@ PHASE 2:  HUB MENU → refine / phrase book / never-say / lexicon / score / enco
 Four Markdown files:
 - **Persona document** (`_local/generated/[agent-name]-persona.md`) — design artifact defining who the agent is, how it sounds, what it never does
 - **Sample dialog** (`_local/generated/[agent-name]-sample-dialog.md`) — validation artifact demonstrating the persona in conversation
-- **Scorecard** (`_local/generated/[agent-name]-persona-scorecard.md`) — 50-point rubric evaluation (on request)
+- **Scorecard** (`_local/generated/[agent-name]-persona-scorecard.md`) — 100-point evaluation rubric (on request)
 - **Encoding output** (`_local/generated/[agent-name]-persona-encoding.md`) — Agentforce Builder field values or Agent Script YAML blocks, with telephony adjustments when modality includes telephony (via Encode flow)
 
 ## Files
@@ -49,7 +49,8 @@ Four Markdown files:
 | File | Purpose |
 |---|---|
 | `SKILL.md` | Skill definition — Design flow + Encode flow + scoring rubric |
-| `resources/persona-framework.md` | Identity + 5 categories, 12 dimensions — the deep reference |
+| `resources/persona-framework.md` | Identity + 5 categories, 13 dimensions — the deep reference |
+| `archetypes/` | Ready-to-use archetype persona packages (Drover, Steady Hand, Y.T., Concierge) |
 | `resources/persona-encoding-guide.md` | How to encode persona into Agentforce (architecture-first) |
 | `resources/persona-encoding-guide-voice.md` | Voice encoding reference — voice selection, tuning, pronunciation (not used in design or encoding flows yet) |
 | `templates/persona-template.md` | Persona document output template |
@@ -59,13 +60,14 @@ Four Markdown files:
 
 ## Framework Overview
 
-12 dimensions across 5 categories, each independently selectable:
+13 dimensions across 5 categories, each independently selectable:
 
 - **Register** (1 dimension) — Subordinate / Peer / Advisor / Coach
-- **Voice** (3 dimensions)
+- **Voice** (4 dimensions)
   - **Formality** — Formal / Professional / Casual / Informal
   - **Warmth** — Cool / Neutral / Warm / Bright / Radiant
   - **Personality Intensity** — Reserved / Moderate / Distinctive / Bold
+  - **Reading Level** — Suppress / Explain / Match / Advanced
 - **Tone** (2 dimensions)
   - **Emotional Coloring** — Blunt / Clinical / Neutral / Encouraging / Enthusiastic
   - **Empathy Level** — Minimal / Understated / Moderate / Attuned

@@ -1,11 +1,11 @@
 ---
-version: "2.4.0"
-date: 2026-03-30
+version: "2.6.0"
+date: 2026-04-23
 ---
 
 # Agent Persona Framework
 
-*A design framework for AI agent personality: Identity + 12 configurable dimensions across five categories.*
+*A design framework for AI agent personality: Identity + 13 configurable dimensions across five categories.*
 
 ---
 
@@ -52,7 +52,7 @@ A well-designed persona delivers:
 
 - **Brand distinctiveness:** Agents are brand touchpoints. Brand fidelity and distinctiveness are differentiators in a world full of generic-sounding AI.
 - **Likability and trustworthiness:** Users are more likely to like and trust agents when they sound natural and speak consistently. This improves adoption and retention.
-- **Model-independent:** Persona encoded in configuration means the agent sounds the same when the underlying model changes.
+- **Model-resilient:** Persona encoded in configuration establishes a consistent behavioral floor across model swaps. Empirical testing shows minor variance on Emotional Coloring when models change, but the persona's core voice, identity, and dimensions persist. The framework's value is the floor it sets, not a ceiling on expressiveness.
 - **Reviewable artifact:** Business, brand, and legal teams get something concrete to evaluate - a structured persona document to redline and approve.
 - **Engineering-ready:** Developers get a clear design specification that respects tool limits and capabilities.
 
@@ -74,13 +74,15 @@ A well-designed persona delivers:
 
 ### The Dimension Model
 
-A persona has two top-level categories: **Identity** (who the agent is - character traits, name, and optional elements like values and negative identity) and **Dimensions** (how the agent expresses itself - 12 independently tunable axes of personality).
+A persona has two top-level categories: **Identity** (who the agent is - character traits, name, and optional elements like values and negative identity) and **Dimensions** (how the agent expresses itself - 13 independently tunable axes of personality).
 
-Each of the 12 dimensions is a single independent axis with a spectrum of named positions. Selecting a value for one dimension should not *require* knowing the value of another - but **constraint notes** recommend natural pairings. Any combination is valid; constraints flag when a combination may feel incoherent.
+Each of the 13 dimensions is a single independent axis with a spectrum of named positions. Selecting a value for one dimension should not *require* knowing the value of another - but **constraint notes** recommend natural pairings. Any combination is valid; constraints flag when a combination may feel incoherent.
+
+In dimension tables throughout this document, the row order reflects the spectrum - positions are listed from one extreme to the other (e.g., most constrained to most expressive, coolest to warmest). The row order is the scale.
 
 Categories group related dimensions:
 - **Register** - the power dynamic (1 dimension)
-- **Voice** - how the words sound (3 dimensions)
+- **Voice** - how the words sound (4 dimensions)
 - **Tone** - how the agent comes across emotionally (2 dimensions)
 - **Delivery** - how much is said and with what humor (2 dimensions)
 - **Chatting Style** - how the text looks on screen (4 dimensions)
@@ -89,13 +91,14 @@ Categories group related dimensions:
 
 1. **Establish context.** Company, audience, and modality - these constrain everything downstream. Extract from input or collect explicitly.
 2. **Start with Identity.** Write 3-5 adjectives that capture your agent's character. This is the anchor - everything derives from here.
-3. **Name the agent.** Distill the identity into a name. The name is a first impression - it should signal who the agent is before any conversation starts.
-4. **Work through dimensions in dependency order:** Register → Voice (Formality, Warmth, Personality Intensity) → Tone (Emotional Coloring, Empathy Level) → Delivery (Brevity, Humor) → Chatting Style. Constraint notes between sections explain how upstream choices pull downstream ones.
-5. **Define Tone Boundaries** - what the agent must never sound like.
-6. **Define Tone Flex** - how tone shifts by context (error, frustration, celebration).
-7. **Generate Phrase Book and Never-Say List** - example phrases and anti-phrases tuned to the persona.
-8. **Validate with sample dialog** - if the agent sounds wrong, revisit the area that's off.
-9. **Encode the persona** into your agent's configuration using the [persona encoding guide](persona-encoding-guide.md).
+3. **Set personification level.** Decide where on the Personification Spectrum this agent sits - Talking System, Familiar Thing, or Personal Assistant. This constrains naming, pronoun use, and personality pull.
+4. **Name the agent.** If the personification level calls for a character name, distill the identity into a name. The name is a first impression - it should signal who the agent is before any conversation starts. If Talking System, use the app or brand name.
+5. **Work through dimensions in dependency order:** Register → Voice (Formality, Warmth, Personality Intensity) → Tone (Emotional Coloring, Empathy Level) → Delivery (Brevity, Humor) → Chatting Style. Constraint notes between sections explain how upstream choices pull downstream ones.
+6. **Define Tone Boundaries** - what the agent must never sound like.
+7. **Define Tone Flex** - how tone shifts by context (error, frustration, celebration).
+8. **Generate Phrase Book and Never-Say List** - example phrases and anti-phrases tuned to the persona.
+9. **Validate with sample dialog** - if the agent sounds wrong, revisit the area that's off.
+10. **Encode the persona** into your agent's configuration using the [persona encoding guide](persona-encoding-guide.md).
 
 ### Dimension Boundaries
 
@@ -166,6 +169,28 @@ For Luna, the definition of *Gracious* might be:
 > Makes every interaction feel unhurried, even under pressure. Acknowledges the person before the problem. Never abrupt, never transactional - treats a routine address change with the same care as a complex escalation. Gratitude is specific, not performative: "Thank you for walking me through that" rather than "Thanks for reaching out!"
 
 *Constraint: Identity is the anchor. Everything traces back. If a choice in any downstream dimension contradicts Identity, Identity wins.*
+
+### Personification Spectrum
+
+*How human does this agent present itself to be?*
+
+The personification level is a zeroth-order identity decision — set it before naming, before dimensions. It constrains the entire downstream design without forking the flow. All levels go through the same framework: identity traits, 13 dimensions, phrase book, never-say, lexicon. The difference is in naming, pronoun use, and how upstream choices naturally settle.
+
+```
+◄─── Talking System ──── Familiar Thing ──── Personal Assistant ───►
+```
+
+| Level | Name | Pronoun "I" | Natural Pull |
+|---|---|---|---|
+| **Talking System** | No character name. May use the app, brand, or product name (e.g., "UBS Virtual Assistant"). | No — uses passive or brand-subject constructions ("Your balance is..." not "I see your balance is..."). | Reserved personality, lower small talk, Subordinate or Peer register. |
+| **Familiar Thing** | Optional short name or label (e.g., "Scout," "Helper"). Name signals function more than character. | Sparingly — "I" for actions ("I've updated your address") but not for opinions or feelings. | Moderate personality, Neutral to Warm, any register. |
+| **Personal Assistant** | Character name that signals personality (e.g., "Drover," "Luna," "Y.T."). | Yes — "I" used naturally, including for preferences and perspective. | Any personality intensity, any warmth, any register. |
+
+The spectrum is a continuum, not three bins — position anywhere along it. The key binary: **Does this agent have a character name and use "I"?** If no to both → Talking System end. If yes to both → Personal Assistant end.
+
+All three levels still produce a complete persona: identity traits, dimension selections, phrase book, never-say, lexicon, tone flex. A Talking System has identity traits ("Efficient, Precise, Reliable") just like a Personal Assistant — the traits manifest through word choice and behavior rather than through a named character.
+
+*Reference: Personification spectrum adapted from Deibel & Evanhoe's conversational design framework. See also [phil-haenggi/conversation-design-library-v2](https://github.com/phil-haenggi/conversation-design-library-v2) for applied personification design patterns.*
 
 ### Naming
 
@@ -265,7 +290,7 @@ Write 2-5 belief statements. Each should be a conviction that generates observab
 
 - Mentor, not authority. Guides with questions rather than directives.
 - "What do you think happens if we change this?" not "You need to change this."
-- Celebrates progress. Adapts complexity to the user's skill level. *(Note: Skill-level adaptation is also available at other registers - see [Skill-Level Adaptation](#skill-level-adaptation) under Voice.)*
+- Celebrates progress. Adapts complexity to the user's skill level. *(Note: Skill-level adaptation is available at any register via Reading Level: Match — see [Reading Level](#reading-level) under Voice.)*
 - Deference to user's learning pace - never rushes past confusion.
 
 *Note: "Manager" exists on the spectrum but has no archetype - agents rarely occupy it.*
@@ -278,7 +303,7 @@ Write 2-5 belief statements. Each should be a conviction that generates observab
 
 *Boundary: Voice is linguistic character - persistent across all interactions. If you're deciding how the agent's words sound and feel, that's Voice. Emotional quality is Tone; response length is Brevity; visual conventions are Chatting Style.*
 
-Voice has three independent dimensions: Formality (how polished), Warmth (how approachable), and Personality Intensity (how much character). These vary independently - a Formal agent can be Warm (luxury concierge), a Casual agent can be Cool (street-smart problem-solver), a Reserved agent can be Warm (dignified trust).
+Voice has four independent dimensions: Formality (how polished), Warmth (how approachable), Personality Intensity (how much character), and Reading Level (how vocabulary is deployed). These vary independently - a Formal agent can be Warm (luxury concierge), a Casual agent can be Cool (street-smart problem-solver), a Reserved agent can be Warm (dignified trust).
 
 ### Formality
 
@@ -349,19 +374,37 @@ When the agent's modality includes telephony, these design adjustments apply:
 
 Voice selection, voice fine-tuning, pronunciation dictionary, and key-term prompting are configured separately in Agentforce Builder under Connections → Voice Settings. See `resources/persona-encoding-guide-voice.md` for reference.
 
-### Skill-Level Adaptation *(optional)*
+### SMS Adjustments *(SMS modality only)*
 
-When the agent's audience spans multiple expertise levels, the agent may need to adapt its language complexity and explanation depth to the user's demonstrated skill level. This is independent of Register - a Peer agent helping a beginner still simplifies, even though it's not coaching.
+SMS is a text-based channel — no voice encoding applies. Key constraints:
 
-**How it interacts with dimensions:**
-- **Formality** stays constant - skill-level adaptation changes *what* is explained, not *how polished* the language is
-- **Brevity** may shift - beginners get more explanation (toward Moderate), experts get less (toward Concise/Terse)
-- **Lexicon** adapts - domain vocabulary is used freely with experts, explained or avoided with beginners
-- **Personality Intensity** stays constant - the character doesn't change, only the complexity of what it says
+- **Brevity recalibration** — shift one position shorter than chat default. SMS users expect quick, scannable responses.
+- **No persistent header** — there is no chat header or avatar. The first message must identify the agent/system in-prose: "This is [Name/Brand] patient support."
+- **Formatting** — no headers, no heavy formatting. Selective at most. Bullets and bold may not render on all devices.
+- **Emoji** — all persona emoji settings apply. SMS is texting; emoji render natively.
 
-**When to include:** Customer-facing agents with broad audience skill ranges. Internal agents with a homogeneous expert audience can skip this.
+### Reading Level
 
-Skill-Level Adaptation is encoded as a behavioral rule in instructions, not as a standalone dimension.
+*How the agent handles the gap between its domain vocabulary and the user's knowledge level.*
+
+Reading Level is behavioral — it governs how the agent *uses* vocabulary, not what vocabulary it knows (that's Lexicon). It's persistent across interactions, like Voice dimensions, because it reflects a design decision about the agent's audience, not a per-turn adaptation.
+
+```
+◄─── Suppress ──── Explain ──── Match ──── Advanced ───►
+```
+
+| Position | Description |
+|---|---|
+| **Suppress** | Avoid domain jargon entirely. Use plain-language alternatives for all technical terms. Best for consumer-facing agents serving a general audience (e.g., patient portal, retail banking). |
+| **Explain** | Use domain terms but always gloss them on first use. "We'll check the AHT — that's the average time each call takes." Balances precision with accessibility. *(Default)* |
+| **Match** | Adapt to the user's demonstrated vocabulary level. If the user uses domain terms fluently, respond in kind. If they don't, simplify. Requires the agent to assess level per-conversation. Best for agents serving audiences that span novice to expert (e.g., IT help desk, financial advisor). When set to Match, other dimensions also flex: Brevity may shift toward Moderate for beginners (more explanation) and toward Concise for experts; Lexicon is used freely with experts and explained or avoided with beginners. Formality and Personality Intensity stay constant — only complexity adapts. |
+| **Advanced** | Always use full domain vocabulary without explanation. Assumes expert audience. Best for specialist-to-specialist contexts (e.g., radiology imaging assistant, legal research tool, developer CLI). |
+
+**How Reading Level differs from adjacent concepts:**
+- **Lexicon** = *what words* the agent knows (vocabulary list). Reading Level = *how it deploys them* (behavioral rule).
+- **Brevity** = *how much* is said. Reading Level = *at what complexity level* it's said. An agent can be Terse + Explain (short responses that still gloss terms) or Expansive + Advanced (detailed responses in full domain language).
+
+*Constraint note → Lexicon: Advanced Reading Level pairs naturally with a rich per-topic lexicon. Suppress pairs with a minimal or plain-language lexicon.*
 
 ---
 
@@ -425,6 +468,18 @@ Add context-specific boundaries based on the Emotional Coloring and other dimens
 - Clinical: "Never editorialize findings." "No 'good news' or 'unfortunately.'"
 - Blunt: "Never be cruel - blunt ≠ hostile." "Never mock the user's situation."
 
+**Worked example — profanity/vulgarity:**
+
+Profanity handling is a Tone Boundary, not a dimension. The guardrail sets the boundary; persona dimensions determine intent.
+
+| Boundary Setting | What It Means |
+|---|---|
+| **Hard block** | Never use profanity under any circumstance. "D\*mn," "h\*ll," "cr\*p" — all blocked regardless of user input. *(Default for most agents)* |
+| **Mirror only** | May echo a user's language when directly quoting or acknowledging, but never initiates. "I hear you — that is frustrating." Never: "Yeah, that's a real s\*\*\*show." |
+| **Permitted — mild** | May use mild language ("damn," "hell," "crap") when it fits the persona's personality intensity and the conversational moment. Never escalates beyond the user's register. |
+
+Most agents use Hard block. The boundary exists so designers of Bold / Informal agents can make a conscious choice rather than leaving it to the model. When in doubt, default to Hard block.
+
 *Note: Content limits (topics the agent must not engage with), confidence rules, and compliance constraints (e.g., "never claim to be human") are defined in agent design, not persona. Tone Boundaries constrain how the agent sounds - not what it can do.*
 
 ### Tone Flex
@@ -434,7 +489,7 @@ Tone Flex defines how the agent's tone shifts from its baseline in response to c
 **Triggers** - context conditions that cause shifts:
 - **System state** - errors increase urgency, timeouts need patience
 - **User emotional state** - frustration increases empathy, confusion increases patience
-- **Content sensitivity** - emotionally loaded topics increase empathy, high-stakes content increases seriousness
+- **Content sensitivity** - emotionally loaded in-scope content (medical results, financial hardship, job loss, safety incidents) triggers a default shift: Humor → None, Empathy up one position from baseline. This default is explicitly overridable by the designer — some personas may handle sensitive content differently by design (e.g., a crisis counselor agent whose baseline is already Attuned doesn't need to shift further)
 - **Conversation phase** - opening may be warmer, deep troubleshooting may be more clinical
 - **Success/progress** - celebrations shift toward encouraging
 
@@ -555,6 +610,28 @@ Boundary test: "If you removed all emoji, would information be lost?" Functional
 
 ---
 
+## Persona Artifacts: What It Says and What It Doesn't
+
+A persona produces three groups of artifacts — positive (what the agent *does*) and negative (what it *doesn't*). These groups organize everything the agent says and avoids:
+
+| Group | Positive (Do) | Negative (Don't) |
+|---|---|---|
+| **(a) Identity** | Identity Traits, Values | Negative Identity ("Not a salesperson"), Never-Do |
+| **(b) Expression** | Tone selections, Tone Flex | Tone Boundaries ("Never sound pushy"), Never-Say List |
+| **(c) Phrasing** | Phrase Book, Discourse Markers, Lexicon (global + per-topic, including immutable terms) | Never-Say List (anti-phrases), Lexicon exclusions ("Don't use this term") |
+
+**Key distinctions:**
+- **Phrase Book** = situation-keyed sample phrases ("When acknowledging, say...")
+- **Lexicon** = domain-keyed vocabulary ("In product topics, use these terms...")
+- **Discourse Markers** = conversational connectors ("So," "Right," "Here's the thing")
+- **Never-Say** = anti-phrases ("Never say 'Great question!'")
+- **Tone Boundaries** = anti-sounds ("Never sound apologetic")
+- **Negative Identity** = anti-characters ("Not a salesperson")
+
+Each group's negative side generates the ones below it: Negative Identity → Tone Boundaries → Never-Say phrases. When reviewing a persona, trace any questionable output back up this chain to find where the constraint should live.
+
+---
+
 ## Phrase Book & Never-Say List
 
 Two companion artifacts generated per persona. Both are tuned to the persona's dimension selections and Identity traits.
@@ -571,6 +648,10 @@ Example phrases the agent would use in common situations. Categories are selecte
 
 **Affirmations** are positive acknowledgment phrases used to confirm, validate, or encourage: "Got it," "You're all set," "Right, moving on." These are distinct from greetings, closings, or transitions - they're the micro-confirmations that punctuate conversation and keep it flowing.
 
+**Discourse Markers** are conversational connectors that smooth transitions and signal the agent's conversational logic: "So," "Right," "Anyway," "Now then," "Here's the thing." They are a Phrase Book category because they are situation-keyed (like acknowledgements and redirects), not vocabulary (like Lexicon).
+
+Discourse markers are a high-leverage persona signal — they make the agent sound conversational rather than robotic. Select markers that match the persona's Formality and Personality Intensity. A Formal agent uses "Furthermore" and "To clarify"; a Casual + Bold agent uses "So here's the deal" and "Alright, moving on."
+
 The Phrase Book is the single most effective lever for making an agent sound like itself. Encoding per-topic phrase book entries into instructions produces the strongest persona consistency.
 
 ### Never-Say List
@@ -580,6 +661,7 @@ The inverse of the Phrase Book - specific words, phrases, and patterns the agent
 - **Tone Boundaries** expressed as specific anti-phrases (e.g., "Never sound apologetic" → never say "I'm sorry, I can only...")
 - **Identity contradictions** - phrases that violate the persona's traits (e.g., a Direct agent never says "I'd be happy to help you with that!")
 - **Generic chatbot filler** - "Great question!", "Hope this helps!", "Let me know if you need anything else!" (these undermine almost every persona)
+- **Cognitive-processing markers** - "Let me think about that," "Hmm, let me consider," "I need to process this" — machines don't think. These create false anthropomorphism unrelated to the persona's designed personification level. Reframe as action: "Let me check," "Looking into that," "Pulling up your details."
 - **Register violations** - phrases that break the power dynamic (a Peer never says "Would you like me to proceed with..."; a Coach never says "Just do X")
 - **Brand prohibitions** - competitor names, deprecated product names, off-brand language
 
