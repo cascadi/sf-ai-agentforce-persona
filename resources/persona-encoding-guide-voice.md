@@ -1,6 +1,6 @@
 ---
-version: "1.0.0"
-date: 2026-03-25
+version: "1.1.0"
+date: 2026-04-23
 ---
 
 # Voice Encoding Guide
@@ -44,7 +44,7 @@ Select voices by matching persona dimensions to voice properties:
 | Persona Signal | Voice Property | Match Logic |
 |---|---|---|
 | Primary language | Language | Start with voices verified for the agent's language. Others are available but not optimized. |
-| Gender (from persona context) | Gender | Infer from persona name, pronouns, description. Only ask if ambiguous. |
+| Gender (from persona context) | Gender | See **Gender in voice selection** below. |
 | Identity adjectives | Description | Keyword overlap — warm, professional, friendly, calm, energetic |
 | Register | Style, Description | Peer → casual, natural. Advisor → professional, authoritative. |
 | Formality | Style, Description | Formal → polished, clear. Casual → relaxed, natural. |
@@ -52,6 +52,17 @@ Select voices by matching persona dimensions to voice properties:
 | Personality Intensity | Description, Stability default | Bold → energetic, expressive. Reserved → calm, steady. |
 | Audience context | Age | Match voice age to audience expectations. |
 | Regional context | Accent | Match to brand or audience region. |
+
+#### Gender in voice selection
+
+Gender surfaces only during voice encoding — it is not a required persona design input. The reason it matters here: even deliberately robotic or neutral voices are perceived as gendered by listeners, and the current voice library categorizes voices as Male or Female. Gender-neutral options are limited.
+
+**How to handle it:**
+- If the persona's name, pronouns, or description clearly imply a gender → use that signal. Don't re-ask.
+- If ambiguous → ask: "Voice selection requires choosing a male or female voice. Do you have a preference, or should I recommend options across both?" Frame it as a practical requirement of the tool, not a persona-defining choice.
+- Never infer gender from the agent's role, audience, or use case.
+
+This is a tool constraint, not a design philosophy. As voice libraries expand to include gender-neutral options, this guidance will update.
 
 Recommend **at least 3 voices by name** with reasoning and per-voice starting points for Speed, Stability, and Similarity. The default voice library is available in most orgs — use `resources/persona-encoding-guide-voice.md` matching criteria to select from it. Also share the **voice selection criteria** (language, gender, qualities) so the designer can evaluate other voices available in their org.
 

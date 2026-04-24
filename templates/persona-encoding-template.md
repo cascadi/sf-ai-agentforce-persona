@@ -1,6 +1,6 @@
 ---
-version: "2.2.0"
-date: 2026-03-25
+version: "2.3.0"
+date: 2026-04-23
 ---
 
 # [Agent Name] — Persona Encoding
@@ -24,12 +24,22 @@ config:
 system:
   instructions: |
     [Full persona content: identity, dimension behavioral rules,
-    phrase book, chatting style, tone boundaries, never-say list.
-    Use literal block scalar (|) — no character limits apply.]
+    phrase book, chatting style, tone boundaries (including profanity
+    boundary if set), never-say list, immutable terms with "use exactly
+    as written" directives. Use literal block scalar (|) — no character
+    limits apply.]
 
   messages:
     welcome: "[Static welcome message in persona voice]"
     error: "[Static error message in persona voice]"
+```
+
+### Dynamic Welcome Message *(optional)*
+
+*Include when the user opts for a dynamic welcome. Supplements the static welcome — does not replace it. See [Salesforce greeting design guide](https://www.salesforce.com/blog/design-better-greetings-agentforce-builder/) for implementation.*
+
+```
+[Dynamic welcome message logic — e.g., time-of-day greeting, returning user personalization, context-aware opening]
 ```
 
 ### Per-Topic Calibration
@@ -104,9 +114,20 @@ topic [topic_name]:
 
 ```
 [Full persona content: identity, dimensions, phrase book, tone
-boundaries, never-say list, chatting style rules. This is the
-primary encoding surface in Builder.]
+boundaries (including profanity boundary if set), never-say list,
+chatting style rules. This is the primary encoding surface in Builder.]
 ```
+
+### Immutable Terms *(include when applicable)*
+
+*Brand-defined and legal/compliance terms that must be preserved exactly as written in all agent output.*
+
+| Term | Type | Usage |
+|---|---|---|
+| [term] | [brand / legal] | [usage rule — e.g., "Always use this exact term for the loyalty program"] |
+| [term] | [brand / legal] | [usage rule] |
+
+*Encode in global instructions with explicit "use exactly as written" directive. If a term appears in both brand and legal contexts with different wording, the resolution chosen during design is noted here.*
 
 ### Per-Topic Persona Instructions
 

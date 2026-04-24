@@ -10,3 +10,8 @@ _local/
 
 # Local agent context
 AGENTS.md
+CLAUDE.md
+
+# AI tool config (local only)
+.claudeignore
+.cursorignore
